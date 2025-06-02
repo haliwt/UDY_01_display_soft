@@ -1,0 +1,130 @@
+#ifndef __BSP_POWER_H
+#define __BSP_POWER_H
+#include "main.h"
+
+
+typedef enum TIMING_T{
+
+   timing_donot,
+   timing_success ,
+   timing_power_off,
+   timing_null
+}timing_t;
+
+
+typedef enum _Signal{
+  
+	PANEL_DATA=0x01,
+    ORDER_DATA,
+    ANSWER_DATA,
+   
+    POWER_NULL
+
+}signal_t;
+
+
+
+typedef struct __RUN{
+
+  uint8_t gPower_On;
+
+   uint8_t works_dispTime_minutes;
+   uint8_t works_dispTime_hours;
+
+   
+  volatile int8_t timer_dispTime_hours;
+  volatile int8_t timer_dispTime_minutes;
+   
+ 
+   uint8_t gRunCommand_label;
+   uint8_t power_off_flag;
+  
+  
+   
+  uint8_t  gPlasma;
+ 
+   uint8_t  gDry;
+   uint8_t  gMouse;
+  
+
+
+   uint8_t  ptc_warning;
+   uint8_t  fan_warning;
+
+   //key ref
+   uint8_t recoder_start_conuter_flag;
+
+   uint8_t gReal_humtemp[2];
+   int8_t temporary_timer_dispTime_hours;
+   int8_t temporary_timer_dispTime_minutes;
+ 
+   /***/
+
+
+   volatile uint8_t set_temperature_decade_value;
+   
+   volatile  uint8_t set_temperature_unit_value;
+
+   volatile   uint8_t hours_two_decade_bit;
+   volatile   uint8_t hours_two_unit_bit;
+   volatile   uint8_t minutes_one_decade_bit;
+   volatile   uint8_t minutes_one_unit_bit;
+
+   uint8_t set_temperature_special_flag;
+
+   
+ 
+   //timer timing ref
+   uint8_t gTimer_set_temp_times;
+    uint8_t gTimer_timer_seconds_counter;
+
+   volatile uint8_t gTimer_key_temp_timing;
+
+
+
+   uint8_t gTimer_display_dht11;
+   uint8_t gTimer_timing_seconds_counter;
+   volatile uint8_t gTimer_time_colon;
+    uint8_t gTimer_key_timing;
+	uint8_t gTimer_error_digital ;
+ 
+ }RUN_T;
+
+extern RUN_T run_t;
+
+
+void Power_Off(void);
+void SplitDispose_Key(uint8_t value);
+
+
+
+void Decode_Handler(uint8_t data);
+
+
+
+void Power_Off_Fun(void);
+
+
+
+
+void Power_On_Fun(void);
+
+
+
+
+void power_on_handler(void);
+
+
+void power_on_run_handler(void);
+
+
+void power_off_run_handler(void);
+
+
+
+
+#endif 
+
+
+
+
