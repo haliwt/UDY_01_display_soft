@@ -46,7 +46,7 @@ void disp_smg_blink_set_tempeature_value(void)
 			 
 	         run_t.set_temperature_special_flag =0xff;
 
-			  run_t.gTimer_display_dht11 = 90;
+			  run_t.gTimer_display_dht11 = 0;
 		   
 			  //TM1639_Write_2bit_SetUp_TempData(run_t.set_temperature_decade_value,run_t.set_temperature_unit_value,0);
 		      

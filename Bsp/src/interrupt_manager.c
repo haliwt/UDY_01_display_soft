@@ -21,6 +21,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
     if(htim->Instance==TIM17){ //timer number14 is 100ms.
        tm0++;
+	   gpro_t.gTimer_4bitsmg_blink_times++;
 	   if(tm0> 999){ //1s
 	      tm0=0;
 		  

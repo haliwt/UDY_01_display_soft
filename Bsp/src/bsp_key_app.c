@@ -121,26 +121,28 @@ void adjust_timer_minutes(int8_t delta_min)
     total_hour += delta_min;
 
    if(total_hour > 24){
-         total_hour =0;
+         total_hour =24;
    	}
 	else if (total_hour < 0) {
-        total_hour = 24 ;  // 循环处理负值
+        total_hour = 0 ;  // 循环处理负值
     }
 
-    total_hour %= 24 ;  //证在一天范围内
+    //total_hour %= 24 ;  //证在一天范围内
 
     run_t.temporary_timer_dispTime_hours   = total_hour;
     run_t.temporary_timer_dispTime_minutes = 0;
 
-    run_t.hours_two_decade_bit    = run_t.temporary_timer_dispTime_hours / 10;
-    run_t.hours_two_unit_bit      = run_t.temporary_timer_dispTime_hours % 10;
-    run_t.minutes_one_decade_bit  = 0;
-    run_t.minutes_one_unit_bit    = 0;
-
+    //run_t.hours_two_decade_bit    = run_t.temporary_timer_dispTime_hours / 10;
+    //run_t.hours_two_unit_bit      = run_t.temporary_timer_dispTime_hours % 10;
+    //run_t.minutes_one_decade_bit  = 0;
+    //run_t.minutes_one_unit_bit    = 0;
+    run_t.timer_dispTime_hours=  run_t.temporary_timer_dispTime_hours;
+	run_t.timer_dispTime_minutes = run_t.temporary_timer_dispTime_minutes;
 
 	copy_total_hour=(uint8_t)total_hour;
 	SendData_ToMainboard_Data(0x4C,&copy_total_hour,0x01);
 	osDelay(5);
+	TM1639_Display_4Bit_Time(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
 
 }
 /**********************************************************************************************************
@@ -190,8 +192,10 @@ void power_key_long_handler(void)
 			power_on_key_counter=202;
 			key_t.key_long_power_flag =  KEY_LONG_POWER; //timer is OK.
 			gpro_t.set_timer_timing_doing_value=1;
+			
 			run_t.gTimer_key_timing=0;
 			gpro_t.key_add_dec_pressed_flag =0;
+			
 			SendData_Buzzer();
 			osDelay(5);
 			key_t.key_power_flag = 1;
@@ -369,8 +373,8 @@ void key_dec_fun(void)
             break;
 
         case 1:  // 设置定时减少（每次减60分钟）
-            SendData_Buzzer();
-			 osDelay(5);
+            //SendData_Buzzer();
+			// osDelay(5);
             run_t.gTimer_key_timing = 0;
             gpro_t.key_add_dec_pressed_flag = 1;
             adjust_timer_minutes(-1);  // 固定每次减60分钟

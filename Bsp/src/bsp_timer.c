@@ -74,7 +74,7 @@ void set_timer_fun_led_blink(void)
     	gpro_t.gTimer_4bitsmg_blink_times =0;
         time_smg_blink = time_smg_blink ^ 0x01;
 	    if(time_smg_blink == 1){
-       // TM1639_Write_4Bit_Time_sync_close(run_t.hours_two_decade_bit,run_t.hours_two_unit_bit, run_t.minutes_one_decade_bit,run_t.minutes_one_unit_bit,time_smg_blink) ;
+      
 	      TM1639_Display_4Bit_Time(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
 
 	   }
@@ -105,7 +105,7 @@ void set_timer_fun_led_blink(void)
       	
 
       	}
-         else{
+        else{
         	// run_t.hours_two_decade_bit = run_t.timer_dispTime_hours/10,
         	/// run_t.hours_two_unit_bit  = run_t.timer_dispTime_hours %10;
         	// run_t.minutes_one_decade_bit = run_t.timer_dispTime_minutes /10;

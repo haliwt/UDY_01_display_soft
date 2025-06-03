@@ -168,7 +168,7 @@ void power_on_run_handler(void)
                     
                     case 1: //display 1:   timing times  2: timer times.
 
-				       if(gpro_t.set_timer_timing_doing_value==0 || gpro_t.set_timer_timing_doing_value==3 \
+				       if((gpro_t.set_timer_timing_doing_value==0 || gpro_t.set_timer_timing_doing_value==3) \
 					   	   &&  run_t.ptc_warning ==0 && run_t.fan_warning ==0 ){ //WT.EDIT 2025.05.07
                         if(run_t.ptc_warning ==0 && run_t.fan_warning ==0){ //read main board ptc_warning of ref.
                             
