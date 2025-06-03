@@ -167,15 +167,15 @@ void power_key_handler(void)
 		
 			if(run_t.gPower_On == power_off){
 				run_t.gPower_On = power_on;
-				 SendData_PowerOnOff(1); // power on
-                 osDelay(5); 
+				// SendData_PowerOnOff(1); // power on
+                // osDelay(5); 
 
 			}
 			else{
 
 				run_t.gPower_On = power_off;
-				SendData_PowerOnOff(0); // power off
-                osDelay(5);
+				//SendData_PowerOnOff(0); // power off
+               /// osDelay(5);
 			}
 		}
 		else if(POWER_KEY_VALUE() ==KEY_DOWN && run_t.gPower_On == power_on && (power_on_key_counter  >= 60 && power_on_key_counter < 200)){
@@ -185,8 +185,8 @@ void power_key_handler(void)
 			gpro_t.set_timer_timing_doing_value=1;
 			run_t.gTimer_key_timing=0;
 			gpro_t.key_add_dec_pressed_flag =0;
-			SendData_Buzzer();
-			osDelay(5);
+			//SendData_Buzzer();
+			//osDelay(5);
 			
 			}
 	}
@@ -401,7 +401,7 @@ void process_keys(void)
 {
 	power_key_handler();
 
-	mouse_key_handler() ;
+  //mouse_key_handler() ;
  // 定义所有按键处理器
     KeyHandler handlers[] = {
         //{ &key_t.key_power_flag, 0, power_key_handler },
