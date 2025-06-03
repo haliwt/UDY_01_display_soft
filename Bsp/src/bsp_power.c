@@ -39,14 +39,9 @@ void Power_Off(void)
 **********************************************************************/
 void Power_On_Fun(void)
 {
-                
-   
-
-  
-   
-		run_t.gPlasma=1;
-		run_t.gDry =1;
-        run_t.gMouse = 1;
+    run_t.gPlasma=1;
+	run_t.gDry =1;
+    run_t.gMouse = 1;
 		
     power_on_led();
 

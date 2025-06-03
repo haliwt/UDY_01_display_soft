@@ -11,7 +11,7 @@
 KEY_T_TYPEDEF key_t;
 
 
-static void handle_key_power_long_pressed(void);
+
 
 
 uint8_t  set_temp_flag;
@@ -127,7 +127,7 @@ void adjust_timer_minutes(int8_t delta_min)
         total_hour = 24 ;  // 循环处理负值
     }
 
-   // total_hour %= 24 ;  // 保证在一天范围内
+    total_hour %= 24 ;  //证在一天范围内
 
     run_t.temporary_timer_dispTime_hours   = total_hour;
     run_t.temporary_timer_dispTime_minutes = 0;
@@ -142,11 +142,7 @@ void adjust_timer_minutes(int8_t delta_min)
 	SendData_ToMainboard_Data(0x4C,&copy_total_hour,0x01);
 	osDelay(5);
 
-    
 }
-
-
-
 /**********************************************************************************************************
     *
 	*Function Name: void power_key_handler(void) 
@@ -164,14 +160,14 @@ void power_key_short_handler(void)
 			power_on_key_counter=0;
 		
 			if(run_t.gPower_On == power_off){
-				run_t.gPower_On = power_on;
+				//run_t.gPower_On = power_on;
 				 SendData_PowerOnOff(1); // power on
                  osDelay(5);
 
 			}
 			else{
 
-				run_t.gPower_On = power_off;
+				//run_t.gPower_On = power_off;
 				SendData_PowerOnOff(0); // power off
                 osDelay(5);
 			}
@@ -179,8 +175,8 @@ void power_key_short_handler(void)
 		}
        else if(POWER_KEY_VALUE() ==KEY_UP &&key_t.key_long_power_flag == KEY_LONG_POWER ){
 		   key_t.key_power_flag++;
-
-    	   handle_key_power_long_pressed();
+           power_on_key_counter=0;
+    	  // handle_key_power_long_pressed();
 
        }
 	  
@@ -196,8 +192,8 @@ void power_key_long_handler(void)
 			gpro_t.set_timer_timing_doing_value=1;
 			run_t.gTimer_key_timing=0;
 			gpro_t.key_add_dec_pressed_flag =0;
-			//SendData_Buzzer();
-			//osDelay(5);
+			SendData_Buzzer();
+			osDelay(5);
 			key_t.key_power_flag = 1;
 	}
 	else{
@@ -215,15 +211,7 @@ void power_key_long_handler(void)
 	*Retrurn Parameter :NO
 	*
 *****************************************************************/
-static void handle_key_power_long_pressed(void)
-{
 
-   if(key_t.key_long_power_flag ==  KEY_LONG_POWER){//timer is OK.)
-      power_on_key_counter=0;
-
-	}
-    
-}
 
 /**********************************************************************************************************
 *	函 数 名: void plasma_key_handler(void) 
@@ -410,6 +398,8 @@ void key_dec_fun(void)
 *	返 回 值: 按键代码
 *********************************************************************************************************
 */
+
+#if 0
 void process_keys(void) 
 {
 	//power_key_handler();
@@ -431,7 +421,49 @@ void process_keys(void)
         handle_key(&handlers[i]);
     }
 }
+#else 
+void process_keys(void) 
+{
+    if(key_t.key_power_flag == 1){
+	   power_key_short_handler();
 
+    }
+	else if(key_t.key_dec_flag == 1 && DEC_KEY_VALUE()==KEY_UP){
+		key_t.key_dec_flag++;
+		key_dec_fun();
+	}
+	else if(key_t.key_add_flag == 1 && ADD_KEY_VALUE()==KEY_UP){
+		key_t.key_add_flag ++;
+		key_add_fun();
+	}
+	else if(key_t.key_dry_flag == 1 && DRY_KEY_VALUE()==KEY_UP){
+		key_t.key_dry_flag ++;
+		dry_key_handler() ;
+	}
+	else if(key_t.key_plasma_flag == 1 && PLASMA_KEY_VALUE()==KEY_UP){
+		key_t.key_plasma_flag++;
+		plasma_key_handler() ;
+	}
+//	else if(key_t.key_mouse_flag == 1 &&  MOUSE_KEY_VALUE()==KEY_UP){
+//		key_t.key_mouse_flag ++;
+//		mouse_key_handler() ;
+//	}
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+#endif 
 
 
 

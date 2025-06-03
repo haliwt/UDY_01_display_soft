@@ -129,7 +129,7 @@ static void vTaskDecoderPro(void *pvParameters)
 
 			   
 				
-                #if USART1_INTERRUPT
+               
 				gl_tMsg.disp_rx_cmd_done_flag = 0;
 
 				check_code =  bcc_check(gl_tMsg.usData,gl_tMsg.ulid);
@@ -137,23 +137,14 @@ static void vTaskDecoderPro(void *pvParameters)
 				if(check_code == gl_tMsg.bcc_check_code ){
 
 				receive_data_from_mainboard(gl_tMsg.usData);
-				}
-			    #else
-					g_msg.disp_rx_cmd_done_flag =0;//gl_tMsg.disp_rx_cmd_done_flag = 0;
-	                check_code =  bcc_check(g_msg.usData,g_msg.ulid);
-
-					 receive_data_from_mainboard(g_msg.usData);
-					 
-				#endif 
-				//memset(g_msg.usData,0,MAX_FRAME_SIZE);
-			    
-			}
+				
+			    }
 
 		}
 
 
-    }
-
+		}
+	}
  }
 /**********************************************************************************************************
 *	Function Name: static void vTaskRunPro(void *pvParameters)
@@ -173,8 +164,8 @@ static void vTaskRunPro(void *pvParameters)
 	
     while(1)
     {
-     power_key_short_handler();
-     //process_keys() ;
+     
+     process_keys() ;
 	
 	if(run_t.gPower_On == power_on){
 
@@ -201,7 +192,7 @@ static void vTaskRunPro(void *pvParameters)
 
 	  }
       task_2_counter++;
-     // send_cmd_ack_hanlder();
+
 
 	  vTaskDelay(10);
      
@@ -229,6 +220,26 @@ static void vTaskStart(void *pvParameters)
          power_key_long_handler();
 
 	  }
+	  else if(DEC_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
+           key_t.key_dec_flag=1;   
+            
+	  }
+	  else if(ADD_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
+           key_t.key_add_flag=1;   
+            
+	  }
+	  else if(DRY_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
+           key_t.key_dry_flag=1;   
+            
+	  }
+	  else if(PLASMA_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
+           key_t.key_plasma_flag=1;   
+            
+	  }
+//	  else if(MOUSE_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
+//           key_t.key_mouse_flag=1;   
+//            
+//	  }
       vTaskDelay(20);     
      }
 }

@@ -240,16 +240,12 @@ void TM1639_Display_Decimal(uint16_t num, uint8_t dot_pos)
 void TM1639_Display_Temperature(int8_t temp)
 {
 
-     
-        // 显示十位
-       if(temp >= 10){
+    
 	   	     
-            TM1639_Write_Digit_Full(TM1639_ADDR_DIG1_H, TM1639_ADDR_DIG1_L,TM1639_Number_Table[temp / 10]);
-       	}
-       else{
-	   	  
-            TM1639_Write_Digit_Full(TM1639_ADDR_DIG1_H, TM1639_ADDR_DIG1_L,TM1639_Number_Table[temp]);
-       	}
+       TM1639_Write_Digit_Full(TM1639_ADDR_DIG1_H, TM1639_ADDR_DIG1_L,TM1639_Number_Table[temp / 10]);
+      
+	   	 
+       	
         
         // 显示个位
        TM1639_Write_Digit_Full(TM1639_ADDR_DIG2_H, TM1639_ADDR_DIG2_L,TM1639_Number_Table[temp % 10] | TM1639_DOT);
@@ -266,14 +262,12 @@ void TM1639_Display_Humidity(uint8_t humi)
     if(humi > 99) humi = 99;
 
 
-    // 显示十位
-    if(humi >= 10){
-        TM1639_Write_Digit_Full(TM1639_ADDR_DIG3_H, TM1639_ADDR_DIG3_L,TM1639_Number_Table[humi / 10]);
-    }
-    else
-        TM1639_Write_Digit_Full(TM1639_ADDR_DIG3_H, TM1639_ADDR_DIG3_L, TM1639_Number_Table[humi]);
+//  显示十位
+  
+   TM1639_Write_Digit_Full(TM1639_ADDR_DIG3_H, TM1639_ADDR_DIG3_L,TM1639_Number_Table[humi / 10]);
+  
     
-    // 显示个位带小数点
+//    显示个位带小数点
     TM1639_Write_Digit_Full(TM1639_ADDR_DIG4_H, TM1639_ADDR_DIG4_L,TM1639_Number_Table[humi % 10] | TM1639_DOT);
     
    

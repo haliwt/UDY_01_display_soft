@@ -60,13 +60,10 @@ void TM1639_Display_4Bit_Time(uint8_t hours,uint8_t minutes)
 {
   
     //hours decade 入十位（最左边）
-    if(hours > 9){
-	    TM1639_Write_Digit_Full(TM1639_ADDR_DIG5_H, TM1639_ADDR_DIG5_L, Number_Table[hours/10]);
+    
+	TM1639_Write_Digit_Full(TM1639_ADDR_DIG5_H, TM1639_ADDR_DIG5_L, Number_Table[hours/10]);
 
-    }
-    else {
-		TM1639_Write_Digit_Full(TM1639_ADDR_DIG5_H, TM1639_ADDR_DIG5_L, Number_Table[hours]);
-    }
+   
         
     //hours unit 
     if(gpro_t.g_time_disp_colon_flag ==1){ //time colon symbol blink 
@@ -78,23 +75,14 @@ void TM1639_Display_4Bit_Time(uint8_t hours,uint8_t minutes)
 	}
 
 	//minute decade入十位（中间）
-    if(minutes > 9){
+  
 	  if(gpro_t.g_time_disp_colon_flag ==1){ //time colon symbol blink 
 	      TM1639_Write_Digit_Full(TM1639_ADDR_DIG7_H, TM1639_ADDR_DIG7_L,Number_Table[minutes/10] | TM1639_DOT);
 	  }
 	  else{
           TM1639_Write_Digit_Full(TM1639_ADDR_DIG7_H, TM1639_ADDR_DIG7_L,Number_Table[minutes/10]);
 	  }
-	}
-    else{
-	  if(gpro_t.g_time_disp_colon_flag ==1){ //time colon symbol blink 
-	      TM1639_Write_Digit_Full(TM1639_ADDR_DIG7_H, TM1639_ADDR_DIG7_L,Number_Table[minutes] | TM1639_DOT);
-	  }
-	  else{
-          TM1639_Write_Digit_Full(TM1639_ADDR_DIG7_H, TM1639_ADDR_DIG7_L,Number_Table[minutes]);
-	  }
-    }   
-   
+	
     //minute uint
 	TM1639_Write_Digit_Full(TM1639_ADDR_DIG8_H, TM1639_ADDR_DIG8_L,Number_Table[minutes%10]);
 }
