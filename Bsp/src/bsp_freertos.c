@@ -72,7 +72,7 @@ MSG_T   gl_tMsg; /* 定义丢�个结构体用于消息队列 */
 uint8_t ucKeyCode;
 uint8_t uckey_number;
 uint8_t key_power_flag,decoder_flag ;
-uint8_t check_code;
+uint8_t check_code,task_2_counter;
 
 
 /**********************************************************************************************************
@@ -139,11 +139,11 @@ static void vTaskDecoderPro(void *pvParameters)
 				receive_data_from_mainboard(gl_tMsg.usData);
 				}
 			    #else
-				g_msg.disp_rx_cmd_done_flag =0;//gl_tMsg.disp_rx_cmd_done_flag = 0;
-                check_code =  bcc_check(g_msg.usData,g_msg.ulid);
+					g_msg.disp_rx_cmd_done_flag =0;//gl_tMsg.disp_rx_cmd_done_flag = 0;
+	                check_code =  bcc_check(g_msg.usData,g_msg.ulid);
 
-				 receive_data_from_mainboard(g_msg.usData);
-				 
+					 receive_data_from_mainboard(g_msg.usData);
+					 
 				#endif 
 				//memset(g_msg.usData,0,MAX_FRAME_SIZE);
 			    
@@ -173,8 +173,8 @@ static void vTaskRunPro(void *pvParameters)
 	
     while(1)
     {
-
-     process_keys() ;
+     power_key_short_handler();
+     //process_keys() ;
 	
 	if(run_t.gPower_On == power_on){
 
@@ -200,8 +200,8 @@ static void vTaskRunPro(void *pvParameters)
 	    power_off_run_handler();
 
 	  }
-
-      send_cmd_ack_hanlder();
+      task_2_counter++;
+     // send_cmd_ack_hanlder();
 
 	  vTaskDelay(10);
      
@@ -221,71 +221,16 @@ static void vTaskRunPro(void *pvParameters)
 **********************************************************************************************************/
 static void vTaskStart(void *pvParameters)
 {
-	BaseType_t xResult;
-    //const TickType_t xMaxBlockTime = pdMS_TO_TICKS(1000); /* 设置最大等待时间为30ms */
-	uint32_t ulValue;
-    static  uint8_t power_on_times;
-
+	
     while(1)
     {
-      
-		xResult = xTaskNotifyWait(0x00000000,      
-						           0xFFFFFFFF,      
-						          &ulValue,        /* 保存ulNotifiedValue到变量ulValue中 */
-								  portMAX_DELAY);  /* 最大允许延迟时间 */
-        if( xResult == pdPASS ){
-		    
-            /* 接收到消息，检测那个位被按下 */
-            if((ulValue & POWER_BIT_0 ) != 0)
-            {
-           
-               key_t.key_power_flag =1;
-										
-		    }
-            else if((ulValue & DEC_BIT_2 ) != 0){
-            	  if(run_t.gPower_On == power_on){
-                  key_t.key_dec_flag =1;
-         
-            
-                }
-               
-            }
-            else if((ulValue & ADD_BIT_3 ) != 0){   /* 接收到消息，检测那个位被按下 */
-            	 if(run_t.gPower_On == power_on){
-					 key_t.key_add_flag =1;
-				
-            	                  
-            	  }
+      if(POWER_KEY_VALUE() ==KEY_DOWN){
 
+         power_key_long_handler();
 
-            }
-            else if((ulValue & PLASMA_BIT_5 ) != 0){   /* 接收到消息，检测那个位被按下 */
-            	  if(run_t.gPower_On == power_on){
-                    key_t.key_plasma_flag =1;
-                
-            	                
-            	    }
-            }
-            else if((ulValue & DRY_BIT_6 ) != 0){   /* 接收到消息，检测那个位被按下 */
-            	   if(run_t.gPower_On == power_on){
-                    key_t.key_dry_flag =1;
-                   
-            	               
-            	  }
-             }
-//            else if((ulValue & MOUSE_BIT_4 ) != 0){   /* 接收到消息，检测那个位被按下 */
-//            	 if(run_t.gPower_On == power_on){
-//                   
-//            	      key_t.key_mouse_flag =1;
-//                    key_t.key_wifi_flag =0;
-//                     }
-//            	                 
-//            }
-
-          }
-		
-           
-        }
+	  }
+      vTaskDelay(20);     
+     }
 }
  /**********************************************************************************************************
 *	Function Name: AppTaskCreate
@@ -408,6 +353,17 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
    }
 }
 #endif 
+
+
+#if 0
+/********************************************************************************
+	**
+	*Function Name:void HAL_GPIO_EXTI_Rising_Callback(uint16_t GPIO_Pin)
+	*Function : GPIO EXIT interrupt callback function
+	*Input Ref: IC GPIO_PIN 
+	*Return Ref:NO
+	*
+*******************************************************************************/
 void HAL_GPIO_EXTI_Rising_Callback(uint16_t GPIO_Pin)
 {
 
@@ -558,7 +514,7 @@ void HAL_GPIO_EXTI_Rising_Callback(uint16_t GPIO_Pin)
 }
 
 
-
+#endif 
 
 /**********************************************************************
 	*

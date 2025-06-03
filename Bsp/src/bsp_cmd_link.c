@@ -25,7 +25,7 @@ uint8_t inputBuf[1];
 static void sendUartData(uint8_t *data, uint8_t size) 
 {
 
-    #if USART1_INTERRUPT
+    #if 0
 		if (size) {
 			while (transOngoingFlag); // 等待上一次传输完成
 			transOngoingFlag = 1;
@@ -185,8 +185,8 @@ void SendData_PowerOnOff(uint8_t index) {
  * Return Ref: 无
  ****************************************************************************************************/
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
-    if (huart->Instance == USART1) {
-	 #if USART1_INTERRUPT
+    if (huart->Instance == USART2) {
+	 #if 0
         transOngoingFlag = 0; // 清除传输标志
      #else
         gpro_t.DMA_txComplete  = 1;

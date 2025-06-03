@@ -91,7 +91,7 @@ void power_on_handler(void)
 	run_t.gTimer_set_temp_times=0; //conflict with send temperatur value
 
 	run_t.gPower_On = power_on;
-	run_t.gRunCommand_label =0;
+	run_t.power_on_step =0;
 	run_t.power_off_flag = 0;
 	
 }
@@ -100,7 +100,7 @@ void power_off_handler(void)
 {
 
     run_t.gPower_On = power_off;
-	run_t.gRunCommand_label =0xff;
+	run_t.power_on_step =0;
 
  }
 
@@ -116,7 +116,7 @@ void power_on_run_handler(void)
 {
 
     static uint8_t  step_state;
-   switch(run_t.gRunCommand_label){
+   switch(run_t.power_on_step){
 
       case 0:
           
@@ -141,8 +141,9 @@ void power_on_run_handler(void)
 
 			
 			gpro_t.set_temp_value_success=0;
-			
-			run_t.gRunCommand_label= 1;
+			run_t.power_off_flag =0;
+			TM1639_Display_ON_OFF(1);
+			run_t.power_on_step= 1;
 
 
             
@@ -234,7 +235,7 @@ void power_off_run_handler(void)
 	  
 		 run_t.ptc_warning =0;
 		 run_t.fan_warning =0;
-			
+		 run_t.power_on_step=0;
           power_off_led();
 
 		   gpro_t.set_timer_timing_value_success=0;

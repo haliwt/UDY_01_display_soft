@@ -36,7 +36,7 @@ typedef struct __RUN{
   volatile int8_t timer_dispTime_minutes;
    
  
-   uint8_t gRunCommand_label;
+   uint8_t power_on_step;
    uint8_t power_off_flag;
   
   

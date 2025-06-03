@@ -3,6 +3,11 @@
 #include "main.h"
 
 
+#define KEY_MOUSE_Pin           GPIO_PIN_14
+#define KEY_MOUSE_GPIO_Port     GPIOA
+
+
+
 #define POWER_KEY_VALUE()          ((KEY_POWER_GPIO_Port->IDR & KEY_POWER_Pin) ? 1 : 0)
 
 

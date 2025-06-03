@@ -40,7 +40,7 @@ void power_off_led(void)
     LED_PLASMA_OFF();
     
     LED_MOUSE_OFF();
-	TM1639_Display_ON_OFF(1);
+	TM1639_Display_ON_OFF(0);
 	
 }
 /************************************************************************

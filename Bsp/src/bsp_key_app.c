@@ -155,31 +155,42 @@ void adjust_timer_minutes(int8_t delta_min)
 	*Return Ref: 按
 	*键代码
 **********************************************************************************************************/
-void power_key_handler(void) 
+void power_key_short_handler(void)
 {
 	if(key_t.key_power_flag == 1){
-
-		power_on_key_counter ++ ;
-
-		if(POWER_KEY_VALUE() ==KEY_UP && power_on_key_counter < 60 && key_t.key_long_power_flag != KEY_LONG_POWER){
-			key_t.key_power_flag=0;
+		
+       if(POWER_KEY_VALUE() ==KEY_UP && key_t.key_long_power_flag != KEY_LONG_POWER){
+			
 			power_on_key_counter=0;
 		
 			if(run_t.gPower_On == power_off){
 				run_t.gPower_On = power_on;
-				// SendData_PowerOnOff(1); // power on
-                // osDelay(5); 
+				 SendData_PowerOnOff(1); // power on
+                 osDelay(5);
 
 			}
 			else{
 
 				run_t.gPower_On = power_off;
-				//SendData_PowerOnOff(0); // power off
-               /// osDelay(5);
+				SendData_PowerOnOff(0); // power off
+                osDelay(5);
 			}
+			 key_t.key_power_flag++;
 		}
-		else if(POWER_KEY_VALUE() ==KEY_DOWN && run_t.gPower_On == power_on && (power_on_key_counter  >= 60 && power_on_key_counter < 200)){
-			key_t.key_power_flag =0;
+       else if(POWER_KEY_VALUE() ==KEY_UP &&key_t.key_long_power_flag == KEY_LONG_POWER ){
+		   key_t.key_power_flag++;
+
+    	   handle_key_power_long_pressed();
+
+       }
+	  
+	}
+}
+void power_key_long_handler(void)
+{
+	power_on_key_counter++;
+	if(POWER_KEY_VALUE() ==KEY_DOWN && run_t.gPower_On == power_on && (power_on_key_counter  >= 60 && power_on_key_counter < 200)){
+		
 			power_on_key_counter=202;
 			key_t.key_long_power_flag =  KEY_LONG_POWER; //timer is OK.
 			gpro_t.set_timer_timing_doing_value=1;
@@ -187,12 +198,11 @@ void power_key_handler(void)
 			gpro_t.key_add_dec_pressed_flag =0;
 			//SendData_Buzzer();
 			//osDelay(5);
-			
-			}
+			key_t.key_power_flag = 1;
 	}
 	else{
-	   handle_key_power_long_pressed();
-
+	  // handle_key_power_long_pressed();
+		key_t.key_power_flag = 1;
 
 	}
 
@@ -278,6 +288,8 @@ void mouse_key_handler(void)
 {
 
 	 static uint8_t k1;
+
+	 if(run_t.gPower_On == power_on){
 	 if(MOUSE_KEY_VALUE()==KEY_DOWN){
           if(k1< 200){
                k1++;
@@ -310,6 +322,7 @@ void mouse_key_handler(void)
 	   k1=0;
        return ;
      }
+	}
  }
 /****************************************************************
 	*
@@ -399,10 +412,10 @@ void key_dec_fun(void)
 */
 void process_keys(void) 
 {
-	power_key_handler();
+	//power_key_handler();
 
-  //mouse_key_handler() ;
- // 定义所有按键处理器
+
+  //定义所有按键处理器
     KeyHandler handlers[] = {
         //{ &key_t.key_power_flag, 0, power_key_handler },
         //{ &key_t.key_mode_flag, 0, mode_key_handler },

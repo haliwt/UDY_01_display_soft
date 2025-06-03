@@ -88,15 +88,17 @@ void MX_GPIO_Init(void)
 
   /*Configure GPIO pins : KEY_ADD_Pin KEY_DEC_Pin KEY_POWER_Pin KEY_DRY_Pin */
   GPIO_InitStruct.Pin = KEY_ADD_Pin|KEY_DEC_Pin|KEY_POWER_Pin|KEY_DRY_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;//GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pin : KEY_PLASMA_Pin */
   GPIO_InitStruct.Pin = KEY_PLASMA_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;//GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(KEY_PLASMA_GPIO_Port, &GPIO_InitStruct);
+
+  #if 0
 
   /* EXTI interrupt init*/
   HAL_NVIC_SetPriority(EXTI0_1_IRQn, 3, 0);
@@ -104,6 +106,7 @@ void MX_GPIO_Init(void)
 
   HAL_NVIC_SetPriority(EXTI4_15_IRQn, 3, 0);
   HAL_NVIC_EnableIRQ(EXTI4_15_IRQn);
+  #endif 
 
 }
 

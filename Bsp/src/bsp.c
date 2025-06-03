@@ -18,7 +18,7 @@ uint8_t  first_set_temperature_value;
 void bsp_init(void)
 {
 
-    run_t.gRunCommand_label =0xff;
+    run_t.power_on_step =0xff;
     run_t.gPower_On = power_off;
 
 

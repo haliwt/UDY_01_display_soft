@@ -240,7 +240,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 
             if(pdata[4]== 0x01){
 			run_t.gPower_On = power_on;
-            run_t.gRunCommand_label =0;
+            run_t.power_on_step =0;
             //gpro_t.receive_copy_cmd = 1;
             power_on_handler();
             SendData_Set_Command(0x11,0x01); //0x11 :send to main has the second display board exit.
@@ -249,7 +249,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
            else{ //power off
 
             run_t.gPower_On = power_off;
-            run_t.gRunCommand_label =0xff;
+            run_t.power_on_step =0;
             SendData_Set_Command(0x11,0x01);
 			osDelay(5);
            
@@ -272,7 +272,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 		    else{
 
 				run_t.gPower_On = power_off;
-                run_t.gRunCommand_label =0xff;
+                run_t.power_on_step =0;
 
 			}
            

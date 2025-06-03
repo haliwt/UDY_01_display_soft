@@ -51,12 +51,10 @@ extern KEY_T_TYPEDEF key_t;
 
 void process_keys(void) ;
 
-//void SetDataTemperatureValue(void);
+void power_key_short_handler(void);
 
-//void mode_key_handler(void);
 
-//void wifi_mode_key_handler(void);
-
+void power_key_long_handler(void);
 
 
 
