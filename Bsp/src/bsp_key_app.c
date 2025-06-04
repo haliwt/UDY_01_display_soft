@@ -76,10 +76,10 @@ void handle_key(KeyHandler *handler)
 void set_temperature_value(int8_t delta) 
 {
     uint8_t new_temp;
-	static uint8_t temperature_init_value;
+	
 
-	if(temperature_init_value == 0 && gpro_t.set_temp_value_success==0){
-        temperature_init_value++;
+	if(gpro_t.temperature_init_value == 0 && gpro_t.set_temp_value_success==0){
+        gpro_t.temperature_init_value++;
         gpro_t.set_up_temperature_value = (delta > 0) ? 20 : 40;
 	    new_temp = gpro_t.set_up_temperature_value;
     }
@@ -95,8 +95,8 @@ void set_temperature_value(int8_t delta)
     //run_t.set_temperature_decade_value = new_temp / 10;
     //run_t.set_temperature_unit_value   = new_temp % 10;
 
-    key_t.key_set_temperature_flag= 1;//run_t.set_temperature_special_flag = 1;
-    run_t.gTimer_set_up_temperature_value       = 0;
+    key_t.key_set_temperature_flag  = 1;
+    run_t.gTimer_set_up_temperature_value = 0;
     gpro_t.g_manual_shutoff_dry_flag   = 0;
  
 
@@ -158,25 +158,26 @@ void power_key_short_handler(void)
        if(POWER_KEY_VALUE() ==KEY_UP && key_t.key_long_power_flag != KEY_LONG_POWER){
 			
 			power_on_key_counter=0;
-		
+		    key_t.key_long_power_flag=0;//WT.EDIT 2025.06.04
 			if(run_t.gPower_On == power_off){
 				//run_t.gPower_On = power_on;
 				 SendData_PowerOnOff(1); // power on
-                 osDelay(5);
+                 osDelay(10);
 
 			}
 			else{
 
 				//run_t.gPower_On = power_off;
 				SendData_PowerOnOff(0); // power off
-                osDelay(5);
+                osDelay(10);
 			}
 			 key_t.key_power_flag++;
 		}
-       else if(POWER_KEY_VALUE() ==KEY_UP &&key_t.key_long_power_flag == KEY_LONG_POWER ){
+       else if(POWER_KEY_VALUE() ==KEY_UP && key_t.key_long_power_flag == KEY_LONG_POWER ){
 		   key_t.key_power_flag++;
+		   key_t.key_long_power_flag=0;//WT.EDIT 2025.06.04
            power_on_key_counter=0;
-    	  // handle_key_power_long_pressed();
+    
 
        }
 	  

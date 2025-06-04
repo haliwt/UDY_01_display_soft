@@ -138,6 +138,9 @@ void set_timer_fun_led_blink(void)
 ************************************************************************************/
 void Display_SmgTiming_Value(void)
 {
+
+   
+
 	 switch(gpro_t.set_timer_timing_value_success){
 
 	   case TIMER_SUCCESS:
@@ -167,11 +170,13 @@ void Display_SmgTiming_Value(void)
 			        gpro_t.send_ack_cmd = check_ack_power_off;//ack_power_off;
 					gpro_t.gTimer_again_send_power_on_off =0;
 					SendData_PowerOnOff(0);//power off
+					osDelay(10);
 					
 			      }
+		     Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
 		}
-
-        Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
+        
+   
        // WorksTime_DonotDisplay_Fun();
         
 	    break;
@@ -192,15 +197,31 @@ void Display_SmgTiming_Value(void)
     		        run_t.works_dispTime_hours =0;
     		   }
     	      }
+			 Display_Timing(run_t.works_dispTime_hours,run_t.works_dispTime_minutes,0);
            }
-  
-            Display_Timing(run_t.works_dispTime_hours,run_t.works_dispTime_minutes,0);
-           // Display_Works_Time_Fun();
-           // Timer_Timing_Donot_Display();
+           
+          
 		break;
 
 	   	}
+	 
+    if(gpro_t.gTimer_disp_time_counter > 3){
+		gpro_t.gTimer_disp_time_counter=0;
+     switch(gpro_t.set_timer_timing_value_success){
+
+	     case TIMER_SUCCESS:
+			 Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
+	     break;
+
+		 case TIMER_NORMAL_TIMING:
+		     Display_Timing(run_t.works_dispTime_hours,run_t.works_dispTime_minutes,0);
 
 
+		 break;
+
+
+	 }
+
+    }
 }
 

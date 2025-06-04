@@ -51,18 +51,21 @@ void power_on_init(void)
 
 	gpro_t.set_timer_timing_doing_value = 0;
 	gpro_t.g_manual_shutoff_dry_flag = 0; //allow open dry function .
-
-	gpro_t.set_temp_value_success=0;
-
-	gpro_t.set_timer_timing_value_success=0;
-
-
-    run_t.gTimer_time_colon =0;
+    gpro_t.set_timer_timing_value_success=0;
 	
+	gpro_t.set_temp_value_success=0;
+	gpro_t.temperature_init_value=0; //the first set up temperature value from 20:40
+	
+    run_t.gTimer_time_colon =0;
+	//timer time
+	run_t.gTimer_timer_seconds_counter=0;
 	run_t.timer_dispTime_hours=0;
 	run_t.timer_dispTime_minutes=0;
-	run_t.gTimer_timer_seconds_counter=0;
+	
+	//works time
     run_t.gTimer_timing_seconds_counter =0;
+	run_t.works_dispTime_hours =0;
+	run_t.works_dispTime_minutes =0;
 
 	run_t.gTimer_display_dht11 = 20; //at once display temperature and humidity value.
     run_t.power_off_flag =0;

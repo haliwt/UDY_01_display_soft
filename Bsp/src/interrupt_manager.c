@@ -41,7 +41,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		  
 
 		//usart
-
+        gpro_t.gTimer_disp_time_counter++;
         gpro_t.gTimer_again_send_power_on_off++;
 		gpro_t.gTimer_set_temp_counter++;
 	

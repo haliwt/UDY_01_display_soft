@@ -42,7 +42,7 @@ void disp_smg_blink_set_tempeature_value(void)
 		     handleSetTemperatureControl();
 			
           	  // Display_DHT11_Value();
-             run_t.gTimer_display_dht11 = 3;
+             run_t.gTimer_display_dht11 = 4;
              run_t.gTimer_set_up_temperature_value =0;
 		  
 	     }
