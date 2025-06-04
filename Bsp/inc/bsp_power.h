@@ -59,33 +59,18 @@ typedef struct __RUN{
    int8_t temporary_timer_dispTime_minutes;
  
    /***/
-
-
-   volatile uint8_t set_temperature_decade_value;
-   
-   volatile  uint8_t set_temperature_unit_value;
-
-   volatile   uint8_t hours_two_decade_bit;
-   volatile   uint8_t hours_two_unit_bit;
-   volatile   uint8_t minutes_one_decade_bit;
-   volatile   uint8_t minutes_one_unit_bit;
-
-   uint8_t set_temperature_special_flag;
-
-   
- 
    //timer timing ref
    uint8_t gTimer_set_temp_times;
-    uint8_t gTimer_timer_seconds_counter;
+   uint8_t gTimer_timer_seconds_counter;
 
-   volatile uint8_t gTimer_key_temp_timing;
+   volatile uint8_t gTimer_set_up_temperature_value;
 
 
 
    uint8_t gTimer_display_dht11;
    uint8_t gTimer_timing_seconds_counter;
    volatile uint8_t gTimer_time_colon;
-    uint8_t gTimer_key_timing;
+    uint8_t gTimer_set_timer_timing_value;
 	uint8_t gTimer_error_digital ;
  
  }RUN_T;
@@ -107,7 +92,7 @@ void Power_Off_Fun(void);
 
 
 
-void Power_On_Fun(void);
+void power_on_init(void);
 
 
 

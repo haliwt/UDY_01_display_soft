@@ -1,6 +1,17 @@
 #include "bsp.h"
 
 
+void set_up_timer_timing_handler(void)
+{
+
+ if(gpro_t.set_timer_timing_doing_value == 1 && run_t.ptc_warning ==0 && run_t.fan_warning ==0){
+
+             Set_TimerTiming_Number_Value();
+                   
+  }
+
+}
+
 /****************************************************************
 	*
 	*Function Name :void Set_Timing_Temperature_Number_Value(void)
@@ -14,8 +25,8 @@ void Set_TimerTiming_Number_Value(void)
   static uint8_t default_numbers =0xff;
    if(gpro_t.set_timer_timing_doing_value==1){
    //set timer timing value 
-    if(run_t.gTimer_key_timing > 3){
-		run_t.gTimer_key_timing =0;		
+    if(run_t.gTimer_set_timer_timing_value > 3){
+		run_t.gTimer_set_timer_timing_value =0;		
 		gpro_t.set_timer_timing_doing_value ++ ;
 	
 	 }
@@ -25,10 +36,7 @@ void Set_TimerTiming_Number_Value(void)
     if(gpro_t.set_timer_timing_doing_value==2){
     	gpro_t.set_timer_timing_doing_value++;
 		if(gpro_t.set_timer_timing_value_success  == TIMER_SUCCESS && gpro_t.key_add_dec_pressed_flag ==0){// ADD and DEC key don't be pressed
-             //run_t.hours_two_decade_bit = run_t.timer_dispTime_hours/10,
-        	 //run_t.hours_two_unit_bit  = run_t.timer_dispTime_hours %10;
-        	 //run_t.minutes_one_decade_bit = run_t.timer_dispTime_minutes /10;
-        	 //run_t.minutes_one_unit_bit = run_t.timer_dispTime_minutes %10;
+       
         	 Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
 
 		}
@@ -106,11 +114,7 @@ void set_timer_fun_led_blink(void)
 
       	}
         else{
-        	// run_t.hours_two_decade_bit = run_t.timer_dispTime_hours/10,
-        	/// run_t.hours_two_unit_bit  = run_t.timer_dispTime_hours %10;
-        	// run_t.minutes_one_decade_bit = run_t.timer_dispTime_minutes /10;
-        	// run_t.minutes_one_unit_bit = run_t.timer_dispTime_minutes %10;
-        	 //TM1639_Write_4Bit_Time_sync_close(run_t.hours_two_decade_bit,run_t.hours_two_unit_bit, run_t.minutes_one_decade_bit,run_t.minutes_one_unit_bit,time_smg_blink) ;
+        	
 		     TM1639_Display_4Bit_Time(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
 
          }

@@ -175,7 +175,8 @@ static void vTaskRunPro(void *pvParameters)
       
 	   disp_dht11_value();
        set_timer_fun_led_blink();
-   
+       disp_smg_blink_set_tempeature_value();
+	   set_up_timer_timing_handler();
 	  
 	 
        if(power_on_theFirst_times < 10 && (gpro_t.set_timer_timing_doing_value==0 || gpro_t.set_timer_timing_doing_value==3)){

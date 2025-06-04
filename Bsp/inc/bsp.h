@@ -113,7 +113,7 @@ typedef struct _pro_t{
 
 
    uint8_t send_ack_cmd;
-   uint8_t receive_copy_cmd;
+
    uint8_t g_manual_shutoff_dry_flag;
   
 
@@ -124,6 +124,7 @@ typedef struct _pro_t{
    uint8_t key_add_dec_pressed_flag;
    
    uint8_t gTimer_again_send_power_on_off;
+   uint8_t gTimer_set_temp_counter;
    uint16_t gTimer_4bitsmg_blink_times;
   
    
@@ -136,21 +137,7 @@ void bsp_init(void);
 
 
 
-void plasma_key_fun(uint8_t data);
 
-
-void ai_key_fun(uint8_t data);
-
-
-
-void bsp_dry_fun(uint8_t data);
-
-
-
-
-void mode_key_long_fun(void);
-
-void SetDataTemperatureValue(void);
 
 
 
@@ -164,3 +151,5 @@ void SetDataTemperatureValue(void);
 
 
 #endif /* BSP_INC_BSP_H_ */
+
+

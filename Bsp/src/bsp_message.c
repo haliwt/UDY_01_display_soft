@@ -36,7 +36,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
             if(pdata[4]== 0x01){
 			run_t.gPower_On = power_on;
             run_t.power_on_step =0;
-            //gpro_t.receive_copy_cmd = 1;
+     
             power_on_handler();
             SendData_Set_Command(0x11,0x01); //0x11 :send to main has the second display board exit.
 			osDelay(5);
@@ -84,7 +84,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 
                 run_t.gDry =pdata[5];
 				if(run_t.gDry == 0){
-                  gpro_t.g_manual_shutoff_dry_flag =1;
+                  
                   LED_DRY_OFF();
 				}
 				else{
@@ -130,7 +130,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 		   	}
 		    else{
 
-	            gpro_t.g_manual_shutoff_dry_flag = 1;
+	            
 	            run_t.gDry =0;
 			    LED_DRY_OFF();   
 
@@ -256,7 +256,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 
            run_t.gDry =0;
 		   LED_DRY_OFF();
-           //SendData_Set_Command(0x22,0x0); //0x22:PTC notice close .
+          
            }
 
         }
@@ -284,7 +284,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 
              }
            
-             run_t.gReal_humtemp[1] = pdata[6];
+             run_t.gReal_humtemp[1] = pdata[6]; //temperature value
 
 			 if(run_t.gPower_On == power_on && power_on_counter < 10){
 			 	 power_on_counter++;
@@ -368,11 +368,11 @@ void receive_data_from_mainboard(uint8_t *pdata)
 	   if(pdata[4]== 0x01 && run_t.gPower_On == power_on){
 
             run_t.gDry =1 ;//&& run_t.gPlasma ==1  && run_t.gUltransonic==1
-           // gpro_t.g_manual_shutoff_dry_flag = 0;
+           
         }
         else if(pdata[4] == 0x0 && run_t.gPower_On == power_on){
 
-            //gpro_t.g_manual_shutoff_dry_flag = 0;
+        
             run_t.gDry =0;
 		    LED_DRY_OFF();
           
@@ -406,13 +406,13 @@ void receive_data_from_mainboard(uint8_t *pdata)
 				
 			gpro_t.set_up_temperature_value =pdata[5];//warning
 	  
-			 gpro_t.g_manual_shutoff_dry_flag = 0 ;//  allow open dry function
+			// gpro_t.g_manual_shutoff_dry_flag = 0 ;//  allow open dry function
              gpro_t.set_temp_value_success=1;//
         
-             run_t.gTimer_key_temp_timing=0;
+      
 
-			 run_t.set_temperature_decade_value = gpro_t.set_up_temperature_value / 10 ;
-             run_t.set_temperature_unit_value  =gpro_t.set_up_temperature_value % 10; //
+			 //run_t.set_temperature_decade_value = gpro_t.set_up_temperature_value / 10 ;
+             //run_t.set_temperature_unit_value  =gpro_t.set_up_temperature_value % 10; //
 
              //TM1639_Write_2bit_SetUp_TempData(run_t.set_temperature_decade_value,run_t.set_temperature_unit_value,0);
 			TM1639_Display_Temperature(gpro_t.set_up_temperature_value)	;
@@ -430,16 +430,13 @@ void receive_data_from_mainboard(uint8_t *pdata)
 			if(pdata[4]== 0x01){ // one only data 
 
 		      gpro_t.set_timer_timing_doing_value = 1;
-			  run_t.gTimer_key_timing = 0;
+			  run_t.gTimer_set_timer_timing_value = 0;
             
 	
 				
 			 run_t.temporary_timer_dispTime_hours=pdata[5];
 	  
-			 	 run_t.hours_two_decade_bit    = run_t.temporary_timer_dispTime_hours / 10;
-    			run_t.hours_two_unit_bit      = run_t.temporary_timer_dispTime_hours % 10;
-   				 run_t.minutes_one_decade_bit  = 0;
-    			run_t.minutes_one_unit_bit    = 0;
+			 
 				
 	  
 			 
@@ -487,14 +484,14 @@ static void copy_cmd_data_from_mainboard(uint8_t *pdata )
     if(pdata[4]==0x00){
     if(pdata[5]==1){
 
-         gpro_t.receive_copy_cmd = 1;
+   
 		 run_t.gDry =1 ;//&& run_t.gPlasma ==1  && run_t.gUltransonic==1
-         gpro_t.g_manual_shutoff_dry_flag = 0;
+        
 		 LED_DRY_ON();
     }
     else{
-      gpro_t.receive_copy_cmd = 2;
-	  gpro_t.g_manual_shutoff_dry_flag = 0;
+     
+	
       run_t.gDry =0;
 	  LED_DRY_OFF();
 
@@ -504,59 +501,39 @@ static void copy_cmd_data_from_mainboard(uint8_t *pdata )
 
     break;
 
-    case ack_plasma:
+	case 0x22:
+		if(pdata[4]==0x00){
+		    if(pdata[5]==1){
 
-    if(pdata[5]==1){
+		       
+				 run_t.gDry =1 ;//&& run_t.gPlasma ==1  && run_t.gUltransonic==1
+		        
+				 LED_DRY_ON();
+		    }
+		    else{
 
-        gpro_t.receive_copy_cmd = 1;
-    }
-    else{
-      gpro_t.receive_copy_cmd = 2;
-
-    }
-    break;
-
-    case ack_ai:
-
-    if(pdata[5]==1){
-
-        gpro_t.receive_copy_cmd = 1;
-    }
-    else{
-      gpro_t.receive_copy_cmd = 2;
-
-    }
-
-    break;
-
-    case ack_wifi: // link wifi command
-
-      if(pdata[4]==0){ //0-command ,0x0f-data
-
-	  if(pdata[5] == 0x01){  // link wifi
-
-	 
-
-			  
-	  
-	   }
-	  else{ //close
-	  
 			
-		
-	  
-			}
+		      run_t.gDry =0;
+			  LED_DRY_OFF();
 
-      }
-     
-
+		    }
+        }
    break;
 
-   
+    case ack_plasma:
+	if(pdata[4]==0x00){
 
+	    if(pdata[5]==1){
 
-    
-    
+	       
+	    }
+	    else{
+	    
+
+	    }
+	}
+    break;
+
     case ack_with_buzzer:
         if(pdata[5] == 1){  //buzzer answer command
 

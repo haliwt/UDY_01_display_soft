@@ -37,7 +37,7 @@ void Power_Off(void)
 *Return Ref: NO
 *
 **********************************************************************/
-void Power_On_Fun(void)
+void power_on_init(void)
 {
     run_t.gPlasma=1;
 	run_t.gDry =1;
@@ -48,16 +48,27 @@ void Power_On_Fun(void)
 	run_t.fan_warning=0;
 	run_t.ptc_warning=0;
  
+
+	gpro_t.set_timer_timing_doing_value = 0;
+	gpro_t.g_manual_shutoff_dry_flag = 0; //allow open dry function .
+
+	gpro_t.set_temp_value_success=0;
+
+	gpro_t.set_timer_timing_value_success=0;
+
+
+    run_t.gTimer_time_colon =0;
 	
-    run_t.gTimer_timer_seconds_counter=0;
-    gpro_t.set_timer_timing_value_success =0 ;
-    gpro_t.set_temp_value_success = 0;
-    run_t.timer_dispTime_hours =0;
+	run_t.timer_dispTime_hours=0;
 	run_t.timer_dispTime_minutes=0;
+	run_t.gTimer_timer_seconds_counter=0;
+    run_t.gTimer_timing_seconds_counter =0;
+
+	run_t.gTimer_display_dht11 = 20; //at once display temperature and humidity value.
+    run_t.power_off_flag =0;
 		
-     //TM1639_Write_4Bit_Time(hour_decade,run_t.hours_two_unit_bit,run_t.minutes_one_decade_bit,minutes_two,0);
-	 TM1639_Display_4Bit_Time(run_t.works_dispTime_hours,run_t.works_dispTime_minutes);
-     //Display_DHT11_Value(); //WT.EIDT 2025.05.10
+    TM1639_Display_4Bit_Time(run_t.works_dispTime_hours,run_t.works_dispTime_minutes);
+     
     
 }
 
@@ -115,30 +126,10 @@ void power_on_run_handler(void)
 
       case 0:
           
-	  
-           run_t.gTimer_time_colon =0;
-	       run_t.set_temperature_decade_value=40;
-           
-			Power_On_Fun();
-			run_t.gTimer_display_dht11 = 20; //at once display temperature and humidity value.
-			gpro_t.set_timer_timing_doing_value = 0;
-            gpro_t.g_manual_shutoff_dry_flag = 0; //allow open dry function .
-      
-
-			gpro_t.set_timer_timing_value_success=0;
-			run_t.timer_dispTime_hours=0;
-		    run_t.timer_dispTime_minutes=0;
-
-		
-			 run_t.works_dispTime_hours=0;
-			  run_t.works_dispTime_minutes=0;
-			  run_t.gTimer_timing_seconds_counter =0;
-
+	  power_on_init();
 			
-			gpro_t.set_temp_value_success=0;
-			run_t.power_off_flag =0;
-			TM1639_Display_ON_OFF(1);
-			run_t.power_on_step= 1;
+	   TM1639_Display_ON_OFF(1);
+		run_t.power_on_step= 1;
 
 
             
@@ -146,57 +137,38 @@ void power_on_run_handler(void)
 
       case 1:
 
-          if(gpro_t.set_timer_timing_doing_value == 1 && run_t.ptc_warning ==0 && run_t.fan_warning ==0){
+           if((gpro_t.set_timer_timing_doing_value==0 || gpro_t.set_timer_timing_doing_value==3) \
+			   &&  run_t.ptc_warning ==0 && run_t.fan_warning ==0 ){ //WT.EDIT 2025.05.07
+			 if(run_t.ptc_warning ==0 && run_t.fan_warning ==0){ //read main board ptc_warning of ref.
 
-                   Set_TimerTiming_Number_Value();
-                   
-           }
-           else if((gpro_t.set_timer_timing_doing_value == 0 ||gpro_t.set_timer_timing_doing_value == 3 )&&  run_t.set_temperature_special_flag   >0 &&  run_t.set_temperature_special_flag != 0xff ){
+				 Display_SmgTiming_Value();
 
-                   disp_smg_blink_set_tempeature_value();
-	              
-						
-           }
-           else{
+				}
+				else{
 
-              switch(step_state){
+					Warning_Error_Numbers_Fun();
 
-					case 0:
-						Led_Panel_OnOff();
-					    step_state=1;
-					break;
-                    
-                    case 1: //display 1:   timing times  2: timer times.
-
-				       if((gpro_t.set_timer_timing_doing_value==0 || gpro_t.set_timer_timing_doing_value==3) \
-					   	   &&  run_t.ptc_warning ==0 && run_t.fan_warning ==0 ){ //WT.EDIT 2025.05.07
-                        if(run_t.ptc_warning ==0 && run_t.fan_warning ==0){ //read main board ptc_warning of ref.
-                            
-							   Display_SmgTiming_Value();
-
-                            
-
-                         }
-                        else{
-
-                            Warning_Error_Numbers_Fun();
-
-                        }
+				}
                         
-                        }
+            }
 
-                     step_state=1;
-                    break;
+            step_state=1;
+       break;
 
-              }
-             	}
-            
-      break;
+
+
 
 	}
 }
 
-
+/******************************************************************************
+	*
+	*Function Name:void detected_ptc_or_fan_warning_fun(void)
+	*Funcion: display ptc warning and fan warning
+	*Input Ref: NO
+	*Return Ref:NO
+	*
+******************************************************************************/
 void detected_ptc_or_fan_warning_fun(void)
 {
 

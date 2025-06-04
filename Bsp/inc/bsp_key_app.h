@@ -37,6 +37,7 @@ typedef struct{
 
   uint8_t key_dec_flag;
   uint8_t key_add_flag;
+  uint8_t key_set_temperature_flag ;
   
 
   //FUNCTION KEY

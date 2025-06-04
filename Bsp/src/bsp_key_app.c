@@ -95,13 +95,13 @@ void set_temperature_value(int8_t delta)
     //run_t.set_temperature_decade_value = new_temp / 10;
     //run_t.set_temperature_unit_value   = new_temp % 10;
 
-    run_t.set_temperature_special_flag = 1;
-    run_t.gTimer_key_temp_timing       = 0;
+    key_t.key_set_temperature_flag= 1;//run_t.set_temperature_special_flag = 1;
+    run_t.gTimer_set_up_temperature_value       = 0;
     gpro_t.g_manual_shutoff_dry_flag   = 0;
  
 
-    SendData_ToMainboard_Data(0x2A,&new_temp,0x01);
-    osDelay(5);
+    //SendData_ToMainboard_Data(0x2A,&new_temp,0x01);
+   // osDelay(5);
 
     TM1639_Display_Temperature(gpro_t.set_up_temperature_value);//TM1639_Write_2bit_SetUp_TempData(run_t.set_temperature_decade_value, run_t.set_temperature_unit_value, 0);
 	
@@ -117,7 +117,7 @@ void set_temperature_value(int8_t delta)
 void adjust_timer_minutes(int8_t delta_min) 
 {
     int8_t total_hour = run_t.temporary_timer_dispTime_hours ;
-	uint8_t copy_total_hour;
+//	uint8_t copy_total_hour;
     total_hour += delta_min;
 
    if(total_hour > 24){
@@ -132,16 +132,14 @@ void adjust_timer_minutes(int8_t delta_min)
     run_t.temporary_timer_dispTime_hours   = total_hour;
     run_t.temporary_timer_dispTime_minutes = 0;
 
-    //run_t.hours_two_decade_bit    = run_t.temporary_timer_dispTime_hours / 10;
-    //run_t.hours_two_unit_bit      = run_t.temporary_timer_dispTime_hours % 10;
-    //run_t.minutes_one_decade_bit  = 0;
-    //run_t.minutes_one_unit_bit    = 0;
+
     run_t.timer_dispTime_hours=  run_t.temporary_timer_dispTime_hours;
 	run_t.timer_dispTime_minutes = run_t.temporary_timer_dispTime_minutes;
-
-	copy_total_hour=(uint8_t)total_hour;
-	SendData_ToMainboard_Data(0x4C,&copy_total_hour,0x01);
-	osDelay(5);
+	
+    run_t.gTimer_set_timer_timing_value=0;
+	//copy_total_hour=(uint8_t)total_hour;
+	//SendData_ToMainboard_Data(0x4C,&copy_total_hour,0x01);
+	//osDelay(5);
 	TM1639_Display_4Bit_Time(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
 
 }
@@ -193,7 +191,7 @@ void power_key_long_handler(void)
 			key_t.key_long_power_flag =  KEY_LONG_POWER; //timer is OK.
 			gpro_t.set_timer_timing_doing_value=1;
 			
-			run_t.gTimer_key_timing=0;
+			run_t.gTimer_set_timer_timing_value=0;
 			gpro_t.key_add_dec_pressed_flag =0;
 			
 			SendData_Buzzer();
@@ -256,15 +254,17 @@ void dry_key_handler(void)
         if(run_t.gDry == 0) {
             SendData_Set_Command(dry_cmd, 0x01);//sendCommandAndAck(dry_cmd, 0x01, check_ack_ptc_on);
 			osDelay(5);
-            run_t.gDry = 1;
+            //run_t.gDry = 1;
+			//LED_DRY_ON();
             gpro_t.g_manual_shutoff_dry_flag = 0;
-            LED_DRY_ON();
+           
         } else {
             SendData_Set_Command(dry_cmd, 0x00);//sendCommandAndAck(dry_cmd, 0x00, check_ack_ptc_off);
 			osDelay(5);
-            run_t.gDry = 0;
+            //run_t.gDry = 0;
+			//LED_DRY_OFF();
             gpro_t.g_manual_shutoff_dry_flag = 1; // 手动关闭后不再自动开启
-            LED_DRY_OFF();
+           
         }
 
 }
@@ -335,14 +335,15 @@ void key_add_fun(void)
 
 	    case 3:
 		case 0:  // 设置温度增加
-           
+            SendData_Buzzer();
+			osDelay(5);
             set_temperature_value(+1);
             break;
 
         case 1:  // 设置定时增加（每次加60分钟）
             SendData_Buzzer();
 			osDelay(5);
-            run_t.gTimer_key_timing = 0;
+            run_t.gTimer_set_timer_timing_value = 0;
             gpro_t.key_add_dec_pressed_flag = 1;
             adjust_timer_minutes(1);  // 固定每次加60分钟
             break;
@@ -367,15 +368,15 @@ void key_dec_fun(void)
 
         case 3:
 		case 0:  // 设置温度减少
-            //SendData_Buzzer();
-		    // osDelay(5);
+             SendData_Buzzer();
+		     osDelay(5);
             set_temperature_value(-1);
             break;
 
         case 1:  // 设置定时减少（每次减60分钟）
-            //SendData_Buzzer();
-			// osDelay(5);
-            run_t.gTimer_key_timing = 0;
+            SendData_Buzzer();
+			osDelay(5);
+            run_t.gTimer_set_timer_timing_value = 0;
             gpro_t.key_add_dec_pressed_flag = 1;
             adjust_timer_minutes(-1);  // 固定每次减60分钟
         break;
