@@ -140,20 +140,24 @@ void power_on_run_handler(void)
 
       case 1:
 
-           if((gpro_t.set_timer_timing_doing_value==0 || gpro_t.set_timer_timing_doing_value==3) \
-			   &&  run_t.ptc_warning ==0 && run_t.fan_warning ==0 ){ //WT.EDIT 2025.05.07
-			 if(run_t.ptc_warning ==0 && run_t.fan_warning ==0){ //read main board ptc_warning of ref.
+
+		   if(run_t.ptc_warning ==0 && run_t.fan_warning ==0){
+
+		   if(gpro_t.set_timer_timing_doing_value==0 || gpro_t.set_timer_timing_doing_value==3){ //WT.EDIT 2025.05.07
+		    { //read main board ptc_warning of ref.
 
 				 Display_SmgTiming_Value();
 
 				}
-				else{
+			 }
+		   	}
+			else{
 
-					Warning_Error_Numbers_Fun();
+			 Warning_Error_Numbers_Fun();
 
-				}
+			 }
                         
-            }
+         
 
             step_state=1;
        break;

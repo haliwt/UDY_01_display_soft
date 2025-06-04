@@ -215,7 +215,7 @@ static void vTaskStart(void *pvParameters)
     while(1)
     {
       if(POWER_KEY_VALUE() ==KEY_DOWN){
-
+         
          power_key_long_handler();
 
 	  }

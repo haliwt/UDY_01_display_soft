@@ -116,19 +116,22 @@ void Warning_Error_Numbers_Fun(void)
 
     static uint8_t alternate_flag,times;
 
-   if(run_t.ptc_warning ==1 ||  run_t.fan_warning ==1){
+	  if(run_t.gTimer_error_digital > 2){//10ms * 51= 510
+	       run_t.gTimer_error_digital=0;
 
-
-
-       if(run_t.ptc_warning ==1 &&   run_t.fan_warning ==1)alternate_flag =1;
+      if(run_t.ptc_warning ==1 && run_t.fan_warning ==1)alternate_flag =1;
        else alternate_flag =0;
 
 
-		if(run_t.gTimer_error_digital< 3){//10ms * 51= 510
+		gpro_t.g_time_disp_colon_flag = gpro_t.g_time_disp_colon_flag ^ 0x01;
+ 
+		 
 
-		      
+		    times = times ^ 0x01;
+		
             if(alternate_flag ==0){
-			   	  
+				
+			   	
                  if(run_t.ptc_warning ==1){
                  
 					Display_Error_Digital(0x01);
@@ -136,27 +139,37 @@ void Warning_Error_Numbers_Fun(void)
 				 else if(run_t.fan_warning ==1){
 
 					  
-                      Display_Error_Digital(0x02);
+                    Display_Error_Digital(0x02);
                      
 
-			        }
+			      }
 
 				 
 			  }
 			  else if(alternate_flag ==1){
 
 			      
-				   if(run_t.ptc_warning ==1 && times == 0){ // && run_t.fan_warning ==1){
+                  if(times ==1){
+
+				   if(run_t.ptc_warning ==1){ // && run_t.fan_warning ==1){
                        
                     
-
                         Display_Error_Digital(0x01);
 
 				   	}
-				    else  if(run_t.fan_warning ==1 && times > 0){
-                      
-					    Display_Error_Digital(0x02);
-			        }
+				    
+
+                   }
+				   else{
+
+				         if(run_t.fan_warning ==1){
+										 
+						   Display_Error_Digital(0x02);
+						}
+
+
+
+				   }
 				
 
 
@@ -164,30 +177,16 @@ void Warning_Error_Numbers_Fun(void)
 			   
 
 		   }
-		   else if(run_t.gTimer_error_digital > 3 && run_t.gTimer_error_digital  < 5 ){
- 			
-                if(alternate_flag ==1){
-                if(times > 0)times = 0;
-                else times ++;
-
-                }
-                    
+		   
 
                 
- 				
-		   }
-		    else if(run_t.gTimer_error_digital > 5){
-
-			  run_t.gTimer_error_digital=0;
-
-
-			 }
-
-		}
-
-
-
+ 	
+		   
 }
+
+
+
+
 
 
 

@@ -185,19 +185,20 @@ void power_key_short_handler(void)
 }
 void power_key_long_handler(void)
 {
-	power_on_key_counter++;
+	if(run_t.ptc_warning ==0 && run_t.fan_warning ==0)power_on_key_counter++;
 	if(POWER_KEY_VALUE() ==KEY_DOWN && run_t.gPower_On == power_on && (power_on_key_counter  >= 60 && power_on_key_counter < 200)){
 		
-			power_on_key_counter=202;
-			key_t.key_long_power_flag =  KEY_LONG_POWER; //timer is OK.
-			gpro_t.set_timer_timing_doing_value=1;
-			
-			run_t.gTimer_set_timer_timing_value=0;
-			gpro_t.key_add_dec_pressed_flag =0;
-			
-			SendData_Buzzer();
-			osDelay(5);
-			key_t.key_power_flag = 1;
+                power_on_key_counter=202;
+				key_t.key_long_power_flag =  KEY_LONG_POWER; //timer is OK.
+				gpro_t.set_timer_timing_doing_value=1;
+				
+				run_t.gTimer_set_timer_timing_value=0;
+				gpro_t.key_add_dec_pressed_flag =0;
+				
+				SendData_Buzzer();
+				osDelay(5);
+				key_t.key_power_flag = 1;
+           
 	}
 	else{
 	  // handle_key_power_long_pressed();

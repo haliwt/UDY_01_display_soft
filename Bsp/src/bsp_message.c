@@ -229,8 +229,9 @@ void receive_data_from_mainboard(uint8_t *pdata)
 		if(pdata[3] == 0x00){
 			
 			if(pdata[4]== 0x01){
-
+                
 	            run_t.ptc_warning = 1;
+				gpro_t.g_manual_shutoff_dry_flag=1;
 	            run_t.gDry =0;
 			    LED_DRY_OFF();
 	           
@@ -253,7 +254,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 
             if(pdata[4]==1){
             run_t.fan_warning = 1;
-
+            gpro_t.g_manual_shutoff_dry_flag=1;
            run_t.gDry =0;
 		   LED_DRY_OFF();
           

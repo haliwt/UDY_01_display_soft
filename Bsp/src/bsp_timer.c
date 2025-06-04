@@ -3,11 +3,12 @@
 
 void set_up_timer_timing_handler(void)
 {
+  if(run_t.fan_warning ==0 && run_t.ptc_warning ==0){
+	 if(gpro_t.set_timer_timing_doing_value == 1 && run_t.ptc_warning ==0 && run_t.fan_warning ==0){
 
- if(gpro_t.set_timer_timing_doing_value == 1 && run_t.ptc_warning ==0 && run_t.fan_warning ==0){
-
-             Set_TimerTiming_Number_Value();
-                   
+	             Set_TimerTiming_Number_Value();
+	                   
+	  }
   }
 
 }
@@ -74,7 +75,7 @@ void Set_TimerTiming_Number_Value(void)
 void set_timer_fun_led_blink(void)
 {
    static uint8_t time_smg_blink;
- 
+   
    if(gpro_t.set_timer_timing_doing_value==1){
 
      if(gpro_t.key_add_dec_pressed_flag ==1 && gpro_t.gTimer_4bitsmg_blink_times  > 300){//if has a key be pressed "+" key or "-" key
