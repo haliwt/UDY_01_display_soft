@@ -128,8 +128,6 @@ static void vTaskDecoderPro(void *pvParameters)
 			if((ulValue & DECODER_BIT_9) != 0){
 
 			   
-				
-               
 				gl_tMsg.disp_rx_cmd_done_flag = 0;
 
 				check_code =  bcc_check(gl_tMsg.usData,gl_tMsg.ulid);
