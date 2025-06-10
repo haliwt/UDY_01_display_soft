@@ -3,7 +3,7 @@
 
 void mouse_gpio_init(void)
 {
-   #if 0
+   #if 1
    GPIO_InitTypeDef GPIO_InitStruct = {0};
 
   /* GPIO Ports Clock Enable */

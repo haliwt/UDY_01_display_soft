@@ -46,31 +46,28 @@ void set_timer_fun_led_blink(void)
 {
    static uint8_t time_smg_blink;
 
-   if(gpro_t.key_add_dec_pressed_flag ==1 && gpro_t.gTimer_set_temp_counter  < 4){
-   if(gpro_t.key_add_dec_pressed_flag ==1 && gpro_t.gTimer_4bitsmg_blink_times  > 300){//if has a key be pressed "+" key or "-" key
+   if(gpro_t.key_add_dec_pressed_flag ==1 && gpro_t.gTimer_set_temp_counter  > 2){
+  // if(gpro_t.key_add_dec_pressed_flag ==1 && gpro_t.gTimer_4bitsmg_blink_times  > 300){//if has a key be pressed "+" key or "-" key
 
-    	gpro_t.gTimer_4bitsmg_blink_times =0;
-        time_smg_blink = time_smg_blink ^ 0x01;
-	    if(time_smg_blink == 1){
-      
-	      TM1639_Display_4Bit_Time(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
+     
 
-	   }
-	   else{
-	   	TM1639_donotDisplay_4Bit_Time();
-	   }
-   	
-     }
-   	}
- 
+    	TM1639_donotDisplay_4Bit_Time();
+        osDelay(300);
+        TM1639_Display_4Bit_Time(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
+	    osDelay(300);
+	    TM1639_donotDisplay_4Bit_Time();
+	    osDelay(300);
+	    TM1639_Display_4Bit_Time(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
 
-      if(gpro_t.key_add_dec_pressed_flag ==1 && gpro_t.gTimer_set_temp_counter  > 3){
-		gpro_t.key_add_dec_pressed_flag=0;
+	 
+	    gpro_t.key_add_dec_pressed_flag=0;
 
       	run_t.timer_dispTime_minutes=0;
 	    run_t.gTimer_timer_seconds_counter =0;
 
-      }
+      
+
+   	}
 
  }
  /***********************************************************************************

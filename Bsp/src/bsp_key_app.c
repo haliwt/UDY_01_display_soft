@@ -271,44 +271,7 @@ void mouse_key_handler(void)
 {
 
 
-    #if 0
-	 static uint8_t k1;
-
-	 if(run_t.gPower_On == power_on){
-	 if(MOUSE_KEY_VALUE()==KEY_DOWN){
-          if(k1< 200){
-               k1++;
-
-		 }
-
-     }
-	 
-	 if(k1==200){
-	  
-        if(run_t.gMouse == 0){
-            // 开启 Mouse 功能
-            SendData_Set_Command(mouse_cmd, 0x01);
-            osDelay(5);
-            run_t.gMouse = 1;
-            LED_MOUSE_ON();
-            gpro_t.send_ack_cmd = check_ack_mouse_on;  // 假设有对应的反馈类型
-            gpro_t.gTimer_again_send_power_on_off = 0;
-
-        }
-		else{
-            // 关闭 Mouse 功能
-            SendData_Set_Command(mouse_cmd, 0x00);
-            osDelay(5);
-            run_t.gMouse = 0;
-            LED_MOUSE_OFF();
-            gpro_t.send_ack_cmd = check_ack_mouse_off;  // 假设有对应的反馈类型
-            gpro_t.gTimer_again_send_power_on_off = 0;
-        }
-	   k1=0;
-       return ;
-     }
-	}
-  #else
+   
      if(run_t.gMouse == 0){
             // 开启 Mouse 功能
             
@@ -330,7 +293,7 @@ void mouse_key_handler(void)
         }
 
   
-  #endif 
+ 
  }
 /****************************************************************
 	*
@@ -402,7 +365,8 @@ void process_keys(void)
 #else 
 void process_keys(void) 
 {
-    if(key_t.key_power_flag == 1 && POWER_KEY_VALUE()== KEY_UP){
+    static uint8_t mouse_power_on;
+	if(key_t.key_power_flag == 1 && POWER_KEY_VALUE()== KEY_UP){
 		key_t.key_power_flag++;
 	   power_key_short_handler();
 
@@ -425,7 +389,16 @@ void process_keys(void)
 	}
 	else if(key_t.key_mouse_flag == 1 &&  MOUSE_KEY_VALUE()==KEY_UP){
 		key_t.key_mouse_flag ++;
-		mouse_key_handler() ;
+		if(mouse_power_on==0){
+
+		    mouse_power_on++;
+		    run_t.gMouse = 1;
+		   LED_MOUSE_ON();
+
+		}
+		else{
+		 mouse_key_handler() ;
+		}
 	}
 
 

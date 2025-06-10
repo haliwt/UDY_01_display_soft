@@ -163,7 +163,7 @@ static void vTaskRunPro(void *pvParameters)
     while(1)
     {
      
-    process_keys() ;
+   // process_keys() ;
 	
 	if(run_t.gPower_On == power_on){
 
@@ -230,7 +230,7 @@ static void vTaskStart(void *pvParameters)
             
 	  }
      
-	  
+	  process_keys() ;
       vTaskDelay(20);     
      }
 }

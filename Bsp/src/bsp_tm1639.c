@@ -189,7 +189,7 @@ void TM1639_Write_Half_Digit(uint8_t addr, uint8_t data)
 
 
 
-uint8_t currentHealth = 0;
+uint8_t currentHealth ;
 
 
 /******************************************************************************
@@ -261,28 +261,19 @@ void TM1639_Display_Temperature(int8_t temp)
 void TM1639_Display_Health(uint16_t minutes)
 {
 
-  	
-    const uint16_t totalMinutes = 8 * 60;
-   
-    currentHealth = (minutes * 99 + totalMinutes/2);
-	currentHealth	= currentHealth / totalMinutes;
-        
-    
-	
-     if(minutes > 480 ) {
-          currentHealth = 99;
-      }
+     
+   currentHealth = (2 * minutes)/10 ;
 
-	
-
-
-//  显示十位
+    if(currentHealth > 477) currentHealth = 97;
+	else if(currentHealth > 478) currentHealth = 98;
   
-   TM1639_Write_Digit_Full(TM1639_ADDR_DIG3_H, TM1639_ADDR_DIG3_L,TM1639_Number_Table[currentHealth / 10]);
+    if(minutes > 479 ) {
+         currentHealth = 99;
+    }
+
+   TM1639_Write_Digit_Full(TM1639_ADDR_DIG3_H, TM1639_ADDR_DIG3_L,TM1639_Number_Table[currentHealth/10]);
   
-    
-//    显示个位带小数点
-    TM1639_Write_Digit_Full(TM1639_ADDR_DIG4_H, TM1639_ADDR_DIG4_L,TM1639_Number_Table[currentHealth % 10] | TM1639_DOT); //display "%"
+   TM1639_Write_Digit_Full(TM1639_ADDR_DIG4_H, TM1639_ADDR_DIG4_L,TM1639_Number_Table[currentHealth % 10] | TM1639_DOT); //display "%"
     
    
    
