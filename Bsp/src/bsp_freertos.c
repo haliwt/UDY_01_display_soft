@@ -108,7 +108,7 @@ void freeRTOS_Handler(void)
 static void vTaskDecoderPro(void *pvParameters)
 {
     BaseType_t xResult;
-	//const TickType_t xMaxBlockTime = pdMS_TO_TICKS(5000); /* 设置最大等待时间为30ms */
+	const TickType_t xMaxBlockTime = pdMS_TO_TICKS(5000); /* 设置最大等待时间为30ms */
 	uint32_t ulValue;
 	
 
@@ -119,7 +119,7 @@ static void vTaskDecoderPro(void *pvParameters)
 	xResult = xTaskNotifyWait(0x00000000,
 								  0xFFFFFFFF,     /* Reset the notification value to 0 on */
 								&ulValue,        /* 保存ulNotifiedValue到变量ulValue中 */
-								portMAX_DELAY);//portMAX_DELAY);  /* 阻塞时间30ms，释放CUP控制权,给其它任务执行的权限*/
+								xMaxBlockTime);//portMAX_DELAY);  /* 阻塞时间30ms，释放CUP控制权,给其它任务执行的权限*/
 
 		if( xResult == pdPASS )
 		{
@@ -163,7 +163,7 @@ static void vTaskRunPro(void *pvParameters)
     while(1)
     {
      
-     process_keys() ;
+    process_keys() ;
 	
 	if(run_t.gPower_On == power_on){
 
@@ -229,6 +229,8 @@ static void vTaskStart(void *pvParameters)
            key_t.key_mouse_flag=1;   
             
 	  }
+     
+	  
       vTaskDelay(20);     
      }
 }
