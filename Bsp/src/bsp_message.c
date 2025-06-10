@@ -208,15 +208,10 @@ void receive_data_from_mainboard(uint8_t *pdata)
 		if(pdata[4]== 0x01){
 
 	
+     }
+	 else if(pdata[4] == 0x0){ //close
 
-	
-		 
-		
-
-		}
-		else if(pdata[4] == 0x0){ //close
-
-		}
+	 }
 
 
 	}
@@ -231,7 +226,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 			if(pdata[4]== 0x01){
                 
 	            run_t.ptc_warning = 1;
-				gpro_t.g_manual_shutoff_dry_flag=1;
+		
 	            run_t.gDry =0;
 			    LED_DRY_OFF();
 	           
@@ -254,7 +249,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 
             if(pdata[4]==1){
             run_t.fan_warning = 1;
-            gpro_t.g_manual_shutoff_dry_flag=1;
+        
            run_t.gDry =0;
 		   LED_DRY_OFF();
           
@@ -271,21 +266,33 @@ void receive_data_from_mainboard(uint8_t *pdata)
 
       break;
 
+	 case 0x0C: //read real temperature value
+	 if(pdata[3]==0x0F){
+			if(pdata[4] == 0x01){ //数据,two 
+
+	 			run_t.ntc_tem[0] = pdata[5]; //temperature value
+	 			TM1639_Display_Temperature(run_t.ntc_tem[0]);
+			}
+	 }
+
+	 break;
+
 	
 
 
      //接收的是数据
 
-      case temp_hum_data: //温度,湿度数据
+      case temp_hum_data: //温度,
+      #if 0 //湿度数据
         if(pdata[3]==0x0F){
         if(pdata[4] == 0x02){ //数据,two 
             
              if(pdata[5] !=0){
-			    run_t.gReal_humtemp[0] = pdata[5] ;//humidity value 
+			    run_t.ntc_tem[0] = pdata[5] ;//humidity value 
 
              }
            
-             run_t.gReal_humtemp[1] = pdata[6]; //temperature value
+             run_t.ntc_tem[1] = pdata[6]; //temperature value
 
 			 if(run_t.gPower_On == power_on && power_on_counter < 10){
 			 	 power_on_counter++;
@@ -302,6 +309,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 
         }
         }
+		#endif 
       break;
 
       case 0x1B: //湿度数据
@@ -320,9 +328,8 @@ void receive_data_from_mainboard(uint8_t *pdata)
 
          
           
-          run_t.works_dispTime_hours= pdata[5];// run_t.dispTime_hours  =  pdata[5];
-          run_t.works_dispTime_minutes =pdata[6];//run_t.dispTime_minutes = pdata[6];
-          run_t.gTimer_timing_seconds_counter =  pdata[7];//run_t.gTimer_disp_time_seconds =  pdata[7];
+        
+  
            }
 
 
@@ -407,8 +414,8 @@ void receive_data_from_mainboard(uint8_t *pdata)
 				
 			gpro_t.set_up_temperature_value =pdata[5];//warning
 	  
-			// gpro_t.g_manual_shutoff_dry_flag = 0 ;//  allow open dry function
-             gpro_t.set_temp_value_success=1;//
+		
+            
         
       
 
@@ -431,7 +438,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 			if(pdata[4]== 0x01){ // one only data 
 
 		      gpro_t.set_timer_timing_doing_value = 1;
-			  run_t.gTimer_set_timer_timing_value = 0;
+			 
             
 	
 				

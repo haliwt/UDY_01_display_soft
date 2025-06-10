@@ -69,10 +69,10 @@ typedef struct Msg
 }MSG_T;
 
 MSG_T   gl_tMsg; /* 定义丢�个结构体用于消息队列 */
-uint8_t ucKeyCode;
-uint8_t uckey_number;
-uint8_t key_power_flag,decoder_flag ;
-uint8_t check_code,task_2_counter;
+
+
+
+uint8_t check_code;
 
 
 /**********************************************************************************************************
@@ -168,21 +168,11 @@ static void vTaskRunPro(void *pvParameters)
 	if(run_t.gPower_On == power_on){
 
 
-	    power_on_run_handler();
+	   power_on_run_handler();
      
-      
-	   disp_dht11_value();
        set_timer_fun_led_blink();
-       disp_smg_blink_set_tempeature_value();
-	   set_up_timer_timing_handler();
-	  
-	 
-       if(power_on_theFirst_times < 10 && (gpro_t.set_timer_timing_doing_value==0 || gpro_t.set_timer_timing_doing_value==3)){
-         power_on_theFirst_times ++;
-         Display_DHT11_Value();
-
-       }
-        Display_TimeColon_Blink_Fun();
+  
+       Display_TimeColon_Blink_Fun();
 
       }
 	  else{
@@ -190,10 +180,8 @@ static void vTaskRunPro(void *pvParameters)
 	    power_off_run_handler();
 
 	  }
-      task_2_counter++;
-
-
-	  vTaskDelay(10);
+	  
+       vTaskDelay(10);
      
 
        } //wihile(1) ---end
@@ -216,7 +204,7 @@ static void vTaskStart(void *pvParameters)
     {
       if(POWER_KEY_VALUE() ==KEY_DOWN){
          
-         power_key_long_handler();
+          key_t.key_power_flag =1;
 
 	  }
 	  else if(DEC_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
@@ -235,10 +223,10 @@ static void vTaskStart(void *pvParameters)
            key_t.key_plasma_flag=1;   
             
 	  }
-//	  else if(MOUSE_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
-//           key_t.key_mouse_flag=1;   
-//            
-//	  }
+	  else if(MOUSE_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
+           key_t.key_mouse_flag=1;   
+            
+	  }
       vTaskDelay(20);     
      }
 }

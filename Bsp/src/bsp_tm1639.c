@@ -257,18 +257,33 @@ void TM1639_Display_Temperature(int8_t temp)
  * @param  humi: 湿度值（0-99%RH）
  * @retval None
  */
-void TM1639_Display_Humidity(uint8_t humi)
+void TM1639_Display_Health(uint8_t minute,uint8_t totalhours)
 {
-    if(humi > 99) humi = 99;
+
+  	int health = 0;
+    const uint16_t totalMinutes = totalhours * 60;
+    static uint8_t currentHealth = 0;
+    
+ 
+    
+    currentHealth = (minute * 99 + totalMinutes/2) / totalMinutes;
+        
+      
+      
+     if(totalhours > 8) {
+          currentHealth = 99;
+      }
+
+	
 
 
 //  显示十位
   
-   TM1639_Write_Digit_Full(TM1639_ADDR_DIG3_H, TM1639_ADDR_DIG3_L,TM1639_Number_Table[humi / 10]);
+   TM1639_Write_Digit_Full(TM1639_ADDR_DIG3_H, TM1639_ADDR_DIG3_L,TM1639_Number_Table[currentHealth / 10]);
   
     
 //    显示个位带小数点
-    TM1639_Write_Digit_Full(TM1639_ADDR_DIG4_H, TM1639_ADDR_DIG4_L,TM1639_Number_Table[humi % 10] | TM1639_DOT);
+    TM1639_Write_Digit_Full(TM1639_ADDR_DIG4_H, TM1639_ADDR_DIG4_L,TM1639_Number_Table[currentHealth % 10] | TM1639_DOT); //display "%"
     
    
    

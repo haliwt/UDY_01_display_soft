@@ -175,16 +175,16 @@ void TM1639_Display_4Bit_Error(uint8_t idata)
 ********************************************************************************/
 void Display_TimeColon_Blink_Fun(void)
 {
-  if(run_t.ptc_warning ==0 && run_t.fan_warning ==0){
-	  if(run_t.gTimer_time_colon >0 && (gpro_t.set_timer_timing_doing_value==0 ||gpro_t.set_timer_timing_doing_value==3)){ //200 //10*20ms=300ms
+
+	  if(run_t.gTimer_time_colon >0 && gpro_t.key_add_dec_pressed_flag != 1){ //200 //10*20ms=300ms
 
 		   run_t.gTimer_time_colon =0;
 	       
-		 	  gpro_t.g_time_disp_colon_flag = gpro_t.g_time_disp_colon_flag ^ 0x01;
+		 gpro_t.g_time_disp_colon_flag = gpro_t.g_time_disp_colon_flag ^ 0x01;
 	  
 		}
-  }
-}
+ }
+
 
 /*************************************************************************
 *

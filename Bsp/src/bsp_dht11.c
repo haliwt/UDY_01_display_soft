@@ -21,7 +21,11 @@ uint8_t current_temperature;
 **********************************************************************************************/
 void disp_smg_blink_set_tempeature_value(void)
 {
-  //   static uint8_t counter_times;
+
+    #if 0
+
+
+//   static uint8_t counter_times;
 	  //waiting for 4 s 
 	 if(run_t.gTimer_set_up_temperature_value > 2 && key_t.key_set_temperature_flag==1 && (gpro_t.set_timer_timing_doing_value==0 || gpro_t.set_timer_timing_doing_value==3)){
 			
@@ -36,7 +40,7 @@ void disp_smg_blink_set_tempeature_value(void)
 			gpro_t.set_temp_value_success=1;
 			
 		   
-			gpro_t.g_manual_shutoff_dry_flag=0; //WT.EDIT 2025.05.28
+	
               
              gpro_t.gTimer_set_temp_counter=6;
 		     handleSetTemperatureControl();
@@ -61,7 +65,7 @@ void disp_smg_blink_set_tempeature_value(void)
 
 			 }
 		 }
-
+     #endif 
 }
 
 #if 0
@@ -95,7 +99,7 @@ static void handleSetTemperatureControl(void)
    
     if( gpro_t.gTimer_set_temp_counter >= CHECK_TIME_THRESHOLD_4S) { // 4秒
           gpro_t.gTimer_set_temp_counter =0;
-         current_temperature = run_t.gReal_humtemp[1];//readTemperature();
+         current_temperature = run_t.ntc_tem[0];//readTemperature();
 
         if (gpro_t.set_up_temperature_value <= current_temperature ){
             //run_t.gDry = 0;
@@ -112,14 +116,14 @@ static void handleSetTemperatureControl(void)
         else if ((gpro_t.set_up_temperature_value) > current_temperature ) {
 
 		        
-            	if(gpro_t.g_manual_shutoff_dry_flag ==0){
+          
 					//run_t.gDry = 1;
 					//LED_DRY_ON();
 
 					SendData_Set_Command(0x22, 0x01); //buzzer don't sound .干燥功能
 				    osDelay(5);
 	              
-            	}
+            	
 			
 		   }
 			
@@ -142,7 +146,7 @@ static void handleDefaultTemperatureControl(void)
   
     if (gpro_t.gTimer_set_temp_counter > 3) { // 3秒
          gpro_t.gTimer_set_temp_counter = 0;
-        current_temperature = run_t.gReal_humtemp[1];
+        current_temperature = run_t.ntc_tem[0];
 
         if(current_temperature > 39) {
 			default_first_close_dry=1;
@@ -160,7 +164,7 @@ static void handleDefaultTemperatureControl(void)
 
 		     if(default_first_close_dry==0 && current_temperature <=39){
 
-			  if(gpro_t.g_manual_shutoff_dry_flag ==0 ){
+	
 
 					//run_t.gDry= 1;
 
@@ -168,14 +172,14 @@ static void handleDefaultTemperatureControl(void)
 				
 			  	    SendData_Set_Command(0x22, 0x01); //sendDisplayCommand(0x02,0x01); // 打开干燥功能
 					osDelay(5);
-				}
+				
 				
 
 			  }
               else if (current_temperature < 38 && default_first_close_dry==1) {
 	        
 
-			    if(gpro_t.g_manual_shutoff_dry_flag ==0){ //manual turn off PTC function.
+			
 
 					 //run_t.gDry= 1;
 
@@ -185,7 +189,7 @@ static void handleDefaultTemperatureControl(void)
 				     osDelay(5);
 				 }
 				 
-	            }
+	            
 
 	    }
    }

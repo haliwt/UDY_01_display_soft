@@ -24,6 +24,7 @@
 #include "bsp_key_app.h"
 #include "bsp_timer.h"
 #include "bsp_delay.h"
+#include "bsp_mouse.h"
 
 #include "bsp_tm1639.h"
 #include "bsp_smg.h"
@@ -104,7 +105,7 @@ typedef struct _pro_t{
    
    uint8_t set_timer_timing_value_success;
    uint8_t set_timer_timing_doing_value;
-   uint8_t set_temp_value_success;
+
    uint8_t set_up_temperature_value;
    uint8_t  temperature_init_value;
   
@@ -112,9 +113,9 @@ typedef struct _pro_t{
    uint8_t answer_signal_flag;
 
 
-   uint8_t send_ack_cmd;
+  
 
-   uint8_t g_manual_shutoff_dry_flag;
+
   
 
    uint8_t DMA_txComplete;
@@ -123,9 +124,9 @@ typedef struct _pro_t{
    
    uint8_t key_add_dec_pressed_flag;
    
-   uint8_t gTimer_again_send_power_on_off;
+ 
    uint8_t gTimer_set_temp_counter;
-   uint8_t gTimer_disp_time_counter;
+
    uint16_t gTimer_4bitsmg_blink_times;
   
    

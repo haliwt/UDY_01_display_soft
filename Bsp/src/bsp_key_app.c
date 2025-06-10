@@ -75,7 +75,8 @@ void handle_key(KeyHandler *handler)
  **********************************************************************************/
 void set_temperature_value(int8_t delta) 
 {
-    uint8_t new_temp;
+    #if 0
+	uint8_t new_temp;
 	
 
 	if(gpro_t.temperature_init_value == 0 && gpro_t.set_temp_value_success==0){
@@ -96,15 +97,15 @@ void set_temperature_value(int8_t delta)
     //run_t.set_temperature_unit_value   = new_temp % 10;
 
     key_t.key_set_temperature_flag  = 1;
-    run_t.gTimer_set_up_temperature_value = 0;
-    gpro_t.g_manual_shutoff_dry_flag   = 0;
+   
+
  
 
     //SendData_ToMainboard_Data(0x2A,&new_temp,0x01);
    // osDelay(5);
 
     TM1639_Display_Temperature(gpro_t.set_up_temperature_value);//TM1639_Write_2bit_SetUp_TempData(run_t.set_temperature_decade_value, run_t.set_temperature_unit_value, 0);
-	
+  #endif 
 }
 
 /*******************************************************
@@ -116,30 +117,23 @@ void set_temperature_value(int8_t delta)
 *******************************************************/
 void adjust_timer_minutes(int8_t delta_min) 
 {
-    int8_t total_hour = run_t.temporary_timer_dispTime_hours ;
+   
 //	uint8_t copy_total_hour;
-    total_hour += delta_min;
+    run_t.timer_dispTime_hours += delta_min;
 
-   if(total_hour > 24){
-         total_hour =24;
-   	}
-	else if (total_hour < 0) {
-        total_hour = 0 ;  // 循环处理负值
+   // 限制时间范围在1~72小时
+    if (run_t.timer_dispTime_hours > 72) {
+        run_t.timer_dispTime_hours = 1;  // 超过72小时，循环回到1小时
+    }
+    else if (run_t.timer_dispTime_hours < 1) {
+        run_t.timer_dispTime_hours = 72;  // 低于1小时，循环到72小时
     }
 
-    //total_hour %= 24 ;  //证在一天范围内
-
-    run_t.temporary_timer_dispTime_hours   = total_hour;
-    run_t.temporary_timer_dispTime_minutes = 0;
-
-
-    run_t.timer_dispTime_hours=  run_t.temporary_timer_dispTime_hours;
-	run_t.timer_dispTime_minutes = run_t.temporary_timer_dispTime_minutes;
+    gpro_t.gTimer_set_temp_counter=0;
+	gpro_t.gTimer_4bitsmg_blink_times=0;
+	run_t.timer_dispTime_minutes = 0;
 	
-    run_t.gTimer_set_timer_timing_value=0;
-	//copy_total_hour=(uint8_t)total_hour;
-	//SendData_ToMainboard_Data(0x4C,&copy_total_hour,0x01);
-	//osDelay(5);
+	
 	TM1639_Display_4Bit_Time(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
 
 }
@@ -153,38 +147,33 @@ void adjust_timer_minutes(int8_t delta_min)
 **********************************************************************************************************/
 void power_key_short_handler(void)
 {
-	if(key_t.key_power_flag == 1){
-		
-       if(POWER_KEY_VALUE() ==KEY_UP && key_t.key_long_power_flag != KEY_LONG_POWER){
-			
-			power_on_key_counter=0;
-		    key_t.key_long_power_flag=0;//WT.EDIT 2025.06.04
-			if(run_t.gPower_On == power_off){
-				//run_t.gPower_On = power_on;
-				 SendData_PowerOnOff(1); // power on
-                 osDelay(10);
+	if(run_t.gPower_On == power_off){
+		//run_t.gPower_On = power_on;
+		SendData_PowerOnOff(1); // power on
+		osDelay(5);
 
-			}
-			else{
-
-				//run_t.gPower_On = power_off;
-				SendData_PowerOnOff(0); // power off
-                osDelay(10);
-			}
-			 key_t.key_power_flag++;
-		}
-       else if(POWER_KEY_VALUE() ==KEY_UP && key_t.key_long_power_flag == KEY_LONG_POWER ){
-		   key_t.key_power_flag++;
-		   key_t.key_long_power_flag=0;//WT.EDIT 2025.06.04
-           power_on_key_counter=0;
-    
-
-       }
-	  
 	}
-}
+	else{
+
+		//run_t.gPower_On = power_off;
+		SendData_PowerOnOff(0); // power off
+		osDelay(5);
+	}
+			 
+		
+  }
+
+/**********************************************************************************************************
+    *
+	*Function Name: void power_key_long_handler(void)
+	*Function:缓冲区读取一个键值。
+	*Inpur Ref: NO 无
+	*Return Ref: NO按
+	*键代码
+**********************************************************************************************************/
 void power_key_long_handler(void)
 {
+#if 0
 	if(run_t.ptc_warning ==0 && run_t.fan_warning ==0)power_on_key_counter++;
 	if(POWER_KEY_VALUE() ==KEY_DOWN && run_t.gPower_On == power_on && (power_on_key_counter  >= 60 && power_on_key_counter < 200)){
 		
@@ -192,7 +181,7 @@ void power_key_long_handler(void)
 				key_t.key_long_power_flag =  KEY_LONG_POWER; //timer is OK.
 				gpro_t.set_timer_timing_doing_value=1;
 				
-				run_t.gTimer_set_timer_timing_value=0;
+			
 				gpro_t.key_add_dec_pressed_flag =0;
 				
 				SendData_Buzzer();
@@ -205,7 +194,7 @@ void power_key_long_handler(void)
 		key_t.key_power_flag = 1;
 
 	}
-
+#endif 
 }
 /****************************************************************
 	*
@@ -231,15 +220,15 @@ void plasma_key_handler(void)
             SendData_Set_Command(plasma_cmd, 0x00);
 		    osDelay(5);
             LED_PLASMA_OFF();
-            gpro_t.send_ack_cmd = check_ack_plasma_off;
+          
         } else {
             run_t.gPlasma = 1;
             SendData_Set_Command(plasma_cmd, 0x01);
 			osDelay(5);
             LED_PLASMA_ON();
-            gpro_t.send_ack_cmd = check_ack_plasma_on;
+            
         }
-        gpro_t.gTimer_again_send_power_on_off = 0;
+     
 
 }
 /****************************************************************
@@ -258,14 +247,14 @@ void dry_key_handler(void)
 			osDelay(5);
             //run_t.gDry = 1;
 			//LED_DRY_ON();
-            gpro_t.g_manual_shutoff_dry_flag = 0;
+ 
            
         } else {
             SendData_Set_Command(dry_cmd, 0x00);//sendCommandAndAck(dry_cmd, 0x00, check_ack_ptc_off);
 			osDelay(5);
             //run_t.gDry = 0;
 			//LED_DRY_OFF();
-            gpro_t.g_manual_shutoff_dry_flag = 1; // 手动关闭后不再自动开启
+  
            
         }
 
@@ -281,6 +270,8 @@ void dry_key_handler(void)
 void mouse_key_handler(void) 
 {
 
+
+    #if 0
 	 static uint8_t k1;
 
 	 if(run_t.gPower_On == power_on){
@@ -317,6 +308,29 @@ void mouse_key_handler(void)
        return ;
      }
 	}
+  #else
+     if(run_t.gMouse == 0){
+            // 开启 Mouse 功能
+            
+            run_t.gMouse = 1;
+            LED_MOUSE_ON();
+          SendData_Set_Command(mouse_cmd, 0x01);
+            osDelay(5);//对应的反馈类型
+            
+
+        }
+		else{
+            // 关闭 Mouse 功能
+          
+            run_t.gMouse = 0;
+            LED_MOUSE_OFF();
+         SendData_Set_Command(mouse_cmd, 0x00);
+            osDelay(5);//应的反馈类型
+            
+        }
+
+  
+  #endif 
  }
 /****************************************************************
 	*
@@ -328,28 +342,14 @@ void mouse_key_handler(void)
 *****************************************************************/
 void key_add_fun(void)
 {
-    if(run_t.ptc_warning != 0) return;
+   
+     gpro_t.key_add_dec_pressed_flag = 1;
+     SendData_Buzzer();
+	 osDelay(5);
 
-    run_t.gTimer_time_colon = 0;
-
-    switch(gpro_t.set_timer_timing_doing_value)
-    {
-
-	    case 3:
-		case 0:  // 设置温度增加
-            SendData_Buzzer();
-			osDelay(5);
-            set_temperature_value(+1);
-            break;
-
-        case 1:  // 设置定时增加（每次加60分钟）
-            SendData_Buzzer();
-			osDelay(5);
-            run_t.gTimer_set_timer_timing_value = 0;
-            gpro_t.key_add_dec_pressed_flag = 1;
-            adjust_timer_minutes(1);  // 固定每次加60分钟
-            break;
-    }
+	 adjust_timer_minutes(1);  // 固定每次加60分钟
+           
+    
 }
 
 
@@ -363,26 +363,14 @@ void key_add_fun(void)
 *****************************************************************/
 void key_dec_fun(void)
 {
-    if(run_t.ptc_warning != 0) return;
+  
+	gpro_t.key_add_dec_pressed_flag = 1;
+	SendData_Buzzer();
+	osDelay(5);
 
-    switch(gpro_t.set_timer_timing_doing_value)
-    {
 
-        case 3:
-		case 0:  // 设置温度减少
-             SendData_Buzzer();
-		     osDelay(5);
-            set_temperature_value(-1);
-            break;
+	adjust_timer_minutes(-1);  // 固定每次减60分钟
 
-        case 1:  // 设置定时减少（每次减60分钟）
-            SendData_Buzzer();
-			osDelay(5);
-            run_t.gTimer_set_timer_timing_value = 0;
-            gpro_t.key_add_dec_pressed_flag = 1;
-            adjust_timer_minutes(-1);  // 固定每次减60分钟
-        break;
-    }
 }
 
 
@@ -431,7 +419,8 @@ void process_keys(void)
 #else 
 void process_keys(void) 
 {
-    if(key_t.key_power_flag == 1){
+    if(key_t.key_power_flag == 1 && POWER_KEY_VALUE()== KEY_UP){
+		key_t.key_power_flag++;
 	   power_key_short_handler();
 
     }
@@ -451,10 +440,10 @@ void process_keys(void)
 		key_t.key_plasma_flag++;
 		plasma_key_handler() ;
 	}
-//	else if(key_t.key_mouse_flag == 1 &&  MOUSE_KEY_VALUE()==KEY_UP){
-//		key_t.key_mouse_flag ++;
-//		mouse_key_handler() ;
-//	}
+	else if(key_t.key_mouse_flag == 1 &&  MOUSE_KEY_VALUE()==KEY_UP){
+		key_t.key_mouse_flag ++;
+		mouse_key_handler() ;
+	}
 
 
 

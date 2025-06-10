@@ -96,7 +96,7 @@ void TM1639_Display_ON_OFF(uint8_t status);  // 显示开关控制
 void TM1639_Clear(void);                     // 清空显示
 
 void TM1639_Display_Temperature(int8_t temp); // 显示温度值（-9到99℃）
-void TM1639_Display_Humidity(uint8_t humi);  // 显示湿度值（0-99%RH
+
 
 
 
@@ -104,6 +104,7 @@ void TM1639_Write_Digit_Full(uint8_t addr_h, uint8_t addr_l, uint8_t data); // �
 void TM1639_All_Off(void);                  // 关闭所有显示（包括数码管和LED）
 
 
+void TM1639_Display_Health(uint8_t minute,uint8_t totalhours); // 显示湿度值（0-99%RH
 
 
 

@@ -25,24 +25,20 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	   if(tm0> 999){ //1s
 	      tm0=0;
 		  
-		run_t.gTimer_error_digital++;
+		
 	     run_t.gTimer_display_dht11++;
          run_t.gTimer_time_colon++ ;
 		//--------------//
 
 		run_t.gTimer_timer_seconds_counter ++;
-		run_t.gTimer_timing_seconds_counter ++;
-
-
-		run_t.gTimer_set_timer_timing_value++;
-        run_t.gTimer_set_up_temperature_value++ ;
-	    run_t.gTimer_set_temp_times++;
+	
+     
 		
 		  
 
 		//usart
-        gpro_t.gTimer_disp_time_counter++;
-        gpro_t.gTimer_again_send_power_on_off++;
+    
+   
 		gpro_t.gTimer_set_temp_counter++;
 	
 	   }

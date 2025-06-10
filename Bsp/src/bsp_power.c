@@ -45,32 +45,27 @@ void power_on_init(void)
 		
     power_on_led();
 
-	run_t.fan_warning=0;
-	run_t.ptc_warning=0;
- 
-
-	gpro_t.set_timer_timing_doing_value = 0;
-	gpro_t.g_manual_shutoff_dry_flag = 0; //allow open dry function .
-    gpro_t.set_timer_timing_value_success=0;
 	
-	gpro_t.set_temp_value_success=0;
-	gpro_t.temperature_init_value=0; //the first set up temperature value from 20:40
+
+	//gpro_t.set_timer_timing_doing_value = 0;
+	
+    //gpro_t.set_timer_timing_value_success=0;
+	
+    gpro_t.key_add_dec_pressed_flag=0;
+    run_t.gTimer_display_dht11 =6;
 	
     run_t.gTimer_time_colon =0;
 	//timer time
-	run_t.gTimer_timer_seconds_counter=0;
-	run_t.timer_dispTime_hours=0;
+
+	run_t.timer_dispTime_hours=8;
 	run_t.timer_dispTime_minutes=0;
+	run_t.gTimer_timer_seconds_counter=0;
 	
 	//works time
-    run_t.gTimer_timing_seconds_counter =0;
-	run_t.works_dispTime_hours =0;
-	run_t.works_dispTime_minutes =0;
 
-	run_t.gTimer_display_dht11 = 20; //at once display temperature and humidity value.
     run_t.power_off_flag =0;
 		
-    TM1639_Display_4Bit_Time(run_t.works_dispTime_hours,run_t.works_dispTime_minutes);
+    TM1639_Display_4Bit_Time(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
      
     
 }
@@ -97,7 +92,6 @@ void Power_Off_Fun(void)
 void power_on_handler(void)
 {
 
-	run_t.gTimer_set_temp_times=0; //conflict with send temperatur value
 
 	run_t.gPower_On = power_on;
 	run_t.power_on_step =0;
@@ -132,7 +126,8 @@ void power_on_run_handler(void)
 	  power_on_init();
 			
 	   TM1639_Display_ON_OFF(1);
-		run_t.power_on_step= 1;
+	   mouse_gpio_init();
+	   run_t.power_on_step= 1;
 
 
             
@@ -140,58 +135,32 @@ void power_on_run_handler(void)
 
       case 1:
 
-
-		   if(run_t.ptc_warning ==0 && run_t.fan_warning ==0){
-
-		   if(gpro_t.set_timer_timing_doing_value==0 || gpro_t.set_timer_timing_doing_value==3){ //WT.EDIT 2025.05.07
+            if(gpro_t.key_add_dec_pressed_flag !=1){ //WT.EDIT 2025.05.07
 		    { //read main board ptc_warning of ref.
 
 				 Display_SmgTiming_Value();
 
-				}
-			 }
-		   	}
-			else{
-
-			 Warning_Error_Numbers_Fun();
-
-			 }
-                        
-         
-
-            step_state=1;
+			}
+			
+           step_state=2;
        break;
 
+	   case 2:
+
+	       disp_ntc_temperature_value();
+	       step_state=1;
 
 
+	   break;
+	   
+	   default:
+		   break;
+
+
+     }
 
 	}
 }
-
-/******************************************************************************
-	*
-	*Function Name:void detected_ptc_or_fan_warning_fun(void)
-	*Funcion: display ptc warning and fan warning
-	*Input Ref: NO
-	*Return Ref:NO
-	*
-******************************************************************************/
-void detected_ptc_or_fan_warning_fun(void)
-{
-
-    Warning_Error_Numbers_Fun();
-
-}
-
-/******************************************************************************
-	*
-	*Function Name:void mode_key_long_fun(void)
-	*Funcion: exit this mode set fun ,
-	*Input Ref: NO
-	*Return Ref:NO
-	*
-******************************************************************************/
-
 
 /******************************************************************************
 	*
@@ -221,10 +190,7 @@ void power_off_run_handler(void)
 
        case 1://4
 
-
-           
-		  
-           LED_Power_Breathing();
+			LED_Power_Breathing();
 		 
 		 break;
        }

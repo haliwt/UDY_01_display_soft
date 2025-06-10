@@ -18,9 +18,9 @@
 void Display_DHT11_Value(void)
 {
     
-   TM1639_Display_Temperature(run_t.gReal_humtemp[1]);//TM1639_Write_2bit_TempData(temp1,temp2);
+   TM1639_Display_Temperature(run_t.ntc_tem[0]);//TM1639_Write_2bit_TempData(temp1,temp2);
     
-	TM1639_Display_Humidity(run_t.gReal_humtemp[0]);//TM1639_Write_2bit_HumData(hum1,hum2);
+	TM1639_Display_Health(run_t.timer_dispTime_minutes,run_t.timer_dispTime_hours);//TM1639_Write_2bit_HumData(hum1,hum2);
 	
 
 
@@ -44,16 +44,16 @@ void Display_Timing(uint8_t hours,uint8_t minutes,uint8_t disp)
 }
 /*******************************************************
 	*
-	*Function Name: static void disp_dht11_value(void)
+	*Function Name: static void disp_ntc_temperature_value(void)
 	*Function : display pannel display conetent
 	*Input Ref:NO
 	*Return Ref:NO
 	*
 *******************************************************/
-void disp_dht11_value(void)
+void disp_ntc_temperature_value(void)
 {
 
-  if(run_t.gTimer_display_dht11 > 5 && key_t.key_set_temperature_flag !=1){
+  if(run_t.gTimer_display_dht11 > 4){
 	    run_t.gTimer_display_dht11=0;
        	Display_DHT11_Value();
        
@@ -111,78 +111,7 @@ void Display_Error_Digital(uint8_t sel)
 	*Return Ref: NO
 	*
 ********************************************************************************/
-void Warning_Error_Numbers_Fun(void)
-{
 
-    static uint8_t alternate_flag,times;
-
-	  if(run_t.gTimer_error_digital > 2){//10ms * 51= 510
-	       run_t.gTimer_error_digital=0;
-
-      if(run_t.ptc_warning ==1 && run_t.fan_warning ==1)alternate_flag =1;
-       else alternate_flag =0;
-
-
-		gpro_t.g_time_disp_colon_flag = gpro_t.g_time_disp_colon_flag ^ 0x01;
- 
-		 
-
-		    times = times ^ 0x01;
-		
-            if(alternate_flag ==0){
-				
-			   	
-                 if(run_t.ptc_warning ==1){
-                 
-					Display_Error_Digital(0x01);
-			     }
-				 else if(run_t.fan_warning ==1){
-
-					  
-                    Display_Error_Digital(0x02);
-                     
-
-			      }
-
-				 
-			  }
-			  else if(alternate_flag ==1){
-
-			      
-                  if(times ==1){
-
-				   if(run_t.ptc_warning ==1){ // && run_t.fan_warning ==1){
-                       
-                    
-                        Display_Error_Digital(0x01);
-
-				   	}
-				    
-
-                   }
-				   else{
-
-				         if(run_t.fan_warning ==1){
-										 
-						   Display_Error_Digital(0x02);
-						}
-
-
-
-				   }
-				
-
-
-			   }
-			   
-
-		   }
-		   
-
-                
- 	
-		   
-}
 
 
 

@@ -3,14 +3,9 @@
 
 void set_up_timer_timing_handler(void)
 {
-  if(run_t.fan_warning ==0 && run_t.ptc_warning ==0){
-	 if(gpro_t.set_timer_timing_doing_value == 1 && run_t.ptc_warning ==0 && run_t.fan_warning ==0){
-
-	             Set_TimerTiming_Number_Value();
+  
+	//Set_TimerTiming_Number_Value();
 	                   
-	  }
-  }
-
 }
 
 /****************************************************************
@@ -23,47 +18,22 @@ void set_up_timer_timing_handler(void)
 *****************************************************************/
 void Set_TimerTiming_Number_Value(void)
 {
-  static uint8_t default_numbers =0xff;
-   if(gpro_t.set_timer_timing_doing_value==1){
-   //set timer timing value 
-    if(run_t.gTimer_set_timer_timing_value > 3){
-		run_t.gTimer_set_timer_timing_value =0;		
-		gpro_t.set_timer_timing_doing_value ++ ;
-	
-	 }
-
-    }
-
-    if(gpro_t.set_timer_timing_doing_value==2){
-    	gpro_t.set_timer_timing_doing_value++;
-		if(gpro_t.set_timer_timing_value_success  == TIMER_SUCCESS && gpro_t.key_add_dec_pressed_flag ==0){// ADD and DEC key don't be pressed
+  #if 0
+  if(gpro_t.key_add_dec_pressed_flag == 1 && run_t.gTimer_set_timer_timing_value >2){
+    	gpro_t.key_add_dec_pressed_flag = ++;
+		
        
-        	 Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
+         //Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
+	    // osDelay(300);
+		 TM1639_donotDisplay_4Bit_Time();
+		 osDelay(300);
+		 Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
 
-		}
-		else if(run_t.temporary_timer_dispTime_hours >0 && gpro_t.key_add_dec_pressed_flag ==1){// ADD and DEC key be pressed
-			gpro_t.set_timer_timing_value_success  = TIMER_SUCCESS;
-			
-
-			run_t.timer_dispTime_hours = run_t.temporary_timer_dispTime_hours ;
-	        run_t.timer_dispTime_minutes = 0;
-			run_t.gTimer_timer_seconds_counter = 0;
-
-			Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
-
-
-		}
-		else{
-
-			gpro_t.set_timer_timing_value_success  = 0;
-
-
-
-		}
-
-
-    }
+		
+	}
+  #endif 	
 }
+
 /***********************************************************************************
 	 *
 	 * Function Name:void set_timer_fun_led_blink(void)
@@ -75,10 +45,9 @@ void Set_TimerTiming_Number_Value(void)
 void set_timer_fun_led_blink(void)
 {
    static uint8_t time_smg_blink;
-   
-   if(gpro_t.set_timer_timing_doing_value==1){
 
-     if(gpro_t.key_add_dec_pressed_flag ==1 && gpro_t.gTimer_4bitsmg_blink_times  > 300){//if has a key be pressed "+" key or "-" key
+   if(gpro_t.key_add_dec_pressed_flag ==1 && gpro_t.gTimer_set_temp_counter  < 4){
+   if(gpro_t.key_add_dec_pressed_flag ==1 && gpro_t.gTimer_4bitsmg_blink_times  > 300){//if has a key be pressed "+" key or "-" key
 
     	gpro_t.gTimer_4bitsmg_blink_times =0;
         time_smg_blink = time_smg_blink ^ 0x01;
@@ -92,44 +61,19 @@ void set_timer_fun_led_blink(void)
 	   }
    	
      }
-     else if(gpro_t.key_add_dec_pressed_flag ==0 && gpro_t.gTimer_4bitsmg_blink_times  > 300){// don't key be pressd,only display timer timing value 
-       gpro_t.gTimer_4bitsmg_blink_times =0;
+   	}
+ 
 
-       time_smg_blink = time_smg_blink ^ 0x01;
+      if(gpro_t.key_add_dec_pressed_flag ==1 && gpro_t.gTimer_set_temp_counter  > 3){
+		gpro_t.key_add_dec_pressed_flag=0;
 
-	    if(time_smg_blink == 1){
-       // TM1639_Write_4Bit_Time_sync_close(run_t.hours_two_decade_bit,run_t.hours_two_unit_bit, run_t.minutes_one_decade_bit,run_t.minutes_one_unit_bit,time_smg_blink) ;
-	      TM1639_Display_4Bit_Time(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
-
-	   }
-	   else{
-	   	TM1639_donotDisplay_4Bit_Time();
-	   }
-
-       if(gpro_t.set_timer_timing_value_success==0){
-
-      	run_t.timer_dispTime_hours=0;
       	run_t.timer_dispTime_minutes=0;
+	    run_t.gTimer_timer_seconds_counter =0;
 
-      	
+      }
 
-      	}
-        else{
-        	
-		     TM1639_Display_4Bit_Time(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
-
-         }
-     
-       
-    }
-
-   }
-  
-}
-
-
-
-/***********************************************************************************
+ }
+ /***********************************************************************************
 	 *
 	 * Function Name:void Display_SmgTiming_Value(void)
 	 * Function:
@@ -140,12 +84,7 @@ void set_timer_fun_led_blink(void)
 void Display_SmgTiming_Value(void)
 {
 
-   
-
-	 switch(gpro_t.set_timer_timing_value_success){
-
-	   case TIMER_SUCCESS:
-           if(run_t.gTimer_timer_seconds_counter > 59){
+   if(run_t.gTimer_timer_seconds_counter > 59){
 			    run_t.gTimer_timer_seconds_counter =0;
 			
 				run_t.timer_dispTime_minutes -- ;
@@ -155,9 +94,6 @@ void Display_SmgTiming_Value(void)
 				   run_t.timer_dispTime_hours -- ;
 				   run_t.timer_dispTime_minutes =59;
 				
-				  // uint8_t dataToSend[3] = {run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes, run_t.gTimer_timer_seconds_counter}; // 要发送的 3 个数据
-           		  // SendData_ToMainboard_Data(0x5C, dataToSend, 3); // cmd=0x1A, 数据长度=3
-                  //  osDelay(5);
 		         }
 
 				
@@ -168,61 +104,15 @@ void Display_SmgTiming_Value(void)
 					run_t.timer_dispTime_hours=0;
 					run_t.timer_dispTime_minutes=0;
 		             
-			        gpro_t.send_ack_cmd = check_ack_power_off;//ack_power_off;
-					gpro_t.gTimer_again_send_power_on_off =0;
+			      
 					SendData_PowerOnOff(0);//power off
-					osDelay(10);
+					osDelay(5);
 					
 			      }
-		     Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
 		}
-        
-   
+
+        Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
        // WorksTime_DonotDisplay_Fun();
-        
-	    break;
-
-		case TIMER_NORMAL_TIMING: //NO_AI_MODE by timer timing  auto be changed AI_MODE
-			
-    
-          if(run_t.gTimer_timing_seconds_counter > 59){
-    		   run_t.gTimer_timing_seconds_counter=0;
-    		 
-    		   run_t.works_dispTime_minutes++; //1 minute 
-    		
-    		 
-    		   if(run_t.works_dispTime_minutes> 59){ //1 hour
-    		   run_t.works_dispTime_minutes=0;
-    		   run_t.works_dispTime_hours++;
-    		   if(run_t.works_dispTime_hours > 99){ //works time timing is 100 hours.
-    		        run_t.works_dispTime_hours =0;
-    		   }
-    	      }
-			 Display_Timing(run_t.works_dispTime_hours,run_t.works_dispTime_minutes,0);
-           }
            
-          
-		break;
-
-	   	}
-	 
-    if(gpro_t.gTimer_disp_time_counter > 3){
-		gpro_t.gTimer_disp_time_counter=0;
-     switch(gpro_t.set_timer_timing_value_success){
-
-	     case TIMER_SUCCESS:
-			 Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
-	     break;
-
-		 case TIMER_NORMAL_TIMING:
-		     Display_Timing(run_t.works_dispTime_hours,run_t.works_dispTime_minutes,0);
-
-
-		 break;
-
-
-	 }
-
-    }
 }
 

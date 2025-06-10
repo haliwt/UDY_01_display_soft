@@ -28,8 +28,8 @@ typedef struct __RUN{
 
   uint8_t gPower_On;
 
-   uint8_t works_dispTime_minutes;
-   uint8_t works_dispTime_hours;
+
+
 
    
   volatile int8_t timer_dispTime_hours;
@@ -39,7 +39,7 @@ typedef struct __RUN{
    uint8_t power_on_step;
    uint8_t power_off_flag;
   
-  
+   uint8_t disp_health_value;
    
   uint8_t  gPlasma;
  
@@ -54,24 +54,24 @@ typedef struct __RUN{
    //key ref
    uint8_t recoder_start_conuter_flag;
 
-   uint8_t gReal_humtemp[2];
+   uint8_t ntc_tem[1];
    int8_t temporary_timer_dispTime_hours;
    int8_t temporary_timer_dispTime_minutes;
  
    /***/
    //timer timing ref
-   uint8_t gTimer_set_temp_times;
+
    uint8_t gTimer_timer_seconds_counter;
 
-   volatile uint8_t gTimer_set_up_temperature_value;
+   
 
 
 
    uint8_t gTimer_display_dht11;
-   uint8_t gTimer_timing_seconds_counter;
-   volatile uint8_t gTimer_time_colon;
-    uint8_t gTimer_set_timer_timing_value;
-	uint8_t gTimer_error_digital ;
+
+    uint8_t gTimer_time_colon;
+ 
+
  
  }RUN_T;
 

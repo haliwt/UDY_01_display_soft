@@ -15,12 +15,12 @@ void Display_Timing(uint8_t hours,uint8_t minutes,uint8_t disp);
 
 void Display_Error_Digital(uint8_t sel);
 
-void disp_dht11_value(void);
+void disp_ntc_temperature_value(void);
 
 
 void Display_TimeColon_Blink_Fun(void);
 
-void Warning_Error_Numbers_Fun(void);
+
 
 
 
