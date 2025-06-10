@@ -124,7 +124,7 @@ typedef struct _pro_t{
    
    uint8_t key_add_dec_pressed_flag;
    
- 
+   uint8_t gTimer_disp_timer_counter ;
    uint8_t gTimer_set_temp_counter;
 
    uint16_t gTimer_4bitsmg_blink_times;

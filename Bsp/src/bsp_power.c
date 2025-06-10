@@ -47,19 +47,18 @@ void power_on_init(void)
 
 	
 
-	//gpro_t.set_timer_timing_doing_value = 0;
-	
-    //gpro_t.set_timer_timing_value_success=0;
+
 	
     gpro_t.key_add_dec_pressed_flag=0;
-    run_t.gTimer_display_dht11 =6;
-	
+   
+	run_t.gTimer_disp_ntc =7;
     run_t.gTimer_time_colon =0;
 	//timer time
-
+   
 	run_t.timer_dispTime_hours=8;
 	run_t.timer_dispTime_minutes=0;
 	run_t.gTimer_timer_seconds_counter=0;
+	 run_t.disp_health_minutes=0;
 	
 	//works time
 
@@ -127,6 +126,7 @@ void power_on_run_handler(void)
 			
 	   TM1639_Display_ON_OFF(1);
 	   mouse_gpio_init();
+	   
 	   run_t.power_on_step= 1;
 
 
@@ -147,7 +147,7 @@ void power_on_run_handler(void)
 
 	   case 2:
 
-	       disp_ntc_temperature_value();
+	     //  disp_ntc_temperature_value();
 	       step_state=1;
 
 

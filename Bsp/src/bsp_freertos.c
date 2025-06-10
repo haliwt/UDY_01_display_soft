@@ -174,6 +174,8 @@ static void vTaskRunPro(void *pvParameters)
   
        Display_TimeColon_Blink_Fun();
 
+	   disp_ntc_temperature_value();
+
       }
 	  else{
 

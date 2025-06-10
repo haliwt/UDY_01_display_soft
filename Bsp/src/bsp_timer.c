@@ -84,35 +84,41 @@ void set_timer_fun_led_blink(void)
 void Display_SmgTiming_Value(void)
 {
 
-   if(run_t.gTimer_timer_seconds_counter > 59){
-			    run_t.gTimer_timer_seconds_counter =0;
-			
-				run_t.timer_dispTime_minutes -- ;
-			
-			    if(run_t.timer_dispTime_minutes <  0 ){
-					 
-				   run_t.timer_dispTime_hours -- ;
-				   run_t.timer_dispTime_minutes =59;
-				
-		         }
+	if(run_t.gTimer_timer_seconds_counter > 59){
+		run_t.gTimer_timer_seconds_counter =0;
 
-				
-				
-				 if(run_t.timer_dispTime_hours < 0 ){
-				 
-					run_t.gTimer_timer_seconds_counter = 57 ;
-					run_t.timer_dispTime_hours=0;
-					run_t.timer_dispTime_minutes=0;
-		             
-			      
-					SendData_PowerOnOff(0);//power off
-					osDelay(5);
-					
-			      }
+		run_t.timer_dispTime_minutes -- ;
+	    run_t.disp_health_minutes++;
+
+		if(run_t.timer_dispTime_minutes <  0 ){
+
+		run_t.timer_dispTime_hours -- ;
+		run_t.timer_dispTime_minutes =59;
+
 		}
 
-        Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
-       // WorksTime_DonotDisplay_Fun();
-           
+
+
+		if(run_t.timer_dispTime_hours < 0 ){
+
+		run_t.gTimer_timer_seconds_counter = 57 ;
+		run_t.timer_dispTime_hours=0;
+		run_t.timer_dispTime_minutes=0;
+
+
+		SendData_PowerOnOff(0);//power off
+		osDelay(5);
+
+		}
+		Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
+	}
+
+	//if(gpro_t.gTimer_disp_timer_counter > 1){
+	//gpro_t.gTimer_disp_timer_counter=0;
+	//Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
+
+	//}
+
+
 }
 

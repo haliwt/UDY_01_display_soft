@@ -26,7 +26,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	      tm0=0;
 		  
 		
-	     run_t.gTimer_display_dht11++;
+         run_t.gTimer_disp_ntc ++;
          run_t.gTimer_time_colon++ ;
 		//--------------//
 
@@ -38,7 +38,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 		//usart
     
-   
+        gpro_t.gTimer_disp_timer_counter ++;
 		gpro_t.gTimer_set_temp_counter++;
 	
 	   }

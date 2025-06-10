@@ -20,7 +20,7 @@ void Display_DHT11_Value(void)
     
    TM1639_Display_Temperature(run_t.ntc_tem[0]);//TM1639_Write_2bit_TempData(temp1,temp2);
     
-	TM1639_Display_Health(run_t.timer_dispTime_minutes,run_t.timer_dispTime_hours);//TM1639_Write_2bit_HumData(hum1,hum2);
+	TM1639_Display_Health(run_t.disp_health_minutes);//TM1639_Write_2bit_HumData(hum1,hum2);
 	
 
 
@@ -53,8 +53,8 @@ void Display_Timing(uint8_t hours,uint8_t minutes,uint8_t disp)
 void disp_ntc_temperature_value(void)
 {
 
-  if(run_t.gTimer_display_dht11 > 4){
-	    run_t.gTimer_display_dht11=0;
+  if(run_t.gTimer_disp_ntc > 4){
+	    run_t.gTimer_disp_ntc=0;
        	Display_DHT11_Value();
        
      

@@ -181,6 +181,7 @@ void Display_TimeColon_Blink_Fun(void)
 		   run_t.gTimer_time_colon =0;
 	       
 		 gpro_t.g_time_disp_colon_flag = gpro_t.g_time_disp_colon_flag ^ 0x01;
+	     Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
 	  
 		}
  }

@@ -344,6 +344,7 @@ void key_add_fun(void)
 {
    
      gpro_t.key_add_dec_pressed_flag = 1;
+	 gpro_t.gTimer_set_temp_counter =0;
      SendData_Buzzer();
 	 osDelay(5);
 
@@ -365,6 +366,7 @@ void key_dec_fun(void)
 {
   
 	gpro_t.key_add_dec_pressed_flag = 1;
+	gpro_t.gTimer_set_temp_counter =0;
 	SendData_Buzzer();
 	osDelay(5);
 
@@ -374,25 +376,6 @@ void key_dec_fun(void)
 }
 
 
-/****************************************************************
-	*
-	*Function Name :void wifi_mode_key_handler(void)
-	*Function : 
-	*Input Parameters :NO
-	*Retrurn Parameter :NO
-	*
-*****************************************************************/
- 
-
-
-/*
-*********************************************************************************************************
-*	函 数 名: void process_keys(void) 
-*	功能说明:
-*	形    参：无
-*	返 回 值: 按键代码
-*********************************************************************************************************
-*/
 
 #if 0
 void process_keys(void) 

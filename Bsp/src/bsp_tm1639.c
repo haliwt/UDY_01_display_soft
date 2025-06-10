@@ -189,6 +189,7 @@ void TM1639_Write_Half_Digit(uint8_t addr, uint8_t data)
 
 
 
+uint8_t currentHealth = 0;
 
 
 /******************************************************************************
@@ -257,20 +258,18 @@ void TM1639_Display_Temperature(int8_t temp)
  * @param  humi: 湿度值（0-99%RH）
  * @retval None
  */
-void TM1639_Display_Health(uint8_t minute,uint8_t totalhours)
+void TM1639_Display_Health(uint16_t minutes)
 {
 
-  	int health = 0;
-    const uint16_t totalMinutes = totalhours * 60;
-    static uint8_t currentHealth = 0;
-    
- 
-    
-    currentHealth = (minute * 99 + totalMinutes/2) / totalMinutes;
+  	
+    const uint16_t totalMinutes = 8 * 60;
+   
+    currentHealth = (minutes * 99 + totalMinutes/2);
+	currentHealth	= currentHealth / totalMinutes;
         
-      
-      
-     if(totalhours > 8) {
+    
+	
+     if(minutes > 480 ) {
           currentHealth = 99;
       }
 

@@ -66,8 +66,9 @@ typedef struct __RUN{
    
 
 
+	uint8_t gTimer_disp_ntc ;
 
-   uint8_t gTimer_display_dht11;
+    uint16_t disp_health_minutes;
 
     uint8_t gTimer_time_colon;
  
