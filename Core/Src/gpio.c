@@ -56,7 +56,7 @@ void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(TM1639_SCLK_GPIO_Port, TM1639_SCLK_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, LED_CTL_Pin, GPIO_PIN_RESET);
+
 
   HAL_GPIO_WritePin(GPIOA, LED_DRY_Pin|LED_MOUSE_Pin|LED_PLASMA_Pin, GPIO_PIN_SET);
 
@@ -75,11 +75,11 @@ void MX_GPIO_Init(void)
   HAL_GPIO_Init(TM1639_SCLK_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : LED_CTL_Pin */
-  GPIO_InitStruct.Pin = LED_CTL_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
-  HAL_GPIO_Init(LED_CTL_GPIO_Port, &GPIO_InitStruct);
+//  GPIO_InitStruct.Pin = LED_CTL_Pin;
+//  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+//  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+//  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
+//  HAL_GPIO_Init(LED_CTL_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LED_DRY_Pin LED_MOUSE_Pin LED_PLASMA_Pin */
   GPIO_InitStruct.Pin = LED_DRY_Pin|LED_MOUSE_Pin|LED_PLASMA_Pin;
@@ -89,7 +89,7 @@ void MX_GPIO_Init(void)
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pins : KEY_ADD_Pin KEY_DEC_Pin KEY_POWER_Pin KEY_DRY_Pin */
-  GPIO_InitStruct.Pin = KEY_ADD_Pin|KEY_DEC_Pin|KEY_POWER_Pin|KEY_DRY_Pin;
+  GPIO_InitStruct.Pin = KEY_ADD_Pin|KEY_DEC_Pin|KEY_POWER_Pin|KEY_DRY_Pin|KEY_MOUSE_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;//GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);

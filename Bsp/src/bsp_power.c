@@ -42,12 +42,9 @@ void power_on_init(void)
     run_t.gPlasma=1;
 	run_t.gDry =1;
     run_t.gMouse = 1;
-		
-    power_on_led();
-
 	
-
-
+	LED_TIME_Init();	
+    power_on_led();
 	
     gpro_t.key_add_dec_pressed_flag=0;
    
@@ -125,7 +122,7 @@ void power_on_run_handler(void)
 	  power_on_init();
 			
 	   TM1639_Display_ON_OFF(1);
-	   mouse_gpio_init();
+	   
 	   
 	   run_t.power_on_step= 1;
 

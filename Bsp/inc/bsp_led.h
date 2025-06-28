@@ -10,13 +10,16 @@
 #include "main.h"
 
 
+#define LED_TIME_Pin 						GPIO_PIN_15//GPIO_PIN_0
+#define LED_TIME_GPIO_Port 					GPIOA//GPIOA
+
 
 
 #define LED_POWER_ON()       do{LED_POWER_GPIO_Port->BSRR |=LED_POWER_Pin;}while(0)//HAL_GPIO_WritePin(LED_POWER_GPIO_Port, LED_POWER_Pin, GPIO_PIN_RESET)
 #define LED_POWER_OFF()          do{LED_POWER_GPIO_Port->BSRR |=(uint32_t)LED_POWER_Pin<<16;}while(0)//sys_write_gpio_pin_value(LED_POWER_GPIO_Port,LED_POWER_Pin,GPIO_PIN_SET)//HAL_GPIO_WritePin(LED_POWER_GPIO_Port, LED_POWER_Pin, GPIO_PIN_SET)
 
-#define LED_TIME_ON()      do{LED_CTL_GPIO_Port->BSRR |=LED_CTL_Pin;}while(0)    
-#define LED_TIME_OFF()      do{LED_CTL_GPIO_Port->BSRR |=(uint32_t)LED_CTL_Pin<<16;}while(0)//        sys_write_gpio_pin_value(LED_TEMP_SYMBOL_GPIO_Port, LED_TEMP_SYMBOL_Pin, GPIO_PIN_RESET)
+#define LED_TIME_ON()     	 do{LED_TIME_GPIO_Port->BSRR |=LED_TIME_Pin;}while(0)    
+#define LED_TIME_OFF()      do{LED_TIME_GPIO_Port->BSRR |=(uint32_t)LED_TIME_Pin<<16;}while(0)//        sys_write_gpio_pin_value(LED_TEMP_SYMBOL_GPIO_Port, LED_TEMP_SYMBOL_Pin, GPIO_PIN_RESET)
  
 
 #define LED_DRY_ON()       do{LED_DRY_GPIO_Port->BSRR |=(uint32_t)LED_DRY_Pin<<16;}while(0)
@@ -27,6 +30,9 @@
 
 #define LED_MOUSE_ON()          do{LED_MOUSE_GPIO_Port->BSRR |=(uint32_t)LED_MOUSE_Pin<<16;}while(0)
 #define LED_MOUSE_OFF()           do{LED_MOUSE_GPIO_Port->BSRR |=LED_MOUSE_Pin;}while(0)  
+
+
+void LED_TIME_Init(void);
 
 void power_on_led(void);
 void power_off_led(void);

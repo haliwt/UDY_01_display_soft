@@ -22,7 +22,7 @@ static void copy_cmd_data_from_mainboard(uint8_t *pdata);
 void receive_data_from_mainboard(uint8_t *pdata)
 {
     
-   static uint8_t power_on_counter;
+   //static uint8_t power_on_counter;
     switch(pdata[2]){
 
      case 0:

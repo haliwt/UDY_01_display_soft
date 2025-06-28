@@ -7,8 +7,8 @@
 #define CHECK_TIME_THRESHOLD_4S      3   //温度差阈值
 
 //static void tempeature_compareison_value_handler(void);
-static void handleSetTemperatureControl(void) ;
-static void handleDefaultTemperatureControl(void);
+//static void handleSetTemperatureControl(void) ;
+//static void handleDefaultTemperatureControl(void);
 
 uint8_t current_temperature;
 /*********************************************************************************************
@@ -92,6 +92,7 @@ void tempeature_compareison_value_handler(void)
 	*Return Ref:NO
 	*
 ******************************************************************************/
+#if 0
 static void handleSetTemperatureControl(void) 
 {
 	
@@ -130,6 +131,7 @@ static void handleSetTemperatureControl(void)
         }
 	
 }
+#endif 
 /******************************************************************************
 	*
 	*Function Name:static void handleDefaultTemperatureControl(void)
@@ -138,6 +140,7 @@ static void handleSetTemperatureControl(void)
 	*Return Ref:NO
 	*
 ******************************************************************************/
+#if 0
 static void handleDefaultTemperatureControl(void) 
 {
     
@@ -195,4 +198,4 @@ static void handleDefaultTemperatureControl(void)
    }
 }
 
-
+#endif 

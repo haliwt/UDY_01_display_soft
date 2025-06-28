@@ -157,13 +157,13 @@ static void vTaskRunPro(void *pvParameters)
 	//BaseType_t xResult;
 	//const TickType_t xMaxBlockTime = pdMS_TO_TICKS(10); /* 设置最大等待时间为30ms */
 	//uint32_t ulValue;
-	static uint8_t power_on_theFirst_times;
+	//static uint8_t power_on_theFirst_times;
  
 	
     while(1)
     {
      
-   // process_keys() ;
+    process_keys() ;
 	
 	if(run_t.gPower_On == power_on){
 

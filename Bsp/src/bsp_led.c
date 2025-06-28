@@ -6,6 +6,38 @@
  */
 #include "bsp.h"
 
+/*
+	@
+	@ led time init handler
+	@
+
+
+*/
+void LED_TIME_Init(void)
+{
+  
+	GPIO_InitTypeDef GPIO_InitStruct = {0};
+	
+	  /* GPIO Ports Clock Enable */
+	
+	  __HAL_RCC_GPIOA_CLK_ENABLE();
+	
+	  /*Configure GPIO pin Output Level */
+	  HAL_GPIO_WritePin(GPIOA, LED_TIME_Pin, GPIO_PIN_RESET);
+	
+	
+	
+	  /*Configure GPIO pin : LED_CTL_Pin */
+		GPIO_InitStruct.Pin = LED_TIME_Pin;
+		GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+		GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
+	    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+
+}
+
+
 /**************************************************************************
  * power_on_led(void)
  * 功能:开启所有LED

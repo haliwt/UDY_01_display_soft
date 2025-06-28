@@ -401,17 +401,7 @@ void process_keys(void)
 		}
 	}
 
-
-
-
-
-
-
 }
-
-
-
-
 
 
 
