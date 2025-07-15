@@ -98,7 +98,8 @@ int main(void)
   delay_init(64); 
 
   HAL_TIM_Base_Start_IT(&htim17);
-
+  bsp_init();
+  printf("mian inti \r\n");
   #if USART1_INTERRUPT
    	 UART_Start_Receive_IT(&huart2,inputBuf,1);
    #else

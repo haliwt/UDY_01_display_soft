@@ -22,7 +22,7 @@ uint8_t  first_set_temperature_value;
 void bsp_init(void)
 {
 
-#if Enable_EventRecorder == 1  
+#if 0  
 	/* 初始化EventRecorder并开启 */
 	EventRecorderInitialize(EventRecordAll, 1U);
 	EventRecorderStart();

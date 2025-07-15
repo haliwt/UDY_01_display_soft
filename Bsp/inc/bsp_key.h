@@ -7,7 +7,7 @@
 
 
 
-#define POWER_KEY_VALUE()          ((KEY_POWER_GPIO_Port->IDR & KEY_POWER_Pin) ? 1 : 0)
+#define POWER_KEY_VALUE()          HAL_GPIO_ReadPin(KEY_POWER_GPIO_Port,KEY_POWER_Pin)//((KEY_POWER_GPIO_Port->IDR & KEY_POWER_Pin) ? 1 : 0)
 
 
 
