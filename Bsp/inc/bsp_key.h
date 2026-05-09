@@ -7,7 +7,7 @@
 
 
 
-#define POWER_KEY_VALUE()          HAL_GPIO_ReadPin(KEY_POWER_GPIO_Port,KEY_POWER_Pin)//((KEY_POWER_GPIO_Port->IDR & KEY_POWER_Pin) ? 1 : 0)
+#define POWER_KEY_VALUE()         (KEY_POWER_GPIO_Port -> IDR & KEY_POWER_Pin) ? 1:0) //HAL_GPIO_ReadPin(KEY_POWER_GPIO_Port,KEY_POWER_Pin)//((KEY_POWER_GPIO_Port->IDR & KEY_POWER_Pin) ? 1 : 0)
 
 
 
@@ -15,7 +15,7 @@
 #define ADD_KEY_VALUE()            ((KEY_ADD_GPIO_Port->IDR & KEY_ADD_Pin) ? 1 : 0)  //HAL_GPIO_ReadPin(GPIOA,ADD_KEY_Pin)
 
 
-#define MOUSE_KEY_VALUE()            ((KEY_MOUSE_GPIO_Port->IDR & KEY_MOUSE_Pin) ? 1 : 0)  //HAL_GPIO_ReadPin(GPIOB,MOUSE_KEY_Pin)
+#define MOUSE_KEY_VALUE()           ((KEY_MOUSE_GPIO_Port->IDR & KEY_MOUSE_Pin) ? 1 : 0)  //HAL_GPIO_ReadPin(GPIOB,MOUSE_KEY_Pin)
 #define PLASMA_KEY_VALUE()          ((KEY_PLASMA_GPIO_Port->IDR & KEY_PLASMA_Pin) ? 1 : 0)    //HAL_GPIO_ReadPin(GPIOB,PLASMA_KEY_Pin)
 #define DRY_KEY_VALUE()             ((KEY_DRY_GPIO_Port->IDR & KEY_DRY_Pin) ? 1 : 0) //HAL_GPIO_ReadPin(GPIOB,DRY_KEY_Pin)
 

@@ -12,13 +12,12 @@
 
 
 #include "main.h"
-#include <stdio.h>
 #include <string.h>
 
 
 
 
-#include "bsp_freertos.h"
+
 
 #include "bsp_key.h"
 #include "bsp_key_app.h"
@@ -40,6 +39,7 @@
 
 #include "interrupt_manager.h"
 
+#include "bsp_threadx.h"
 
 
 
@@ -54,26 +54,32 @@
 #include "gpio.h"
 
 //freeRtos
-#include "FreeRTOS.h"
-#include "task.h"
-#include "cmsis_os.h"
+#include "app_threadx.h"
 
 
-#define  USE_FreeRTOS      1
+
+
+#define  USE_Threadx      1
   
 #define  TEST_UNIT        0
 
 
-#if USE_FreeRTOS == 1
-	//#include "FreeRTOS.h"
-	///#include "task.h"
-	#define DISABLE_INT()    taskENTER_CRITICAL()
-	#define ENABLE_INT()     taskEXIT_CRITICAL()
+#if USE_ThreadX == 1
+
+#include "tx_api.h"
+
+static UINT _old_posture;
+
+#define DISABLE_INT()   _old_posture = tx_interrupt_control(TX_INT_DISABLE)
+#define ENABLE_INT()    tx_interrupt_control(_old_posture)
+
 #else
-	/* ����ȫ���жϵĺ� */
-	#define ENABLE_INT()	__set_PRIMASK(0)	/* ʹ��ȫ���ж� */
-	#define DISABLE_INT()	__set_PRIMASK(1)	/* ��ֹȫ���ж� */
+
+#define ENABLE_INT()    __set_PRIMASK(0)
+#define DISABLE_INT()   __set_PRIMASK(1)
+
 #endif
+
 
 /* Ä¬ÈÏÊÇ¹Ø±Õ×´Ì¬ */
 #define  Enable_EventRecorder  0

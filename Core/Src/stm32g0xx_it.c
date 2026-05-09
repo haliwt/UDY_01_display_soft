@@ -102,67 +102,6 @@ void HardFault_Handler(void)
 /******************************************************************************/
 
 /**
-  * @brief This function handles EXTI line 0 and line 1 interrupts.
-  */
-void EXTI0_1_IRQHandler(void)
-{
-  /* USER CODE BEGIN EXTI0_1_IRQn 0 */
-
-  /* USER CODE END EXTI0_1_IRQn 0 */
-  if (LL_EXTI_IsActiveRisingFlag_0_31(LL_EXTI_LINE_0) != RESET)
-  {
-    LL_EXTI_ClearRisingFlag_0_31(LL_EXTI_LINE_0);
-    /* USER CODE BEGIN LL_EXTI_LINE_0_RISING */
-
-    /* USER CODE END LL_EXTI_LINE_0_RISING */
-  }
-  /* USER CODE BEGIN EXTI0_1_IRQn 1 */
-
-  /* USER CODE END EXTI0_1_IRQn 1 */
-}
-
-/**
-  * @brief This function handles EXTI line 4 to 15 interrupts.
-  */
-void EXTI4_15_IRQHandler(void)
-{
-  /* USER CODE BEGIN EXTI4_15_IRQn 0 */
-
-  /* USER CODE END EXTI4_15_IRQn 0 */
-  if (LL_EXTI_IsActiveRisingFlag_0_31(LL_EXTI_LINE_4) != RESET)
-  {
-    LL_EXTI_ClearRisingFlag_0_31(LL_EXTI_LINE_4);
-    /* USER CODE BEGIN LL_EXTI_LINE_4_RISING */
-
-    /* USER CODE END LL_EXTI_LINE_4_RISING */
-  }
-  if (LL_EXTI_IsActiveRisingFlag_0_31(LL_EXTI_LINE_5) != RESET)
-  {
-    LL_EXTI_ClearRisingFlag_0_31(LL_EXTI_LINE_5);
-    /* USER CODE BEGIN LL_EXTI_LINE_5_RISING */
-
-    /* USER CODE END LL_EXTI_LINE_5_RISING */
-  }
-  if (LL_EXTI_IsActiveRisingFlag_0_31(LL_EXTI_LINE_6) != RESET)
-  {
-    LL_EXTI_ClearRisingFlag_0_31(LL_EXTI_LINE_6);
-    /* USER CODE BEGIN LL_EXTI_LINE_6_RISING */
-
-    /* USER CODE END LL_EXTI_LINE_6_RISING */
-  }
-  if (LL_EXTI_IsActiveRisingFlag_0_31(LL_EXTI_LINE_7) != RESET)
-  {
-    LL_EXTI_ClearRisingFlag_0_31(LL_EXTI_LINE_7);
-    /* USER CODE BEGIN LL_EXTI_LINE_7_RISING */
-
-    /* USER CODE END LL_EXTI_LINE_7_RISING */
-  }
-  /* USER CODE BEGIN EXTI4_15_IRQn 1 */
-
-  /* USER CODE END EXTI4_15_IRQn 1 */
-}
-
-/**
   * @brief This function handles DMA1 channel 1 interrupt.
   */
 void DMA1_Channel1_IRQHandler(void)
@@ -173,6 +112,19 @@ void DMA1_Channel1_IRQHandler(void)
   /* USER CODE BEGIN DMA1_Channel1_IRQn 1 */
 
   /* USER CODE END DMA1_Channel1_IRQn 1 */
+}
+
+/**
+  * @brief This function handles DMA1 channel 2 and channel 3 interrupts.
+  */
+void DMA1_Channel2_3_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA1_Channel2_3_IRQn 0 */
+
+  /* USER CODE END DMA1_Channel2_3_IRQn 0 */
+  /* USER CODE BEGIN DMA1_Channel2_3_IRQn 1 */
+
+  /* USER CODE END DMA1_Channel2_3_IRQn 1 */
 }
 
 /**
