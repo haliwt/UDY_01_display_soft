@@ -29,6 +29,18 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include "stm32g0xx_hal.h"
 
+#include "stm32g0xx_ll_dma.h"
+#include "stm32g0xx_ll_rcc.h"
+#include "stm32g0xx_ll_bus.h"
+#include "stm32g0xx_ll_system.h"
+#include "stm32g0xx_ll_exti.h"
+#include "stm32g0xx_ll_cortex.h"
+#include "stm32g0xx_ll_utils.h"
+#include "stm32g0xx_ll_pwr.h"
+#include "stm32g0xx_ll_tim.h"
+#include "stm32g0xx_ll_usart.h"
+#include "stm32g0xx_ll_gpio.h"
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -57,58 +69,37 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-//GPIO IC TM1639
-#define TM1639_STB_Pin GPIO_PIN_7
+#define TM1639_STB_Pin LL_GPIO_PIN_7
 #define TM1639_STB_GPIO_Port GPIOB
-#define TM1639_DIO_Pin GPIO_PIN_9
+#define TM1639_DIO_Pin LL_GPIO_PIN_9
 #define TM1639_DIO_GPIO_Port GPIOB
-#define TM1639_SCLK_Pin GPIO_PIN_15
+#define TM1639_SCLK_Pin LL_GPIO_PIN_15
 #define TM1639_SCLK_GPIO_Port GPIOC
-
-
-
-//KEY GPIO
-#define KEY_ADD_Pin 				GPIO_PIN_4
-#define KEY_ADD_GPIO_Port 			GPIOA
-#define KEY_ADD_EXTI_IRQn 			EXTI4_15_IRQn
-
-#define KEY_DEC_Pin 				GPIO_PIN_5
-#define KEY_DEC_GPIO_Port 			GPIOA
-#define KEY_DEC_EXTI_IRQn 			EXTI4_15_IRQn
-
-#define KEY_POWER_Pin 					GPIO_PIN_6
-#define KEY_POWER_GPIO_Port 			GPIOA
-#define KEY_POWER_EXTI_IRQn 			EXTI4_15_IRQn
-
-#define KEY_DRY_Pin 					GPIO_PIN_7
-#define KEY_DRY_GPIO_Port 				GPIOA
-#define KEY_DRY_EXTI_IRQn 				EXTI4_15_IRQn
-
-#define KEY_PLASMA_Pin 					GPIO_PIN_0
-#define KEY_PLASMA_GPIO_Port 			GPIOB
-#define KEY_PLASMA_EXTI_IRQn 			EXTI0_1_IRQn
-
-#define KEY_MOUSE_Pin           GPIO_PIN_11//GPIO_PIN_14
-#define KEY_MOUSE_GPIO_Port     GPIOA
-#define KEY_DRY_EXTI_IRQn 				EXTI4_15_IRQn
-
-
-//GPIO LED CONTROL
-#define LED_MOUSE_Pin 						GPIO_PIN_0//GPIO_PIN_11
-#define LED_MOUSE_GPIO_Port 				GPIOA//GPIOA
-
-#define LED_PLASMA_Pin GPIO_PIN_12
-#define LED_PLASMA_GPIO_Port GPIOA
-
-#define LED_POWER_Pin GPIO_PIN_3
-#define LED_POWER_GPIO_Port GPIOB
-
-//#define LED_TIME_Pin 							GPIO_PIN_13//GPIO_PIN_0
-//#define LED_TIME_GPIO_Port 					GPIOA//GPIOA
-
-#define LED_DRY_Pin GPIO_PIN_1
+#define LED_CTL_Pin LL_GPIO_PIN_0
+#define LED_CTL_GPIO_Port GPIOA
+#define LED_DRY_Pin LL_GPIO_PIN_1
 #define LED_DRY_GPIO_Port GPIOA
-
+#define KEY_ADD_Pin LL_GPIO_PIN_4
+#define KEY_ADD_GPIO_Port GPIOA
+#define KEY_ADD_EXTI_IRQn EXTI4_15_IRQn
+#define KEY_DEC_Pin LL_GPIO_PIN_5
+#define KEY_DEC_GPIO_Port GPIOA
+#define KEY_DEC_EXTI_IRQn EXTI4_15_IRQn
+#define KEY_POWER_Pin LL_GPIO_PIN_6
+#define KEY_POWER_GPIO_Port GPIOA
+#define KEY_POWER_EXTI_IRQn EXTI4_15_IRQn
+#define KEY_DRY_Pin LL_GPIO_PIN_7
+#define KEY_DRY_GPIO_Port GPIOA
+#define KEY_DRY_EXTI_IRQn EXTI4_15_IRQn
+#define KEY_PLASMA_Pin LL_GPIO_PIN_0
+#define KEY_PLASMA_GPIO_Port GPIOB
+#define KEY_PLASMA_EXTI_IRQn EXTI0_1_IRQn
+#define LED_MOUSE_Pin LL_GPIO_PIN_11
+#define LED_MOUSE_GPIO_Port GPIOA
+#define LED_PLASMA_Pin LL_GPIO_PIN_12
+#define LED_PLASMA_GPIO_Port GPIOA
+#define LED_POWER_Pin LL_GPIO_PIN_3
+#define LED_POWER_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 
