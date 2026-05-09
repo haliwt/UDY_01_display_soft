@@ -109,7 +109,7 @@ static void handleSetTemperatureControl(void)
 	
 		    //notice main board dry state 
 			SendData_Set_Command(0x22, 0x00); //buzzer don't sound .
-			osDelay(5);
+			tx_thread_sleep(10);
 		    
 		
 			
@@ -122,7 +122,7 @@ static void handleSetTemperatureControl(void)
 					//LED_DRY_ON();
 
 					SendData_Set_Command(0x22, 0x01); //buzzer don't sound .干燥功能
-				    osDelay(5);
+				    tx_thread_sleep(10);
 	              
             	
 			
@@ -159,7 +159,7 @@ static void handleDefaultTemperatureControl(void)
 			
 		   
 		     SendData_Set_Command(0x22, 0x0);//sendDisplayCommand(0x02,0x0); // send data to the second displayboard .关闭干燥功能
-			 osDelay(5);
+			 tx_thread_sleep(10);
 			
 			
         } 
@@ -174,7 +174,7 @@ static void handleDefaultTemperatureControl(void)
 			        //LED_DRY_ON();
 				
 			  	    SendData_Set_Command(0x22, 0x01); //sendDisplayCommand(0x02,0x01); // 打开干燥功能
-					osDelay(5);
+					tx_thread_sleep(10);
 				
 				
 
@@ -189,7 +189,7 @@ static void handleDefaultTemperatureControl(void)
 				    // LED_DRY_ON();
 					
 				      SendData_Set_Command(0x22, 0x01);//sendDisplayCommand(0x02,0x01); // 第二个显示板，打开干燥功能
-				     osDelay(5);
+				     tx_thread_sleep(10);
 				 }
 				 
 	            

@@ -1,19 +1,22 @@
 #include "bsp.h"
 
-#if DEBUG_ENABLE   1
+
+#define KEY_POWER_SHORT  (1UL << 0)
+#define KEY_POWER_LONG   (1UL << 1)
 
 
-#define KEY_MODE_SHORT   (1 << 0)
-#define KEY_MODE_LONG    (1 << 1)
+#define KEY_DRY_SHORT   (1UL << 2)
 
-#define KEY_UP_SHORT     (1 << 2)
-#define KEY_UP_LONG      (1 << 3)
+#define KEY_PLASMA_SHORT    (1UL<< 3)
 
-#define KEY_DOWN_SHORT   (1 << 4)
-#define KEY_DOWN_LONG    (1 << 5)
+#define KEY_MOUSE_SHORT      (1UL << 4)
 
-#define KEY_POWER_SHORT  (1 << 6)
-#define KEY_POWER_LONG   (1 << 7)
+
+#define KEY_UP_SHORT     (1UL << 5)
+
+#define KEY_DOWN_SHORT   (1UL << 6)
+
+
 
 
 #define STACK_SIZE_UI     1024 
@@ -115,23 +118,7 @@ void tx_application_define(VOID * first_unused_memory)
 
 
 
-typedef struct Msg
-{
-	
-	uint8_t  usData[12];
-    uint8_t  ucMessageID;
-    uint8_t  rx_data_counter;
-    uint8_t  disp_rx_cmd_done_flag;
-    uint8_t  bcc_check_code;
-    volatile uint8_t ulid;
- 
-}MSG_T;
 
-MSG_T   gl_tMsg; /* 定义丢�个结构体用于消息队列 */
-
-
-
-uint8_t check_code;
 
 /**********************************************************************************************************
 *   FunctionName: static void vTaskRunPro(void *pvParameters)
@@ -152,17 +139,12 @@ static void vTaskDecoderPro(ULONG thread_input)
 
 
 		if(tx_semaphore_get(&decoder_semaphore,TX_WAIT_FOREVER)==TX_SUCCESS){	   
-				gl_tMsg.disp_rx_cmd_done_flag = 0;
-
-				check_code =  bcc_check(gl_tMsg.usData,gl_tMsg.ulid);
-
-				if(check_code == gl_tMsg.bcc_check_code ){
-
-				receive_data_from_mainboard(gl_tMsg.usData);
 				
-			    }
+            decoder_handler();
+				
         }
  }
+}
 /**
 *@brief 
 *@param
@@ -176,7 +158,7 @@ static void vTaskUiPro(ULONG thread_input)
 	while(1)
     {
      
-    process_keys() ;
+    //process_keys() ;
 	
 	if(run_t.gPower_On == power_on){
 
@@ -215,38 +197,99 @@ static void vTaskUiPro(ULONG thread_input)
 static void vTaskKeyPro(ULONG thread_input)
 {
   (void)thread_input;  /* 消除未使用的参数警告 */
+    
+    static uint16_t dry_cnt = 0;
+	static uint16_t plasma_cnt = 0;
+	static uint16_t mouse_cnt = 0;
+    static uint16_t up_cnt = 0;
+    static uint16_t down_cnt = 0;
+    static uint16_t power_cnt = 0;
 
+    const uint16_t LONG_PRESS_TIME = 90;   // 300 * 10ms = 3000ms
 	
     while(1)
     {
-      if(POWER_KEY_VALUE() ==KEY_DOWN){
+      if(POWER_KEY_VALUE() == KEY_DOWN){
          
-          key_t.key_power_flag =1;
-		 // printf("power_key be pressed done \r\n");
+            power_cnt++;
+            if(power_cnt == LONG_PRESS_TIME && run_t.gPower_On == power_on){
+                tx_event_flags_set(&key_event, KEY_POWER_LONG, TX_OR);
+             }
 
 	  }
-	  else if(DEC_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
-           key_t.key_dec_flag=1;   
-            
+	  else{
+          if(power_cnt > 1 && power_cnt < LONG_PRESS_TIME)
+                tx_event_flags_set(&key_event, KEY_POWER_SHORT, TX_OR);
+
+            power_cnt = 0;
+
 	  }
-	  else if(ADD_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
-           key_t.key_add_flag=1;   
-            
+	  
+	  if(DEC_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
+           
+           down_cnt++;
 	  }
-	  else if(DRY_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
-           key_t.key_dry_flag=1;   
-            
-	  }
-	  else if(PLASMA_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
-           key_t.key_plasma_flag=1;   
-            
-	  }
-	  else if(MOUSE_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
-           key_t.key_mouse_flag=1;   
-            
+	  else{
+	       if(down_cnt > 1 && down_cnt < LONG_PRESS_TIME)
+					 tx_event_flags_set(&key_event, KEY_DOWN_SHORT, TX_OR);
+	  
+				 down_cnt = 0;
+
+
 	  }
 
-      vTaskDelay(20);     
+	  if(ADD_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
+          
+           up_cnt++;
+          
+	  }
+	  else{
+          if(up_cnt > 1 && up_cnt < LONG_PRESS_TIME)
+                tx_event_flags_set(&key_event, KEY_UP_SHORT, TX_OR);
+
+            up_cnt = 0;
+
+	  }
+
+	  if(DRY_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
+
+	       dry_cnt++ ;
+            
+	  }
+	  else{
+        if(dry_cnt > 1 && up_cnt < LONG_PRESS_TIME)
+                tx_event_flags_set(&key_event, KEY_DRY_SHORT, TX_OR); 
+
+		 dry_cnt = 0;
+
+	  }
+
+	  if(PLASMA_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
+            plasma_cnt ++;    
+            
+	  }
+	  else{
+	          if(plasma_cnt > 1 && up_cnt < LONG_PRESS_TIME)
+					  tx_event_flags_set(&key_event, KEY_PLASMA_SHORT, TX_OR); 
+	  
+			   plasma_cnt = 0;
+
+
+	  }
+
+	  if(MOUSE_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
+         
+           mouse_cnt ++ ; 
+	  }
+	  else{
+	      if(mouse_cnt > 1 && up_cnt < LONG_PRESS_TIME)
+						   tx_event_flags_set(&key_event, KEY_MOUSE_SHORT, TX_OR); 
+		   
+					mouse_cnt = 0;
+
+	  }
+
+      tx_thread_sleep(2);//vTaskDelay(20);     
      }
 }
 
@@ -275,7 +318,7 @@ static void vTaskKeyPro(ULONG thread_input)
  
 		 if(flags & KEY_POWER_SHORT){
  
-			power_on_off_handler();
+			power_key_short_handler();
  
 		 }
 		 else if(flags & KEY_POWER_LONG){
@@ -284,33 +327,27 @@ static void vTaskKeyPro(ULONG thread_input)
 			tx_thread_sleep(10);
  
 		 }
-	   /* MODE 键 */
-		 else if(flags & KEY_MODE_SHORT){
-			 SendData_Buzzer();
-			 tx_thread_sleep(10);
-			 mode_key_short_fun();
-			 display_ai_icon(run_t.gModel) ;
- 
-		 }
-		 else if(flags & KEY_MODE_LONG){
-			 SendData_Buzzer();
-			 tx_thread_sleep(10);
-			 mode_key_long_fun();
- 
-		 }
 		 else if(flags & KEY_UP_SHORT){
-			
-				 SendData_Buzzer();//SendData_Buzzer_Has_Ack();//SendData_Buzzer();
-				 tx_thread_sleep(10);
-		 
-				 add_key_fun();
+			   key_add_fun();
+				
 		 }	
 		 else if(flags & KEY_DOWN_SHORT){
-		   SendData_Buzzer();
-		   tx_thread_sleep(10);
-		   dec_key_fun();
- 
+		  
+               key_dec_fun();
 		 }
+		 else if(flags & KEY_DRY_SHORT){
+            dry_key_handler() ;
+
+		 }
+		 else if(flags & KEY_PLASMA_SHORT){
+		     plasma_key_handler() ;
+
+
+		 }
+		 else if(flags & KEY_MOUSE_SHORT){
+       
+		      mouse_key_handler() ;
+	     }
 		
 	  }
  
@@ -318,87 +355,7 @@ static void vTaskKeyPro(ULONG thread_input)
 	}
  }
 
-/********************************************************************************
-	**
-	*Function Name:void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-	*Function :UART callback function  for UART interrupt for receive data
-	*Input Ref: structure UART_HandleTypeDef pointer
-	*Return Ref:NO
-	*
-*******************************************************************************/
-#if USART1_INTERRUPT
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-{
-     static uint8_t state,rx_end_flag ;
-     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-  
 
-    if(huart==&huart2) // Motor Board receive data (filter)
-	{
-
-    //   DISABLE_INT();
-       switch(state)
-		{
-		case 0:  //#0
-			if(inputBuf[0] == 0x5A){  // 0x5A --main board singla
-               gl_tMsg.rx_data_counter=0;
-               gl_tMsg.usData[gl_tMsg.rx_data_counter] = inputBuf[0];
-				state=1; //=1
-
-             }
-            else
-                state=0;
-		break;
-
-       
-		case 1: //#1
-
-            if(gl_tMsg.disp_rx_cmd_done_flag ==0){
-              /* 初始化结构体指针 */
-               gl_tMsg.rx_data_counter++;
-		     
-	          gl_tMsg.usData[gl_tMsg.rx_data_counter] = inputBuf[0];
-              
-
-              if(rx_end_flag == 1){
-
-                state = 0;
-            
-                gl_tMsg.ulid = gl_tMsg.rx_data_counter;
-                rx_end_flag=0;
-
-                gl_tMsg.rx_data_counter =0;
-
-                gl_tMsg.disp_rx_cmd_done_flag = 1 ;
-
-                gl_tMsg.bcc_check_code=inputBuf[0];
-
-              
-              
-                  
-              }
-
-              }
-
-              if(gl_tMsg.usData[gl_tMsg.rx_data_counter] ==0xFE && rx_end_flag == 0 &&   gl_tMsg.rx_data_counter > 4){
-                     
-                     rx_end_flag = 1 ;
-                          
-              }
-
-        break;
-
-
-			
-		}
-
-       //   ENABLE_INT();
-    __HAL_UART_CLEAR_OREFLAG(&huart2);
-	HAL_UART_Receive_IT(&huart2,inputBuf,1);//UART receive data interrupt 1 byte
-    
-   }
-}
-#endif 
 /*************************************************************************
 *
 *	Funtion Name:

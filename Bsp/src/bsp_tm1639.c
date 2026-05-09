@@ -189,7 +189,7 @@ void TM1639_Write_Half_Digit(uint8_t addr, uint8_t data)
 
 
 
-uint8_t currentHealth ;
+uint16_t currentHealth ;
 
 
 /******************************************************************************

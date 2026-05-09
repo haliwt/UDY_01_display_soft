@@ -9,11 +9,17 @@
 #define __BSP_H_
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 
 #include "main.h"
-#include <string.h>
 
+
+#include "dma.h"
+#include "iwdg.h"
+#include "tim.h"
+#include "usart.h"
+#include "gpio.h"
 
 
 
@@ -34,6 +40,7 @@
 
 #include "bsp_message.h"
 #include "bsp_cmd_link.h"
+#include "bsp_usart.h"
 
 
 
@@ -43,15 +50,6 @@
 
 
 
-
-
-
-//mainboard
-
-
-#include "tim.h"
-#include "usart.h"
-#include "gpio.h"
 
 //freeRtos
 #include "app_threadx.h"

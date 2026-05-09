@@ -39,14 +39,14 @@ void receive_data_from_mainboard(uint8_t *pdata)
      
             power_on_handler();
             SendData_Set_Command(0x11,0x01); //0x11 :send to main has the second display board exit.
-			osDelay(5);
+			tx_thread_sleep(10);
            }
            else{ //power off
 
             run_t.gPower_On = power_off;
             run_t.power_on_step =0;
             SendData_Set_Command(0x11,0x01);
-			osDelay(5);
+			tx_thread_sleep(10);
            
            }
           }

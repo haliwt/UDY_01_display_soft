@@ -52,6 +52,10 @@ void MX_TIM17_Init(void)
   LL_TIM_Init(TIM17, &TIM_InitStruct);
   LL_TIM_DisableARRPreload(TIM17);
   /* USER CODE BEGIN TIM17_Init 2 */
+     LL_TIM_EnableARRPreload(TIM17);
+	LL_TIM_EnableIT_UPDATE(TIM17);
+	LL_TIM_EnableCounter(TIM17);
+	LL_TIM_EnableAllOutputs(TIM17);
 
   /* USER CODE END TIM17_Init 2 */
 

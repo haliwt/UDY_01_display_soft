@@ -8,7 +8,7 @@
 #include "bsp.h"
 
 
-KEY_T_TYPEDEF key_t;
+
 
 
 
@@ -61,7 +61,7 @@ void handle_key(KeyHandler *handler)
 //
 //     //SendData_Tx_Data(0x11,gpro_t.set_up_temperature_value);
 //     SendData_ToMainboard_Data(0x2A,&gpro_t.set_up_temperature_value,0x01);
-//     osDelay(5);
+//     tx_thread_sleep(10);
 //	}  
 //
 //
@@ -102,7 +102,7 @@ void set_temperature_value(int8_t delta)
  
 
     //SendData_ToMainboard_Data(0x2A,&new_temp,0x01);
-   // osDelay(5);
+   // tx_thread_sleep(10);
 
     TM1639_Display_Temperature(gpro_t.set_up_temperature_value);//TM1639_Write_2bit_SetUp_TempData(run_t.set_temperature_decade_value, run_t.set_temperature_unit_value, 0);
   #endif 
@@ -150,14 +150,14 @@ void power_key_short_handler(void)
 	if(run_t.gPower_On == power_off){
 		//run_t.gPower_On = power_on;
 		SendData_PowerOnOff(1); // power on
-		osDelay(5);
+		tx_thread_sleep(10);
 
 	}
 	else{
 
 		//run_t.gPower_On = power_off;
 		SendData_PowerOnOff(0); // power off
-		osDelay(5);
+		tx_thread_sleep(10);
 	}
 			 
 		
@@ -185,7 +185,7 @@ void power_key_long_handler(void)
 				gpro_t.key_add_dec_pressed_flag =0;
 				
 				SendData_Buzzer();
-				osDelay(5);
+				tx_thread_sleep(10);
 				key_t.key_power_flag = 1;
            
 	}
@@ -218,13 +218,13 @@ void plasma_key_handler(void)
         if(run_t.gPlasma == 1){
             run_t.gPlasma = 0;
             SendData_Set_Command(plasma_cmd, 0x00);
-		    osDelay(5);
+		    tx_thread_sleep(10);
             LED_PLASMA_OFF();
           
         } else {
             run_t.gPlasma = 1;
             SendData_Set_Command(plasma_cmd, 0x01);
-			osDelay(5);
+			tx_thread_sleep(10);
             LED_PLASMA_ON();
             
         }
@@ -244,14 +244,14 @@ void dry_key_handler(void)
 
         if(run_t.gDry == 0) {
             SendData_Set_Command(dry_cmd, 0x01);//sendCommandAndAck(dry_cmd, 0x01, check_ack_ptc_on);
-			osDelay(5);
+			tx_thread_sleep(10);
             //run_t.gDry = 1;
 			//LED_DRY_ON();
  
            
         } else {
             SendData_Set_Command(dry_cmd, 0x00);//sendCommandAndAck(dry_cmd, 0x00, check_ack_ptc_off);
-			osDelay(5);
+			tx_thread_sleep(10);
             //run_t.gDry = 0;
 			//LED_DRY_OFF();
   
@@ -278,7 +278,7 @@ void mouse_key_handler(void)
             run_t.gMouse = 1;
             LED_MOUSE_ON();
           SendData_Set_Command(mouse_cmd, 0x01);
-            osDelay(5);//对应的反馈类型
+            tx_thread_sleep(10);//对应的反馈类型
             
 
         }
@@ -288,7 +288,7 @@ void mouse_key_handler(void)
             run_t.gMouse = 0;
             LED_MOUSE_OFF();
          SendData_Set_Command(mouse_cmd, 0x00);
-            osDelay(5);//应的反馈类型
+            tx_thread_sleep(10);//应的反馈类型
             
         }
 
@@ -309,7 +309,7 @@ void key_add_fun(void)
      gpro_t.key_add_dec_pressed_flag = 1;
 	 gpro_t.gTimer_set_temp_counter =0;
      SendData_Buzzer();
-	 osDelay(5);
+	 tx_thread_sleep(10);
 
 	 adjust_timer_minutes(1);  // 固定每次加60分钟
            
@@ -331,7 +331,7 @@ void key_dec_fun(void)
 	gpro_t.key_add_dec_pressed_flag = 1;
 	gpro_t.gTimer_set_temp_counter =0;
 	SendData_Buzzer();
-	osDelay(5);
+	tx_thread_sleep(10);
 
 
 	adjust_timer_minutes(-1);  // 固定每次减60分钟
@@ -362,7 +362,7 @@ void process_keys(void)
         handle_key(&handlers[i]);
     }
 }
-#else 
+ 
 void process_keys(void) 
 {
     static uint8_t mouse_power_on;

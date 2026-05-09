@@ -10,6 +10,7 @@
 #include "main.h"
 
 
+void tim17_invoke_callback(void);
 
 
 

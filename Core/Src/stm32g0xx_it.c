@@ -22,6 +22,7 @@
 #include "stm32g0xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "bsp.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -147,7 +148,13 @@ void TIM16_IRQHandler(void)
 void TIM17_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM17_IRQn 0 */
+    if(LL_TIM_IsActiveFlag_UPDATE(TIM17)){
+  	
+      LL_TIM_ClearFlag_UPDATE(TIM17); // ✅ 清除更新中断标志
+      tim17_invoke_callback();//tim17_isr_callback_handler();
 
+
+  }
   /* USER CODE END TIM17_IRQn 0 */
   /* USER CODE BEGIN TIM17_IRQn 1 */
 
@@ -160,6 +167,15 @@ void TIM17_IRQHandler(void)
 void USART2_IRQHandler(void)
 {
   /* USER CODE BEGIN USART2_IRQn 0 */
+  volatile uint8_t data;
+  if(LL_USART_IsActiveFlag_RXNE(USART2)){
+
+     data = LL_USART_ReceiveData8(USART2);
+	  
+	  usart2_rx_data(data);
+
+  }
+
 
   /* USER CODE END USART2_IRQn 0 */
   /* USER CODE BEGIN USART2_IRQn 1 */

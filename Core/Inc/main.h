@@ -76,8 +76,8 @@ void Error_Handler(void);
 #define TM1639_DIO_GPIO_Port GPIOB
 #define TM1639_SCLK_Pin LL_GPIO_PIN_15
 #define TM1639_SCLK_GPIO_Port GPIOC
-#define LED_CTL_Pin LL_GPIO_PIN_0
-#define LED_CTL_GPIO_Port GPIOA
+#define LED_MOUSE_Pin LL_GPIO_PIN_0
+#define LED_MOUSE_GPIO_Port GPIOA
 #define LED_DRY_Pin LL_GPIO_PIN_1
 #define LED_DRY_GPIO_Port GPIOA
 #define KEY_ADD_Pin LL_GPIO_PIN_4

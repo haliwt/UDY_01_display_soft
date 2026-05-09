@@ -24,9 +24,9 @@ void Set_TimerTiming_Number_Value(void)
 		
        
          //Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
-	    // osDelay(300);
+	    // tx_thread_sleep(300);
 		 TM1639_donotDisplay_4Bit_Time();
-		 osDelay(300);
+		 tx_thread_sleep(300);
 		 Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
 
 		
@@ -52,11 +52,11 @@ void set_timer_fun_led_blink(void)
      
 
     	TM1639_donotDisplay_4Bit_Time();
-        osDelay(300);
+        tx_thread_sleep(300);
         TM1639_Display_4Bit_Time(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
-	    osDelay(300);
+	    tx_thread_sleep(300);
 	    TM1639_donotDisplay_4Bit_Time();
-	    osDelay(300);
+	    tx_thread_sleep(300);
 	    TM1639_Display_4Bit_Time(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
 
 	 
@@ -104,7 +104,7 @@ void Display_SmgTiming_Value(void)
 
 
 		SendData_PowerOnOff(0);//power off
-		osDelay(5);
+		tx_thread_sleep(10);
 
 		}
 		Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);

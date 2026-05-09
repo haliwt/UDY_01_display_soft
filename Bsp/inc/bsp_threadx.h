@@ -5,6 +5,7 @@
 
 
 
+void semaphore_isr(void);
 
 
 

@@ -7,7 +7,7 @@
 
 
 
-#define POWER_KEY_VALUE()         (KEY_POWER_GPIO_Port -> IDR & KEY_POWER_Pin) ? 1:0) //HAL_GPIO_ReadPin(KEY_POWER_GPIO_Port,KEY_POWER_Pin)//((KEY_POWER_GPIO_Port->IDR & KEY_POWER_Pin) ? 1 : 0)
+#define POWER_KEY_VALUE()         ((KEY_POWER_GPIO_Port -> IDR & KEY_POWER_Pin) ? 1:0) //HAL_GPIO_ReadPin(KEY_POWER_GPIO_Port,KEY_POWER_Pin)//((KEY_POWER_GPIO_Port->IDR & KEY_POWER_Pin) ? 1 : 0)
 
 
 
@@ -73,6 +73,16 @@
 #define HIGH_LEVEL                   1  /* ����ԭ��ͼ��ƣ�KEY1����ʱ����Ϊ�͵�ƽ��������������Ϊ0 */
 
 
+
+typedef enum
+{
+ KEY_DOWN ,
+ KEY_UP ,
+
+}KEYState_TypeDef;
+
+
+
 typedef enum{
 
 	 DRY_ON = 0x40,
@@ -101,12 +111,7 @@ typedef enum{
 
 
 
-typedef enum
-{
- KEY_DOWN ,
- KEY_UP ,
 
-}KEYState_TypeDef;
 
 typedef enum{
 

@@ -59,7 +59,7 @@ void MX_GPIO_Init(void)
   LL_GPIO_ResetOutputPin(TM1639_SCLK_GPIO_Port, TM1639_SCLK_Pin);
 
   /**/
-  LL_GPIO_ResetOutputPin(LED_CTL_GPIO_Port, LED_CTL_Pin);
+  LL_GPIO_ResetOutputPin(LED_MOUSE_GPIO_Port, LED_MOUSE_Pin);
 
   /**/
   LL_GPIO_ResetOutputPin(LED_DRY_GPIO_Port, LED_DRY_Pin);
@@ -95,19 +95,19 @@ void MX_GPIO_Init(void)
   LL_GPIO_Init(TM1639_SCLK_GPIO_Port, &GPIO_InitStruct);
 
   /**/
-  GPIO_InitStruct.Pin = LED_CTL_Pin;
+  GPIO_InitStruct.Pin = LED_MOUSE_Pin;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
-  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_MEDIUM;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
   GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-  GPIO_InitStruct.Pull = LL_GPIO_PULL_DOWN;
-  LL_GPIO_Init(LED_CTL_GPIO_Port, &GPIO_InitStruct);
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
+  LL_GPIO_Init(LED_MOUSE_GPIO_Port, &GPIO_InitStruct);
 
   /**/
   GPIO_InitStruct.Pin = LED_DRY_Pin;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
   GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
   GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-  GPIO_InitStruct.Pull = LL_GPIO_PULL_DOWN;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
   LL_GPIO_Init(LED_DRY_GPIO_Port, &GPIO_InitStruct);
 
   /**/

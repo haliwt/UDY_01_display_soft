@@ -29,26 +29,7 @@ typedef enum{
 
 
 
-typedef struct{
 
- //SELECT KEY
-  uint8_t key_power_flag;
-  uint8_t key_long_power_flag;
-
-  uint8_t key_dec_flag;
-  uint8_t key_add_flag;
-  uint8_t key_set_temperature_flag ;
-  
-
-  //FUNCTION KEY
-  uint8_t key_plasma_flag;
-  uint8_t key_dry_flag;
-  uint8_t key_mouse_flag;
-
-
-}KEY_T_TYPEDEF;
-
-extern KEY_T_TYPEDEF key_t;
 
 void process_keys(void) ;
 
@@ -56,6 +37,17 @@ void power_key_short_handler(void);
 
 
 void power_key_long_handler(void);
+
+void key_add_fun(void);
+
+void key_dec_fun(void);
+
+
+void dry_key_handler(void) ;
+
+void mouse_key_handler(void);
+
+void plasma_key_handler(void);
 
 
 

@@ -14,12 +14,12 @@
 	*Return Ref:NO
 	*
 *******************************************************************************/
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+void tim17_invoke_callback(void)//tim17_isr_callback_handler();
 {
    static  uint16_t tm0;
   
 
-    if(htim->Instance==TIM17){ //timer number14 is 100ms.
+   
        tm0++;
 	   gpro_t.gTimer_4bitsmg_blink_times++;
 	   if(tm0> 999){ //1s
@@ -44,6 +44,5 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	   }
 	   
 
-   }
-}
+ }
 
