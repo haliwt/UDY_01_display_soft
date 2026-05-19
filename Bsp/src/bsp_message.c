@@ -254,26 +254,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 
 	 break;
 
-	
-
-
-     //接收的是数据
-
-    case 0x2A: //main board set temperature value 
-	  
-          if(pdata[4]== 0x01){ // one only data 
-
-		  
-				
-			gpro_t.set_up_temperature_value =pdata[5];//warning
-	        TM1639_Display_Temperature(gpro_t.set_up_temperature_value)	;
-	  
-			}
-		  
-	break;
-
-
-     case copy_cmd: // copy send cmd acknowlege
+	 case copy_cmd: // copy send cmd acknowlege
           copy_cmd_data_from_mainboard(pdata);
 
      break;
