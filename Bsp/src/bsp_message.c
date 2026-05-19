@@ -31,9 +31,9 @@ void receive_data_from_mainboard(uint8_t *pdata)
      break;
 
      case  power_cmd:
-           if(pdata[3] == 0x00){ //power on
+          
 
-            if(pdata[4]== 0x01){
+            if(pdata[3]== 0x01){
 			run_t.gPower_On = power_on;
             run_t.power_on_step =0;
      
@@ -49,19 +49,15 @@ void receive_data_from_mainboard(uint8_t *pdata)
 			tx_thread_sleep(10);
            
            }
-          }
+          
 
      break;
 
 	 case 0x21: //smart phone power on or off that App timer .
-        if(pdata[3]==0x00){ //power on by smart phone APP
+       
 
-		   if(pdata[4]==0x01){
-
-
-		   	
-        
-		    run_t.gPower_On = power_on;
+		   if(pdata[3]==0x01){
+             run_t.gPower_On = power_on;
 			 power_on_handler();
 		   	}
 		    else{
@@ -72,7 +68,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 			}
            
              
-         }
+         
        
      break; 
 
@@ -144,39 +140,39 @@ void receive_data_from_mainboard(uint8_t *pdata)
 
      case dry_cmd: //PTC打开关闭指令
        
-     if(pdata[3] == 0x00){
+     
 
-	   if(pdata[4]== 0x01 && run_t.gPower_On == power_on){
+	   if(pdata[3]== 0x01 && run_t.gPower_On == power_on){
 
             run_t.gDry =1 ;//&& run_t.gPlasma ==1  && run_t.gUltransonic==1
             
         }
-        else if(pdata[4] == 0x0){
+        else if(pdata[3] == 0x0){
 
             run_t.gDry =0;
 		    LED_DRY_OFF();
           
 
         }
-    	}
+    	
      break;
 
      case plasma_cmd: //PLASMA 打开关闭指令
 
-		if(pdata[3] == 0x00){
 		
-			if(pdata[4]== 0x01){
+		
+			if(pdata[3]== 0x01){
 	          
 	        run_t.gPlasma =1;
 
 
 	        }
-	        else if(pdata[4] == 0x0){
+	        else if(pdata[3] == 0x0){
 	          
 	         run_t.gPlasma =0;
 
 	        }
-		}
+		
 
      break;
 
@@ -184,9 +180,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
       case mouse_cmd: //ultrasonic  打开关闭指令
 
         
-	   if(pdata[3] == 0x00){
-		   
-		   if(pdata[4]== 0x01){
+	     if(pdata[3]== 0x01){
 	           
 	           run_t.gMouse = 1;
 
@@ -195,35 +189,16 @@ void receive_data_from_mainboard(uint8_t *pdata)
 	         run_t.gMouse = 0;
 	        }
 
-		}
+		
 
 
      break;
 
-	 case wifi_cmd:
-
-
-	if(pdata[3] == 0x00){
-
-		if(pdata[4]== 0x01){
-
-	
-     }
-	 else if(pdata[4] == 0x0){ //close
-
-	 }
-
-
-	}
-
-
-	 break;
 
 	case temp_warning: //temperature of high warning.
 
-		if(pdata[3] == 0x00){
 			
-			if(pdata[4]== 0x01){
+			if(pdata[3]== 0x01){
                 
 	            run_t.ptc_warning = 1;
 		
@@ -239,41 +214,43 @@ void receive_data_from_mainboard(uint8_t *pdata)
 
 	        }
 
-	    }
+	    
 
       break;
 
       case fan_warning: //fan of default of warning.
 
-         if(pdata[3] == 0x00){  //warning
+       
 
-            if(pdata[4]==1){
+            if(pdata[3]==1){
             run_t.fan_warning = 1;
         
            run_t.gDry =0;
 		   LED_DRY_OFF();
           
            }
-
-        }
-        else if(pdata[3] == 0x0){ //close
+           else if(pdata[3] == 0x0){ //close
 
            run_t.fan_warning = 0;
 
 
-        }
+          }
 
 
       break;
 
-	 case 0x0C: //read real temperature value
-	 if(pdata[3]==0x0F){
-			if(pdata[4] == 0x01){ //数据,two 
+	 case 0x1A: //read real temperature value
+	
+			if(pdata[4] == 0x01){ //数据,one 
 
 	 			run_t.ntc_tem[0] = pdata[5]; //temperature value
 	 			TM1639_Display_Temperature(run_t.ntc_tem[0]);
 			}
-	 }
+			else if(pdata[4] == 0x02){
+
+
+			}
+	 
 
 	 break;
 
@@ -282,133 +259,9 @@ void receive_data_from_mainboard(uint8_t *pdata)
 
      //接收的是数据
 
-      case temp_hum_data: //温度,
-      #if 0 //湿度数据
-        if(pdata[3]==0x0F){
-        if(pdata[4] == 0x02){ //数据,two 
-            
-             if(pdata[5] !=0){
-			    run_t.ntc_tem[0] = pdata[5] ;//humidity value 
-
-             }
-           
-             run_t.ntc_tem[1] = pdata[6]; //temperature value
-
-			 if(run_t.gPower_On == power_on && power_on_counter < 10){
-			 	 power_on_counter++;
-		          Display_DHT11_Value();
-
-			 }
-		
-		   
-
-        }
-        else if(pdata[4] == 0x01){ //数据,one
-
-
-
-        }
-        }
-		#endif 
-      break;
-
-      case 0x1B: //湿度数据
-
-        if(pdata[2] == 0x0F){ //数据
-
-
-        }
-      break;
-
-      case beijing_times_data: //表示时间：小时，分，秒
-
-        if(pdata[4] == 0x03){ //数据,has three data
-
-            if(pdata[5] < 24){ //WT.EDIT 2024.11.23
-
-         
-          
-        
-  
-           }
-
-
-        }
-      break;
-
-	  case wifi_connect_data: //0x1f notice is command
-	  	
-        if(pdata[3]==0x0F){ // 0xF is explain is data don't command.
-	    if(pdata[4] == 0x01){   //only 
-
-		     if(pdata[5]==1){
-         
-		
-		
-		
-			  
+    case 0x2A: //main board set temperature value 
 	  
-			}
-			else{ //close
-	  
-
-	
-	  
-			}
-	    	}
-	    }
-  
-	  break;
-
-
-	  case timer_time_sync:
-
-	      
-
-          
-
-	  break;
-
-	  case 0x22: //Command ,set temperature compare dht11 result open or close
-
-	   if(pdata[3] == 0x00){
-
-	   if(pdata[4]== 0x01 && run_t.gPower_On == power_on){
-
-            run_t.gDry =1 ;//&& run_t.gPlasma ==1  && run_t.gUltransonic==1
-           
-        }
-        else if(pdata[4] == 0x0 && run_t.gPower_On == power_on){
-
-        
-            run_t.gDry =0;
-		    LED_DRY_OFF();
-          
-
-        }
-    	}
-
-	  break;
-
-	  
-
-        case 0x1D: //表示日期： 年，月，日
-
-        if(pdata[2] == 0x0F){ //数据
-
-
-
-        }
-      break;
-
-	  
-
-	  case 0x2A: //main board set temperature value 
-	  
-          
-		  if(pdata[3] == 0x0F){
-		  
-			if(pdata[4]== 0x01){ // one only data 
+          if(pdata[4]== 0x01){ // one only data 
 
 		  
 				
@@ -416,31 +269,9 @@ void receive_data_from_mainboard(uint8_t *pdata)
 	        TM1639_Display_Temperature(gpro_t.set_up_temperature_value)	;
 	  
 			}
-		  }
-	break;
-
-	case mainboard_set_timer_value:
-
-	     if(pdata[3] == 0x0F){
 		  
-			if(pdata[4]== 0x01){ // one only data 
-
-		      gpro_t.set_timer_timing_doing_value = 1;
-			 
-            
-	
-				
-			 run_t.temporary_timer_dispTime_hours=pdata[5];
-	  
-			 
-				
-	  
-			 
-
-				}
-		  	}
-
 	break;
+
 
      case copy_cmd: // copy send cmd acknowlege
           copy_cmd_data_from_mainboard(pdata);
@@ -458,27 +289,27 @@ static void copy_cmd_data_from_mainboard(uint8_t *pdata )
     switch(pdata[3]){
 
     case CMD_POWER : //power_on 
-    if(pdata[4]==0x00){ // is command don't data.
+    
 
-	 if(pdata[5]==0x01){
+	 if(pdata[4]==0x01){
 	 	run_t.gPower_On = power_on;
         power_on_handler();
         
 
      }
-     else{ //power offf
+     else if(pdata[4]==0){ //power offf
 
         run_t.gPower_On = power_off;
         run_t.power_off_flag=0;
        
 
      }
-    }
+    
     break;
 
     case ack_ptc:
-    if(pdata[4]==0x00){
-    if(pdata[5]==1){
+    
+    if(pdata[4]==1){ //if pdata[4] == 0x0F ,传输的是数据。
 
    
 		 run_t.gDry =1 ;//&& run_t.gPlasma ==1  && run_t.gUltransonic==1
@@ -493,13 +324,13 @@ static void copy_cmd_data_from_mainboard(uint8_t *pdata )
 
     }
 
-    }
+    
 
     break;
 
 	case 0x22:
-		if(pdata[4]==0x00){
-		    if(pdata[5]==1){
+		
+		    if(pdata[4]==1){
 
 		       
 				 run_t.gDry =1 ;//&& run_t.gPlasma ==1  && run_t.gUltransonic==1
@@ -513,13 +344,13 @@ static void copy_cmd_data_from_mainboard(uint8_t *pdata )
 			  LED_DRY_OFF();
 
 		    }
-        }
+        
    break;
 
     case ack_plasma:
-	if(pdata[4]==0x00){
+	
 
-	    if(pdata[5]==1){
+	    if(pdata[4]==1){
 
 	       
 	    }
@@ -527,7 +358,7 @@ static void copy_cmd_data_from_mainboard(uint8_t *pdata )
 	    
 
 	    }
-	}
+	
     break;
 
     case ack_with_buzzer:

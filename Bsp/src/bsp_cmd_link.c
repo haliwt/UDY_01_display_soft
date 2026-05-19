@@ -45,7 +45,8 @@ static void sendUartData(uint8_t *data, uint8_t size)
  * Input Ref: cmd - 命令, frameType - 帧类型, data - 数据指针, dataLen - 数据长度
  * Return Ref: 无
  ****************************************************************************************************/
-static void fillFrame(uint8_t cmd, uint8_t frameType, uint8_t *data, uint8_t dataLen) {
+static void fillFrame(uint8_t cmd, uint8_t frameType, uint8_t *data, uint8_t dataLen) 
+{
     outputBuf[0] = FRAME_HEADER;       // 帧头
     outputBuf[1] = DEVICE_NUMBER;      // 设备号
     outputBuf[2] = cmd;                // 命令
@@ -60,10 +61,11 @@ static void fillFrame(uint8_t cmd, uint8_t frameType, uint8_t *data, uint8_t dat
         outputBuf[6 + dataLen] = bcc_check(outputBuf, 6 + dataLen); // 校验码
         transferSize = 7 + dataLen;    // 计算帧总长度
     } else {                           // 命令类型
-        outputBuf[4] = data[0];      // 功能码
-        outputBuf[5] = FRAME_END;      // 帧尾
-        outputBuf[6] = bcc_check(outputBuf, 6); // 校验码
-        transferSize = 7;              // 帧总长度
+		outputBuf[4] = 0;            // 命令数据长度是“0”
+		outputBuf[5] = data[0];      // 功能码
+        outputBuf[6] = FRAME_END;      // 帧尾
+        outputBuf[7] = bcc_check(outputBuf, 6); // 校验码
+        transferSize = 8;              // 帧总长度
     }
 }
 

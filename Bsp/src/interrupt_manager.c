@@ -8,9 +8,9 @@
 
 /********************************************************************************
 	**
-	*Function Name:void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-	*Function :UART callback function  for UART interrupt for receive data
-	*Input Ref: structure UART_HandleTypeDef pointer
+	*Function Name:
+	*Function : timer 10ms 
+	*Input Ref: 
 	*Return Ref:NO
 	*
 *******************************************************************************/
@@ -22,7 +22,7 @@ void tim17_invoke_callback(void)//tim17_isr_callback_handler();
    
        tm0++;
 	   gpro_t.gTimer_4bitsmg_blink_times++;
-	   if(tm0> 999){ //1s
+	   if(tm0> 99){ //10ms * 100  = 1000ms = 1s
 	      tm0=0;
 		  
 		
@@ -31,12 +31,7 @@ void tim17_invoke_callback(void)//tim17_isr_callback_handler();
 		//--------------//
 
 		run_t.gTimer_timer_seconds_counter ++;
-	
-     
-		
-		  
-
-		//usart
+	   //usart
     
         gpro_t.gTimer_disp_timer_counter ++;
 		gpro_t.gTimer_set_temp_counter++;
