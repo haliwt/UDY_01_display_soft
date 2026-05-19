@@ -413,22 +413,10 @@ void receive_data_from_mainboard(uint8_t *pdata)
 		  
 				
 			gpro_t.set_up_temperature_value =pdata[5];//warning
+	        TM1639_Display_Temperature(gpro_t.set_up_temperature_value)	;
 	  
-		
-            
-        
-      
-
-			 //run_t.set_temperature_decade_value = gpro_t.set_up_temperature_value / 10 ;
-             //run_t.set_temperature_unit_value  =gpro_t.set_up_temperature_value % 10; //
-
-             //TM1639_Write_2bit_SetUp_TempData(run_t.set_temperature_decade_value,run_t.set_temperature_unit_value,0);
-			TM1639_Display_Temperature(gpro_t.set_up_temperature_value)	;
-	  
-			 
-
-				}
-		  	}
+			}
+		  }
 	break;
 
 	case mainboard_set_timer_value:
