@@ -19,10 +19,11 @@
 
 
 
-#define STACK_SIZE_UI     1024 
+#define STACK_SIZE_UI     896//1024 
 #define STACK_SIZE_KEY    256//512
-#define STACK_SIZE_DEC    512//
-#define STACK_SIZE_EVENT  256
+#define STACK_SIZE_DEC    512//512//
+#define STACK_SIZE_EVENT  512//512//256
+
 
 
 
@@ -35,7 +36,7 @@ static TX_THREAD  thread_key_event;
 
 static UCHAR stack_ui_pro[STACK_SIZE_UI];
 static UCHAR stack_key_pro[STACK_SIZE_KEY];
-static UCHAR stack_decoder_pro[STACK_SIZE_DEC];
+static UCHAR stack_dec_pro[STACK_SIZE_DEC];
 static UCHAR stack_key_event[STACK_SIZE_EVENT];
 
 
@@ -52,6 +53,18 @@ TX_EVENT_FLAGS_GROUP key_event;
 
 TX_SEMAPHORE      decoder_semaphore;
 
+#if DEBUG_ENABLE
+
+static void debug_stack_ui_check(void);
+
+static void debug_stack_key_check(void);
+
+static void debug_stack_decoder_check(void);
+
+static void debug_stack_key_event_check(void);
+
+ULONG unused_ui,unused_key,unused_decoder,unused_event ;
+#endif 
 
 
 /**
@@ -62,6 +75,18 @@ TX_SEMAPHORE      decoder_semaphore;
 **/
 void tx_application_define(VOID * first_unused_memory)
 {
+
+
+
+#if DEBUG_ENABLE
+    /* 2. 只有当 stack_msg_pro 是全局定义的静态数组时，这样写才有效 */
+    memset(stack_ui_pro, 0xEF, sizeof(stack_ui_pro));
+    memset(stack_key_pro, 0xEF, sizeof(stack_key_pro));
+	memset(stack_dec_pro, 0xEF, sizeof(stack_dec_pro));
+	memset(stack_key_event, 0xEF, sizeof(stack_key_event));
+#endif
+
+
 	//tx_event_flags_create(&commEventFlags,"commEventFlags");
   tx_semaphore_create(&decoder_semaphore,"decoderSemaphore",0);
   tx_event_flags_create(&key_event, "key_event");
@@ -70,10 +95,10 @@ void tx_application_define(VOID * first_unused_memory)
   					"DecoderPro",
   					vTaskDecoderPro,
   					0,
-  					stack_decoder_pro,
+  					stack_dec_pro,
   					STACK_SIZE_DEC,
-  					0,
-  					0,
+  					2,
+  					2,
   					TX_NO_TIME_SLICE,
   					TX_AUTO_START);
 
@@ -84,8 +109,8 @@ void tx_application_define(VOID * first_unused_memory)
    					0,
    					stack_ui_pro,
    					STACK_SIZE_UI,
-   					2,
-   					2,
+   					3,
+   					3,
    					TX_NO_TIME_SLICE,
    					TX_AUTO_START);
 
@@ -95,8 +120,8 @@ void tx_application_define(VOID * first_unused_memory)
 					0,
 					stack_key_pro,
 					STACK_SIZE_KEY,
-					1,
-					1,
+					0,
+					0,
 					TX_NO_TIME_SLICE,
 					TX_AUTO_START);
 	
@@ -106,8 +131,8 @@ void tx_application_define(VOID * first_unused_memory)
 					  0,							/* ???????? */
 					  stack_key_event,				/* ????? */
 					  STACK_SIZE_EVENT,				/* ?????? */  
-					  2,							/* ?????*/
-					  2,							/* ?????? */
+					  1,							/* ?????*/
+					  1,							/* ?????? */
 					  TX_NO_TIME_SLICE, 			/* ?????? */
 					  TX_AUTO_START);				/* ??????? */
    
@@ -131,6 +156,9 @@ static void vTaskDecoderPro(ULONG thread_input)
         if(tx_semaphore_get(&decoder_semaphore,TX_WAIT_FOREVER)==TX_SUCCESS){	   
 				
             decoder_handler();
+			#if DEBUG_ENABLE
+              debug_stack_decoder_check();
+            #endif 
 				
         }
  }
@@ -149,25 +177,22 @@ static void vTaskUiPro(ULONG thread_input)
 	while(1)
     {
      
-     
-	
-	if(run_t.gPower_On == power_on){
+        if(run_t.gPower_On == power_on){
 
-	
+		  power_on_run_handler();
 
-      }
-	  else{
-        // In power off mode, always run power_off_run_handler
-        power_off_run_handler();
+	    }
+		else{
+	        // In power off mode, always run power_off_run_handler
+	        power_off_run_handler();
+        }
 
-	  }
-
-
-	  
-       tx_thread_sleep(2);//20ms //vTaskDelay(10);
-     
-
-       } //wihile(1) ---end
+		 LL_IWDG_ReloadCounter(IWDG);
+		 #if DEBUG_ENABLE
+              debug_stack_ui_check();
+         #endif 
+	     tx_thread_sleep(2);//20ms //vTaskDelay(10);
+   } //wihile(1) ---end
 }
 /**********************************************************************************************************
 *
@@ -273,6 +298,10 @@ static void vTaskKeyPro(ULONG thread_input)
 
 	  }
 
+	  #if DEBUG_ENABLE
+              debug_stack_key_check();
+        #endif 
+
       tx_thread_sleep(2);//vTaskDelay(20);     
      }
 }
@@ -332,9 +361,14 @@ static void vTaskKeyPro(ULONG thread_input)
        
 		      mouse_key_handler() ;
 	     }
-		
+
+		  #if DEBUG_ENABLE
+              debug_stack_key_event_check();
+          #endif 
+		 
+		 tx_thread_sleep(1);
 	  }
- 
+  
 		
 	}
  }
@@ -384,7 +418,7 @@ static void debug_stack_ui_check(void)
   
  
 	
-	unused = temp_unused;  // ??????????????? Watch ????
+	unused_ui = temp_unused;  // ??????????????? Watch ????
     // ??? unused ??????�???�
     // ?? unused < 100 ????? G030 ?????
 }
@@ -399,7 +433,7 @@ static void debug_stack_key_check(void)
     // ??????????/?????????? 0xEF
     for (i = 0; i < STACK_SIZE_KEY; i++)
     {
-        if (stack_start_pro[i] == 0xEF)
+        if (stack_key_pro[i] == 0xEF)
             temp_unused++;
         else
             break; 
@@ -417,9 +451,9 @@ static void debug_stack_decoder_check(void)
 
 
     // ??????????/?????????? 0xEF
-    for (i = 0; i < STACK_SIZE_DECODER; i++)
+    for (i = 0; i < STACK_SIZE_DEC; i++)
     {
-        if (stack_decoder_pro[i] == 0xEF)
+        if (stack_dec_pro[i] == 0xEF)
             temp_unused++;
         else
             break; 

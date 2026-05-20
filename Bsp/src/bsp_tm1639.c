@@ -241,15 +241,9 @@ void TM1639_Display_Decimal(uint16_t num, uint8_t dot_pos)
 void TM1639_Display_Temperature(int8_t temp)
 {
 
-    
-	   	     
-       TM1639_Write_Digit_Full(TM1639_ADDR_DIG1_H, TM1639_ADDR_DIG1_L,TM1639_Number_Table[temp / 10]);
-      
-	   	 
-       	
-        
-        // 显示个位
-       TM1639_Write_Digit_Full(TM1639_ADDR_DIG2_H, TM1639_ADDR_DIG2_L,TM1639_Number_Table[temp % 10] | TM1639_DOT);
+   TM1639_Write_Digit_Full(TM1639_ADDR_DIG1_H, TM1639_ADDR_DIG1_L,TM1639_Number_Table[temp / 10]);
+    // 显示个位
+   TM1639_Write_Digit_Full(TM1639_ADDR_DIG2_H, TM1639_ADDR_DIG2_L,TM1639_Number_Table[temp % 10] | TM1639_DOT);
         
       
 }

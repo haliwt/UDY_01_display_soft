@@ -21,6 +21,7 @@ void disp_ntc_temperature_value(void);
 void Display_TimeColon_Blink_Fun(void);
 
 
+void disp_health_index(void);
 
 
 

@@ -20,11 +20,15 @@ void Display_DHT11_Value(void)
     
    TM1639_Display_Temperature(run_t.ntc_tem[0]);//TM1639_Write_2bit_TempData(temp1,temp2);
     
-	TM1639_Display_Health(run_t.disp_health_minutes);//TM1639_Write_2bit_HumData(hum1,hum2);
-	
-
-
+   //TM1639_Display_Health(run_t.disp_health_minutes);//TM1639_Write_2bit_HumData(hum1,hum2);
 }  
+
+void disp_health_index(void)
+{
+
+  TM1639_Display_Health(run_t.disp_health_minutes);
+
+}
 
 
 /**********************************************************************
@@ -53,12 +57,22 @@ void Display_Timing(uint8_t hours,uint8_t minutes,uint8_t disp)
 void disp_ntc_temperature_value(void)
 {
 
-  if(run_t.gTimer_disp_ntc > 4){
+  if(gpro_t.disp_set_temp_f ==1 &&  gpro_t.gTimer_set_timer_counter <4){
+
+       TM1639_Display_Temperature(run_t.set_temperature_value);
+	   disp_health_index();
+
+  }
+  else if(run_t.gTimer_disp_ntc > 2 && gpro_t.disp_set_temp_f !=1){
 	    run_t.gTimer_disp_ntc=0;
-       	Display_DHT11_Value();
-       
-     
-	}
+		
+		Display_DHT11_Value();
+        disp_health_index();
+  }
+  else if(gpro_t.disp_set_temp_f ==1 &&  gpro_t.gTimer_set_timer_counter > 3){
+       gpro_t.disp_set_temp_f ++;
+       Display_DHT11_Value();
+   }
 
 }
 

@@ -8,14 +8,13 @@
 #include "bsp.h"
 
 
-
-
-
-
-
-
 uint8_t  set_temp_flag;
 uint8_t power_on_key_counter;
+
+static void adjust_timer_minutes(int8_t delta_min) ;
+static void adjust_temperature_value(int8_t delta) ;
+
+
 
 
 typedef struct {
@@ -50,62 +49,27 @@ void handle_key(KeyHandler *handler)
 
 /*********************************************************************************
  * 
- * Function Name:void ai_on_off_handler(void)
- * 
- * 
- **********************************************************************************/
-//void SetDataTemperatureValue(void)
-//{
-//    if(set_temp_flag ==1){
-//	 set_temp_flag++;
-//
-//     //SendData_Tx_Data(0x11,gpro_t.set_up_temperature_value);
-//     SendData_ToMainboard_Data(0x2A,&gpro_t.set_up_temperature_value,0x01);
-//     tx_thread_sleep(10);
-//	}  
-//
-//
-//}
-
-/*********************************************************************************
- * 
  * Function Name:void mouse_on_off_handler(void)
  * // 设置温度并做边界检查
  * 
  **********************************************************************************/
-void set_temperature_value(int8_t delta) 
+static void adjust_temperature_value(int8_t delta) 
 {
-    #if 0
-	uint8_t new_temp;
-	
+  
+	 gpro_t.set_up_temperature_value += delta;
+	 
+	 if (run_t.set_temperature_value< 30) run_t.set_temperature_value= 30;
+     if (run_t.set_temperature_value > 50) run_t.set_temperature_value= 50;
+	  
+     gpro_t.ptc_first_open_f = 0;
+	 gpro_t.gTimer_set_timer_counter=0;
+	 gpro_t.disp_set_temp_f =0;
 
-	if(gpro_t.temperature_init_value == 0 && gpro_t.set_temp_value_success==0){
-        gpro_t.temperature_init_value++;
-        gpro_t.set_up_temperature_value = (delta > 0) ? 20 : 40;
-	    new_temp = gpro_t.set_up_temperature_value;
-    }
-	else{
+    //TM1639_Display_4Bit_Temp(run_t.set_temperature_value);
+    TM1639_Display_Temperature(run_t.set_temperature_value);
 
-	   	new_temp = gpro_t.set_up_temperature_value + delta;
-	    if (new_temp < 20) new_temp = 20;
-        if (new_temp > 40) new_temp = 40;
-   }
-
-	gpro_t.set_up_temperature_value = new_temp;
-
-    //run_t.set_temperature_decade_value = new_temp / 10;
-    //run_t.set_temperature_unit_value   = new_temp % 10;
-
-    key_t.key_set_temperature_flag  = 1;
-   
-
- 
-
-    //SendData_ToMainboard_Data(0x2A,&new_temp,0x01);
-   // tx_thread_sleep(10);
-
-    TM1639_Display_Temperature(gpro_t.set_up_temperature_value);//TM1639_Write_2bit_SetUp_TempData(run_t.set_temperature_decade_value, run_t.set_temperature_unit_value, 0);
-  #endif 
+  
+  
 }
 
 /*******************************************************
@@ -115,22 +79,22 @@ void set_temperature_value(int8_t delta)
 	*
 	*
 *******************************************************/
-void adjust_timer_minutes(int8_t delta_min) 
+static void adjust_timer_minutes(int8_t delta_min) 
 {
    
 //	uint8_t copy_total_hour;
     run_t.timer_dispTime_hours += delta_min;
 
    // 限制时间范围在1~72小时
-    if (run_t.timer_dispTime_hours > 72) {
-        run_t.timer_dispTime_hours = 1;  // 超过72小时，循环回到1小时
+    if (run_t.timer_dispTime_hours > 24) {
+        run_t.timer_dispTime_hours = 24;  // 超过72小时，循环回到1小时
     }
-    else if (run_t.timer_dispTime_hours < 1) {
-        run_t.timer_dispTime_hours = 72;  // 低于1小时，循环到72小时
+    else if (run_t.timer_dispTime_hours < 0) {
+        run_t.timer_dispTime_hours = 0;  // 低于1小时，循环到72小时
     }
 
-    gpro_t.gTimer_set_temp_counter=0;
-	gpro_t.gTimer_4bitsmg_blink_times=0;
+    gpro_t.gTimer_set_timer_counter=0;
+	
 	run_t.timer_dispTime_minutes = 0;
 	
 	
@@ -174,18 +138,15 @@ void power_key_short_handler(void)
 void power_key_long_handler(void)
 {
 	
-           
-			key_t.key_long_power_flag =  KEY_LONG_POWER; //timer is OK.
-			gpro_t.set_timer_timing_doing_value=1;
-			// Reset temperature setting mode
-			run_t.temp_setting_mode = 0;
-			// Reset timer for setting timeout
-			gpro_t.gTimer_set_temp_counter = 0;
-			
-			gpro_t.key_add_dec_pressed_flag =0;
-			
-			SendData_Buzzer();
-			tx_thread_sleep(10);
+	gpro_t.set_timer_timing_doing_value=1;
+
+	// Reset timer for setting timeout
+	gpro_t.gTimer_set_timer_counter = 0;
+
+	gpro_t.key_add_dec_pressed_flag =0;
+
+	SendData_Buzzer();
+	tx_thread_sleep(10);
 		
            
 
@@ -290,12 +251,14 @@ void mouse_key_handler(void)
 void key_add_fun(void)
 {
    
-     gpro_t.key_add_dec_pressed_flag = 1;
+
      SendData_Buzzer();
 	 tx_thread_sleep(10);
 
 	 if(gpro_t.set_timer_timing_doing_value) {
+	 	   gpro_t.key_add_dec_pressed_flag = 1;
 		 // In timer setting mode, adjust timer hours
+		#if 0
 		 run_t.timer_dispTime_hours++;
 		 if(run_t.timer_dispTime_hours > 24) {
 			 run_t.timer_dispTime_hours = 24; // Maximum 24 hours
@@ -303,19 +266,28 @@ void key_add_fun(void)
 		 // Display the new timer value
 		 TM1639_Display_4Bit_Time(run_t.timer_dispTime_hours, run_t.timer_dispTime_minutes);
 		 // Reset the timeout counter
-		 gpro_t.gTimer_set_temp_counter = 0;
+		 gpro_t.gTimer_set_timer_counter = 0;
+		 #else
+		 adjust_timer_minutes(1) ;
+
+		 #endif 
 	 }
-	 else if(run_t.temp_setting_mode) {
+	 else{
+	 	  
+	 	 if(gpro_t.set_timer_timing_doing_value==1) return ;
+		 #if 0
 		 // In temperature setting mode, adjust temperature
 		 run_t.set_temperature_value++;
 		 if(run_t.set_temperature_value > 50) {
 			 run_t.set_temperature_value = 50; // Loop back to maxnimum (50°C)
 		 }
 		 TM1639_Display_4Bit_Temp(run_t.set_temperature_value);
+		 #else 
+
+          adjust_temperature_value(1) ;
+		 #endif 
 		 
-	 } 
-     // Reset the timeout counter for all cases
-	 gpro_t.gTimer_set_temp_counter = 0;
+	 }
            
     
 }
@@ -323,7 +295,7 @@ void key_add_fun(void)
 /****************************************************************
 	*
 	*Function Name :void key_dec_fun(void)
-	*Function : 
+	*Function : set temperature value is range is 30 ~ 50 degree. 
 	*Input Parameters :NO
 	*Retrurn Parameter :NO
 	*
@@ -331,11 +303,15 @@ void key_add_fun(void)
 void key_dec_fun(void)
 {
   
-	gpro_t.key_add_dec_pressed_flag = 1;
+	
 	SendData_Buzzer();
 	tx_thread_sleep(10);
 
 	if(gpro_t.set_timer_timing_doing_value) {
+
+	    gpro_t.key_add_dec_pressed_flag = 1;
+
+	    #if 0
 		// In timer setting mode, adjust timer hours
 		run_t.timer_dispTime_hours--;
 		if(run_t.timer_dispTime_hours < 0) {
@@ -344,19 +320,28 @@ void key_dec_fun(void)
 		// Display the new timer value
 		TM1639_Display_4Bit_Time(run_t.timer_dispTime_hours, run_t.timer_dispTime_minutes);
 		// Reset the timeout counter
-		gpro_t.gTimer_set_temp_counter = 0;
+		gpro_t.gTimer_set_timer_counter = 0;
+		#else
+		adjust_timer_minutes(-1) ;
+
+		#endif 
 	}
-	else if(run_t.temp_setting_mode) {
+	else{
+
+	    if(gpro_t.set_timer_timing_doing_value==1) return ;
+		
+		#if 0
 		// In temperature setting mode, adjust temperature
 		run_t.set_temperature_value--;
 		if(run_t.set_temperature_value < 30) {
 			run_t.set_temperature_value = 30; // Loop back to  (30°C)
 		 }
 		TM1639_Display_4Bit_Temp(run_t.set_temperature_value);
-	   
-	} 
-    // Reset the timeout counter for all cases
-	gpro_t.gTimer_set_temp_counter = 0;
+		#else
+		adjust_temperature_value(-1) ;
+
+		#endif 
+	}
 
 }
 

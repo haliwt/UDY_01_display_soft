@@ -27,7 +27,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-//#include "bsp.h"
+#include "bsp.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -96,18 +96,16 @@ int main(void)
   MX_TIM17_Init();
   MX_IWDG_Init();
   /* USER CODE BEGIN 2 */
- // delay_init(64); 
 
- // HAL_TIM_Base_Start_IT(&htim17);
-  //bsp_init();
+   bsp_init();
 
 
    //freeRTOS_Handler();
 
   /* USER CODE END 2 */
-
-  MX_ThreadX_Init();
-
+   
+  //MX_ThreadX_Init();
+   tx_kernel_enter();
   /* We should never get here as control is now taken by the scheduler */
 
   /* Infinite loop */
