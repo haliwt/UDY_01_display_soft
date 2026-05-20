@@ -117,7 +117,7 @@ void power_key_short_handler(void)
 		tx_thread_sleep(10);
 
 	}
-	else{
+	else if(run_t.gPower_On == power_on){
 
 		//run_t.gPower_On = power_off;
 		SendData_PowerOnOff(0); // power off

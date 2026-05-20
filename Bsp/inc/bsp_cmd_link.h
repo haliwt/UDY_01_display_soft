@@ -45,12 +45,12 @@ void SendData_ToMainboard_Data(uint8_t cmd,uint8_t *tdata,uint8_t datalen);
 
 void SendWifiData_Answer_Cmd(uint8_t cmd ,uint8_t data);
 
-<<<<<<< HEAD
+
 //void USART1_Cmd_Error_Handler(void);
 void SendData_setTemp_Data(uint8_t tdata) ;
-=======
 
->>>>>>> 721eaf4b0b45feb7a06bb8701f5f43f6eb80d198
+
+
 
 
 #endif 

@@ -64,7 +64,7 @@ static void fillFrame(uint8_t cmd, uint8_t frameType, uint8_t *data, uint8_t dat
 		outputBuf[4] = 0;            // 命令数据长度是“0”
 		outputBuf[5] = data[0];      // 功能码
         outputBuf[6] = FRAME_END;      // 帧尾
-        outputBuf[7] = bcc_check(outputBuf, 6); // 校验码
+        outputBuf[7] = bcc_check(outputBuf, 7); // 校验码
         transferSize = 8;              // 帧总长度
     }
 }
@@ -95,7 +95,7 @@ static void fillFrame_copy(uint8_t cmd, uint8_t frameType, uint8_t *data, uint8_
     } else {                           // 命令类型
         outputBuf[5] = data[0];      // 功能码
         outputBuf[6] = FRAME_END;      // 帧尾
-        outputBuf[7] = bcc_check(outputBuf, 6); // 校验码
+        outputBuf[7] = bcc_check(outputBuf, 7); // 校验码
         transferSize = 8;              // 帧总长度
     }
 }
@@ -147,14 +147,13 @@ void SendData_Temp_Data(uint8_t tdata) {
     sendUartData(outputBuf, transferSize);
 }
 
-<<<<<<< HEAD
+
 void SendData_setTemp_Data(uint8_t tdata) 
 {
     fillFrame(0x2A, HAS_DATA, &tdata, 1);
     sendUartData(outputBuf, transferSize);
 }
-=======
->>>>>>> 721eaf4b0b45feb7a06bb8701f5f43f6eb80d198
+
 
 /****************************************************************************************************
  * Function Name: copy_cmd_data_from_mainboard
