@@ -147,6 +147,7 @@ void SendData_Temp_Data(uint8_t tdata) {
     sendUartData(outputBuf, transferSize);
 }
 
+
 /****************************************************************************************************
  * Function Name: copy_cmd_data_from_mainboard
  * Function: 发送设置温度数据

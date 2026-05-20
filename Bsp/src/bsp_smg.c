@@ -130,7 +130,7 @@ void TM1639_Display_4Bit_Error(uint8_t idata)
   
    
 	  TM1639_Write_Digit_Full(TM1639_ADDR_DIG5_H, TM1639_ADDR_DIG5_L, TM1639_Char_Err_Table[0]);//"E"
-		   
+	   
 	   // 写入十位（中间）
 	   if(gpro_t.g_time_disp_colon_flag==1){ 
 	      TM1639_Write_Digit_Full(TM1639_ADDR_DIG6_H, TM1639_ADDR_DIG6_L, TM1639_Char_Err_Table[1] | TM1639_DOT);//"r"
@@ -154,13 +154,29 @@ void TM1639_Display_4Bit_Error(uint8_t idata)
 	   if(idata==1){ //ptc warning "Er:01"
 	   // 写入个位（最右边
 		TM1639_Write_Digit_Full(TM1639_ADDR_DIG8_H, TM1639_ADDR_DIG8_L,Number_Table[1]);
-	
+
 	   }
 	   else if(idata == 2){ //fan warning "Er:02"
-		   
+	   
 		 TM1639_Write_Digit_Full(TM1639_ADDR_DIG8_H, TM1639_ADDR_DIG8_L,Number_Table[2]);
 	   }
 	   
+}
+
+/**
+ * @brief  Display 4-bit temperature value
+ * @param  temp: Temperature value to display (30-50)
+ * @retval None
+ */
+void TM1639_Display_4Bit_Temp(uint8_t temp)
+{
+    // Display temperature value (XX°C)
+    TM1639_Write_Digit_Full(TM1639_ADDR_DIG5_H, TM1639_ADDR_DIG5_L, Number_Table[temp / 10]);
+    TM1639_Write_Digit_Full(TM1639_ADDR_DIG6_H, TM1639_ADDR_DIG6_L, Number_Table[temp % 10]);
+    
+    // Display 'C' for Celsius
+    TM1639_Write_Digit_Full(TM1639_ADDR_DIG7_H, TM1639_ADDR_DIG7_L, 0x93); // 'C' character
+    TM1639_Write_Digit_Full(TM1639_ADDR_DIG8_H, TM1639_ADDR_DIG8_L, 0x00); // Empty
 }
 
 
