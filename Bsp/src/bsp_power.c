@@ -41,13 +41,14 @@ static void Power_Off(void)
 static void power_on_init(void)
 {
    static uint8_t dc_on_f = 0;
-	run_t.gPlasma=1;
-	run_t.gDry =1;
-    run_t.gMouse = 1;
+	
 	if(dc_on_f ==0){
 	  dc_on_f ++;
 	  LED_GPIO_TIME_Init();	
     }
+	run_t.gPlasma=1;
+	run_t.gDry =1;
+    run_t.gMouse = 1;
     power_on_led();
 	
     gpro_t.key_add_dec_pressed_flag=0;
