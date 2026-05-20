@@ -147,11 +147,14 @@ void SendData_Temp_Data(uint8_t tdata) {
     sendUartData(outputBuf, transferSize);
 }
 
+<<<<<<< HEAD
 void SendData_setTemp_Data(uint8_t tdata) 
 {
     fillFrame(0x2A, HAS_DATA, &tdata, 1);
     sendUartData(outputBuf, transferSize);
 }
+=======
+>>>>>>> 721eaf4b0b45feb7a06bb8701f5f43f6eb80d198
 
 /****************************************************************************************************
  * Function Name: copy_cmd_data_from_mainboard

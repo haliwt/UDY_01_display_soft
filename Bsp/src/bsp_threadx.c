@@ -100,45 +100,35 @@ void tx_application_define(VOID * first_unused_memory)
 					TX_NO_TIME_SLICE,
 					TX_AUTO_START);
 	
-	 tx_thread_create(&thread_key_event, 		   /* 任务控制块地址 */	  
-					 "KeyEvent",				    /* 任务名 */
-					  vTaskKeyEvent,				/* 启动任务函数地址 */
-					  0,							/* 传递给任务的参数 */
-					  stack_key_event,				/* 堆栈基地址 */
-					  STACK_SIZE_EVENT,				/* 堆栈空间大小 */  
-					  2,							/* 任务优先级*/
-					  2,							/* 任务抢占阀值 */
-					  TX_NO_TIME_SLICE, 			/* 不开启时间片 */
-					  TX_AUTO_START);				/* 创建后立即启动 */
+	 tx_thread_create(&thread_key_event, 		   /* ??????? */	  
+					 "KeyEvent",				    /* ??? */
+					  vTaskKeyEvent,				/* ???????? */
+					  0,							/* ???????? */
+					  stack_key_event,				/* ????? */
+					  STACK_SIZE_EVENT,				/* ?????? */  
+					  2,							/* ?????*/
+					  2,							/* ?????? */
+					  TX_NO_TIME_SLICE, 			/* ?????? */
+					  TX_AUTO_START);				/* ??????? */
    
   
 
 }
 
-
-
-
-
-
 /**********************************************************************************************************
 *   FunctionName: static void vTaskRunPro(void *pvParameters)
-*	功能说明: 使用函数xTaskNotifyWait接收任务vTaskTaskUserIF发�?�的事件标志位设�?
-*	�?    �?: pvParameters 是在创建该任务时传�?�的形参
-*	�? �? �?: �?
-*   �? �? �?: 1  
-
-*   priority : 1  (数priority is 2,number is large priority is large值越低，这个跟uCOS相反)
+*	????: ????xTaskNotifyWait????vTaskTaskUserIF?�?�???????�?
+*	�?    �?: pvParameters ?????????�?�???
+*	�? �? �?: �?
+*   �? �? �?: 1  
+*   priority : 1  (?priority is 2,number is large priority is large???????uCOS??)
 **********************************************************************************************************/
 static void vTaskDecoderPro(ULONG thread_input)
 {
     (void)thread_input;
-	
-
-    while(1)
+	while(1)
     {
-
-
-		if(tx_semaphore_get(&decoder_semaphore,TX_WAIT_FOREVER)==TX_SUCCESS){	   
+        if(tx_semaphore_get(&decoder_semaphore,TX_WAIT_FOREVER)==TX_SUCCESS){	   
 				
             decoder_handler();
 				
@@ -154,33 +144,27 @@ static void vTaskDecoderPro(ULONG thread_input)
 static void vTaskUiPro(ULONG thread_input)
 {
 	(void)thread_input;
+	static uint8_t function_counter = 0; // Counter for time-sharing functions
 
 	while(1)
     {
      
-    //process_keys() ;
+     
 	
 	if(run_t.gPower_On == power_on){
 
-
-	   power_on_run_handler();
-     
-       set_timer_fun_led_blink();
-  
-       Display_TimeColon_Blink_Fun();
-
-	   disp_ntc_temperature_value();
+	
 
       }
 	  else{
-
-	    power_off_run_handler();
+        // In power off mode, always run power_off_run_handler
+        power_off_run_handler();
 
 	  }
 
 
 	  
-       tx_thread_sleep(1);//10ms //vTaskDelay(10);
+       tx_thread_sleep(2);//20ms //vTaskDelay(10);
      
 
        } //wihile(1) ---end
@@ -189,14 +173,14 @@ static void vTaskUiPro(ULONG thread_input)
 *
 *	Function Name: vTaskStart
 *	Function: 
-*	Input Ref: pvParameters 是在创建该任务时传�?�的形参
+*	Input Ref: pvParameters ?????????�?�???
 *	Return Ref:
-*	priority: 3  (数�?�越小优先级越低，这个跟uCOS相反)
+*	priority: 3  (?�?�???????????uCOS??)
 *
 **********************************************************************************************************/
 static void vTaskKeyPro(ULONG thread_input)
 {
-  (void)thread_input;  /* 消除未使用的参数警告 */
+  (void)thread_input;  /* ?????????? */
     
     static uint16_t dry_cnt = 0;
 	static uint16_t plasma_cnt = 0;
@@ -205,7 +189,7 @@ static void vTaskKeyPro(ULONG thread_input)
     static uint16_t down_cnt = 0;
     static uint16_t power_cnt = 0;
 
-    const uint16_t LONG_PRESS_TIME = 90;   // 300 * 10ms = 3000ms
+    const uint16_t LONG_PRESS_TIME = 130;   // 300 * 10ms = 3000ms
 	
     while(1)
     {
@@ -322,10 +306,10 @@ static void vTaskKeyPro(ULONG thread_input)
  
 		 }
 		 else if(flags & KEY_POWER_LONG){
- 
-			SendData_Set_Command(0x05,0x01); // link wifi of command .
-			tx_thread_sleep(10);
- 
+
+			// Handle long power key press (enter timer setting mode)
+			power_key_long_handler();
+
 		 }
 		 else if(flags & KEY_UP_SHORT){
 			   key_add_fun();
@@ -386,10 +370,10 @@ static void debug_stack_ui_check(void)
 {
     ULONG i;
    // ULONG unused = 0;
-   ULONG temp_unused = 0; // 使用局部变量进行统计
+   ULONG temp_unused = 0; // ??????????
 
   
-    // 从数组起始位置（栈底/低地址）开始数连续的 0xEF
+    // ??????????/?????????? 0xEF
     for (i = 0; i < STACK_SIZE_UI; i++)
     {
         if (stack_ui_pro[i] == 0xEF)
@@ -400,19 +384,19 @@ static void debug_stack_ui_check(void)
   
  
 	
-	unused = temp_unused;  // 统计完后再赋值给全局变量，方便 Watch 窗口查看
-    // 剩下的 unused 就是你安全的“护城河”
-    // 如果 unused < 100 字节，你的 G030 就危险了！
+	unused = temp_unused;  // ??????????????? Watch ????
+    // ??? unused ??????�???�
+    // ?? unused < 100 ????? G030 ?????
 }
 
 static void debug_stack_key_check(void)
 {
     ULONG i;
    // ULONG unused = 0;
-   ULONG temp_unused = 0; // 使用局部变量进行统计
+   ULONG temp_unused = 0; // ??????????
 
 
-    // 从数组起始位置（栈底/低地址）开始数连续的 0xEF
+    // ??????????/?????????? 0xEF
     for (i = 0; i < STACK_SIZE_KEY; i++)
     {
         if (stack_start_pro[i] == 0xEF)
@@ -420,19 +404,19 @@ static void debug_stack_key_check(void)
         else
             break; 
     }
-    unused_key = temp_unused;  // 统计完后再赋值给全局变量，方便 Watch 窗口查看
-    // 剩下的 unused 就是你安全的“护城河”
-    // 如果 unused < 100 字节，你的 G030 就危险了！
+    unused_key = temp_unused;  // ??????????????? Watch ????
+    // ??? unused ??????�???�
+    // ?? unused < 100 ????? G030 ?????
 }
 
 static void debug_stack_decoder_check(void)
 {
     ULONG i;
    // ULONG unused = 0;
-   ULONG temp_unused = 0; // 使用局部变量进行统计
+   ULONG temp_unused = 0; // ??????????
 
 
-    // 从数组起始位置（栈底/低地址）开始数连续的 0xEF
+    // ??????????/?????????? 0xEF
     for (i = 0; i < STACK_SIZE_DECODER; i++)
     {
         if (stack_decoder_pro[i] == 0xEF)
@@ -440,19 +424,19 @@ static void debug_stack_decoder_check(void)
         else
             break; 
     }
-    unused_decoder = temp_unused;  // 统计完后再赋值给全局变量，方便 Watch 窗口查看
-    // 剩下的 unused 就是你安全的“护城河”
-    // 如果 unused < 100 字节，你的 G030 就危险了！
+    unused_decoder = temp_unused;  // ??????????????? Watch ????
+    // ??? unused ??????�???�
+    // ?? unused < 100 ????? G030 ?????
 }
 
 static void debug_stack_key_event_check(void)
 {
     ULONG i;
    // ULONG unused = 0;
-   ULONG temp_unused = 0; // 使用局部变量进行统计
+   ULONG temp_unused = 0; // ??????????
 
 
-    // 从数组起始位置（栈底/低地址）开始数连续的 0xEF
+    // ??????????/?????????? 0xEF
     for (i = 0; i < STACK_SIZE_EVENT; i++)
     {
         if (stack_key_event[i] == 0xEF)
@@ -460,9 +444,9 @@ static void debug_stack_key_event_check(void)
         else
             break; 
     }
-    unused_event = temp_unused;  // 统计完后再赋值给全局变量，方便 Watch 窗口查看
-    // 剩下的 unused 就是你安全的“护城河”
-    // 如果 unused < 100 字节，你的 G030 就危险了！
+    unused_event = temp_unused;  // ??????????????? Watch ????
+    // ??? unused ??????�???�
+    // ?? unused < 100 ????? G030 ?????
 }
 
 

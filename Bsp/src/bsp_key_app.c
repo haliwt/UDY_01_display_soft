@@ -173,39 +173,23 @@ void power_key_short_handler(void)
 **********************************************************************************************************/
 void power_key_long_handler(void)
 {
-#if 0
-	if(run_t.ptc_warning ==0 && run_t.fan_warning ==0)power_on_key_counter++;
-	if(POWER_KEY_VALUE() ==KEY_DOWN && run_t.gPower_On == power_on && (power_on_key_counter  >= 60 && power_on_key_counter < 200)){
-		
-                power_on_key_counter=202;
-				key_t.key_long_power_flag =  KEY_LONG_POWER; //timer is OK.
-				gpro_t.set_timer_timing_doing_value=1;
-				
-			
-				gpro_t.key_add_dec_pressed_flag =0;
-				
-				SendData_Buzzer();
-				tx_thread_sleep(10);
-				key_t.key_power_flag = 1;
+	
            
-	}
-	else{
-	  // handle_key_power_long_pressed();
-		key_t.key_power_flag = 1;
+			key_t.key_long_power_flag =  KEY_LONG_POWER; //timer is OK.
+			gpro_t.set_timer_timing_doing_value=1;
+			// Reset temperature setting mode
+			run_t.temp_setting_mode = 0;
+			// Reset timer for setting timeout
+			gpro_t.gTimer_set_temp_counter = 0;
+			
+			gpro_t.key_add_dec_pressed_flag =0;
+			
+			SendData_Buzzer();
+			tx_thread_sleep(10);
+		
+           
 
-	}
-#endif 
 }
-/****************************************************************
-	*
-	*Function Name :void mode_key_handler(void)
-	*Function : set timer timing how many ?
-	*Input Parameters :NO
-	*Retrurn Parameter :NO
-	*
-*****************************************************************/
-
-
 /**********************************************************************************************************
 *	函 数 名: void plasma_key_handler(void) 
 *	功能说明: 从按键FIFO缓冲区读取一个键值。
@@ -307,15 +291,34 @@ void key_add_fun(void)
 {
    
      gpro_t.key_add_dec_pressed_flag = 1;
-	 gpro_t.gTimer_set_temp_counter =0;
      SendData_Buzzer();
 	 tx_thread_sleep(10);
 
-	 adjust_timer_minutes(1);  // 固定每次加60分钟
+	 if(gpro_t.set_timer_timing_doing_value) {
+		 // In timer setting mode, adjust timer hours
+		 run_t.timer_dispTime_hours++;
+		 if(run_t.timer_dispTime_hours > 24) {
+			 run_t.timer_dispTime_hours = 24; // Maximum 24 hours
+		 }
+		 // Display the new timer value
+		 TM1639_Display_4Bit_Time(run_t.timer_dispTime_hours, run_t.timer_dispTime_minutes);
+		 // Reset the timeout counter
+		 gpro_t.gTimer_set_temp_counter = 0;
+	 }
+	 else if(run_t.temp_setting_mode) {
+		 // In temperature setting mode, adjust temperature
+		 run_t.set_temperature_value++;
+		 if(run_t.set_temperature_value > 50) {
+			 run_t.set_temperature_value = 50; // Loop back to maxnimum (50°C)
+		 }
+		 TM1639_Display_4Bit_Temp(run_t.set_temperature_value);
+		 
+	 } 
+     // Reset the timeout counter for all cases
+	 gpro_t.gTimer_set_temp_counter = 0;
            
     
 }
-
 
 /****************************************************************
 	*
@@ -329,12 +332,31 @@ void key_dec_fun(void)
 {
   
 	gpro_t.key_add_dec_pressed_flag = 1;
-	gpro_t.gTimer_set_temp_counter =0;
 	SendData_Buzzer();
 	tx_thread_sleep(10);
 
-
-	adjust_timer_minutes(-1);  // 固定每次减60分钟
+	if(gpro_t.set_timer_timing_doing_value) {
+		// In timer setting mode, adjust timer hours
+		run_t.timer_dispTime_hours--;
+		if(run_t.timer_dispTime_hours < 0) {
+			run_t.timer_dispTime_hours = 0; // Minimum 0 hours
+		 }
+		// Display the new timer value
+		TM1639_Display_4Bit_Time(run_t.timer_dispTime_hours, run_t.timer_dispTime_minutes);
+		// Reset the timeout counter
+		gpro_t.gTimer_set_temp_counter = 0;
+	}
+	else if(run_t.temp_setting_mode) {
+		// In temperature setting mode, adjust temperature
+		run_t.set_temperature_value--;
+		if(run_t.set_temperature_value < 30) {
+			run_t.set_temperature_value = 30; // Loop back to  (30°C)
+		 }
+		TM1639_Display_4Bit_Temp(run_t.set_temperature_value);
+	   
+	} 
+    // Reset the timeout counter for all cases
+	gpro_t.gTimer_set_temp_counter = 0;
 
 }
 
