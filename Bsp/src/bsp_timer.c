@@ -1,38 +1,6 @@
 #include "bsp.h"
 
 
-void set_up_timer_timing_handler(void)
-{
-  
-	//Set_TimerTiming_Number_Value();
-	                   
-}
-
-/****************************************************************
-	*
-	*Function Name :void Set_Timing_Temperature_Number_Value(void)
-	*Function : set timer timing how many ?
-	*Input Parameters :NO
-	*Retrurn Parameter :NO
-	*
-*****************************************************************/
-void Set_TimerTiming_Number_Value(void)
-{
-  #if 0
-  if(gpro_t.key_add_dec_pressed_flag == 1 && run_t.gTimer_set_timer_timing_value >2){
-    	gpro_t.key_add_dec_pressed_flag = ++;
-		
-       
-         //Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
-	    // tx_thread_sleep(300);
-		 TM1639_donotDisplay_4Bit_Time();
-		 tx_thread_sleep(300);
-		 Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
-
-		
-	}
-  #endif 	
-}
 
 /***********************************************************************************
 	 *
@@ -42,26 +10,25 @@ void Set_TimerTiming_Number_Value(void)
 	 * Return Ref:NO
 	 *
 ************************************************************************************/
+#if 0
 void set_timer_fun_led_blink(void)
 {
    static uint8_t time_smg_blink;
 
-   if(gpro_t.key_add_dec_pressed_flag ==1 && gpro_t.gTimer_set_temp_counter  > 2){
-  // if(gpro_t.key_add_dec_pressed_flag ==1 && gpro_t.gTimer_4bitsmg_blink_times  > 300){//if has a key be pressed "+" key or "-" key
+   if(gpro_t.key_add_dec_pressed_flag ==1 && gpro_t.gTimer_set_timer_counter  > 2){
+  
 
-     
-
-    	TM1639_donotDisplay_4Bit_Time();
-        tx_thread_sleep(300);
+        TM1639_donotDisplay_4Bit_Time();
+        tx_thread_sleep(30);//300ms
         TM1639_Display_4Bit_Time(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
-	    tx_thread_sleep(300);
+	    tx_thread_sleep(30);
 	    TM1639_donotDisplay_4Bit_Time();
-	    tx_thread_sleep(300);
+	    tx_thread_sleep(30);
 	    TM1639_Display_4Bit_Time(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
 
 	 
 	    gpro_t.key_add_dec_pressed_flag=0;
-
+      
       	run_t.timer_dispTime_minutes=0;
 	    run_t.gTimer_timer_seconds_counter =0;
 
@@ -70,6 +37,7 @@ void set_timer_fun_led_blink(void)
    	}
 
  }
+#endif 
  /***********************************************************************************
 	 *
 	 * Function Name:void Display_SmgTiming_Value(void)
@@ -81,6 +49,7 @@ void set_timer_fun_led_blink(void)
 void Display_SmgTiming_Value(void)
 {
 
+ 
 	if(run_t.gTimer_timer_seconds_counter > 59){
 		run_t.gTimer_timer_seconds_counter =0;
 
@@ -110,12 +79,6 @@ void Display_SmgTiming_Value(void)
 		Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
 	}
 
-	//if(gpro_t.gTimer_disp_timer_counter > 1){
-	//gpro_t.gTimer_disp_timer_counter=0;
-	//Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
-
-	//}
-
-
+	
 }
 

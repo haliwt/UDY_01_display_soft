@@ -10,8 +10,8 @@
 #include "main.h"
 
 
-#define LED_TIME_Pin 						GPIO_PIN_15//GPIO_PIN_0
-#define LED_TIME_GPIO_Port 					GPIOA//GPIOA
+//#define LED_TIME_Pin 						GPIO_PIN_15//GPIO_PIN_0
+//#define LED_TIME_GPIO_Port 					GPIOA//GPIOA
 
 
 
@@ -32,7 +32,7 @@
 #define LED_MOUSE_OFF()           do{LED_MOUSE_GPIO_Port->BSRR |=LED_MOUSE_Pin;}while(0)  
 
 
-void LED_TIME_Init(void);
+void LED_GPIO_TIME_Init(void);
 
 void power_on_led(void);
 void power_off_led(void);

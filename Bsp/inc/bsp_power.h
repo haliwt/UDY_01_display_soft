@@ -73,7 +73,7 @@ typedef struct __RUN{
 
     // Temperature setting variables
     uint8_t set_temperature_value;
-    uint8_t temp_setting_mode;
+   
     
     // PTC heating control flag
     uint8_t ptc_open_f;
@@ -83,7 +83,7 @@ typedef struct __RUN{
 
 extern RUN_T run_t;
 
-void Power_Off(void);
+
 void SplitDispose_Key(uint8_t value);
 void Decode_Handler(uint8_t data);
 

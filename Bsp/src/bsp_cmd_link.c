@@ -182,12 +182,5 @@ void SendData_PowerOnOff(uint8_t index) {
     sendUartData(outputBuf, transferSize);
 }
 
-/****************************************************************************************************
- * Function Name: HAL_UART_TxCpltCallback
- * Function: UART发送完成回调函数
- * Input Ref: UART_HandleTypeDef 指针
- * Return Ref: 无
- ****************************************************************************************************/
-
 
 

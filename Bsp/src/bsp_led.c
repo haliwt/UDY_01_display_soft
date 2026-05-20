@@ -13,9 +13,30 @@
 
 
 */
-void LED_TIME_Init(void)
+void LED_GPIO_TIME_Init(void)
 {
   
+	LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
+	
+	 /* GPIO Ports Clock Enable */
+
+	 LL_IOP_GRP1_EnableClock(LL_IOP_GRP1_PERIPH_GPIOA);
+	
+
+	
+	 /**/
+	 LL_GPIO_ResetOutputPin(LED_TIME_GPIO_Port, LED_TIME_Pin);
+	
+	
+	
+
+	 /**/
+	 GPIO_InitStruct.Pin = LED_TIME_Pin;
+	 GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
+	 GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+	 GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+	 GPIO_InitStruct.Pull = LL_GPIO_PULL_DOWN;//UP;
+	 LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 	
 
 
@@ -86,19 +107,6 @@ void LED_Power_Breathing(void)
         }
     }
 }
-/************************************************************************
- * Function Name: LED_Power_Breathing(void)
- * 功能:
- * 参数:无
- * 返回值:无
- ************************************************************************/
-void Led_Panel_OnOff(void)
-{
-
-
-
-}
-
 
 
 
