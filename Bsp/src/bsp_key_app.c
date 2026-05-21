@@ -56,15 +56,15 @@ void handle_key(KeyHandler *handler)
 static void adjust_temperature_value(int8_t delta) 
 {
   
-	 gpro_t.set_up_temperature_value += delta;
+	 run_t.set_temperature_value += delta;
 	 
 	 if (run_t.set_temperature_value< 30) run_t.set_temperature_value= 30;
      if (run_t.set_temperature_value > 50) run_t.set_temperature_value= 50;
 	  
      gpro_t.ptc_first_open_f = 0;
 	 gpro_t.gTimer_set_timer_counter=0;
-	 gpro_t.disp_set_temp_f =0;
-
+	 gpro_t.disp_set_temp_f =1;
+     gpro_t.immediately_compare_temp_f = 1;
     //TM1639_Display_4Bit_Temp(run_t.set_temperature_value);
     TM1639_Display_Temperature(run_t.set_temperature_value);
 
@@ -139,7 +139,7 @@ void power_key_long_handler(void)
 {
 	
 	gpro_t.set_timer_timing_doing_value=1;
-
+    
 	// Reset timer for setting timeout
 	gpro_t.gTimer_set_timer_counter = 0;
 
@@ -190,15 +190,18 @@ void dry_key_handler(void)
         if(run_t.gDry == 0) {
             SendData_Set_Command(dry_cmd, 0x01);//sendCommandAndAck(dry_cmd, 0x01, check_ack_ptc_on);
 			tx_thread_sleep(10);
-            //run_t.gDry = 1;
-			//LED_DRY_ON();
+            run_t.gDry = 1;
+			gpro_t.ptc_force_close_f = 0;
+			LED_DRY_ON();
  
            
-        } else {
+        } 
+		else if(run_t.gDry == 1) {
             SendData_Set_Command(dry_cmd, 0x00);//sendCommandAndAck(dry_cmd, 0x00, check_ack_ptc_off);
 			tx_thread_sleep(10);
-            //run_t.gDry = 0;
-			//LED_DRY_OFF();
+		    gpro_t.ptc_force_close_f = 1;
+            run_t.gDry = 0;
+			LED_DRY_OFF();
   
            
         }
@@ -255,7 +258,7 @@ void key_add_fun(void)
      SendData_Buzzer();
 	 tx_thread_sleep(10);
 
-	 if(gpro_t.set_timer_timing_doing_value) {
+	 if(gpro_t.set_timer_timing_doing_value==1) {
 	 	   gpro_t.key_add_dec_pressed_flag = 1;
 		 // In timer setting mode, adjust timer hours
 		#if 0
@@ -307,7 +310,7 @@ void key_dec_fun(void)
 	SendData_Buzzer();
 	tx_thread_sleep(10);
 
-	if(gpro_t.set_timer_timing_doing_value) {
+	if(gpro_t.set_timer_timing_doing_value==1) {
 
 	    gpro_t.key_add_dec_pressed_flag = 1;
 

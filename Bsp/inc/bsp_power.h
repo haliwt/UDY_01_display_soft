@@ -62,10 +62,7 @@ typedef struct __RUN{
 
    uint8_t gTimer_timer_seconds_counter;
 
-   
-
-
-	uint8_t gTimer_disp_ntc ;
+   uint8_t gTimer_disp_ntc ;
 
     uint16_t disp_health_minutes;
 
@@ -74,12 +71,7 @@ typedef struct __RUN{
     // Temperature setting variables
     uint8_t set_temperature_value;
    
-    
-    // PTC heating control flag
-    uint8_t ptc_open_f;
-
-
- }RUN_T;
+}RUN_T;
 
 extern RUN_T run_t;
 

@@ -66,7 +66,6 @@ static void power_on_init(void)
 	// Temperature setting initialization
 	run_t.set_temperature_value = 50; // Default temperature 50°C (maximum)
    
-	run_t.ptc_open_f = 0; // PTC heating off by default
 	gpro_t.ptc_first_open_f =0;
 	//works time
 
@@ -230,26 +229,27 @@ void power_off_run_handler(void)
 void immediately_compare_temp_value(void)
 {
     // If set temperature is >= 50°C, must turn off heating immediately
-    if(run_t.ptc_open_f == 1){
-        run_t.ptc_open_f = 0;
-        if(run_t.ntc_tem[0] < run_t.set_temperature_value) {
+    
+    if(run_t.ntc_tem[0] < run_t.set_temperature_value) {
             // Turn on heating
+            gpro_t.ptc_force_close_f = 0;
+            run_t.gDry =1;
             LED_DRY_ON();
             // Send command to mainboard to turn on heating
-            SendData_Set_Command(0x02, 0x01);
+            SendData_Set_Command(0x22, 0x01);
             tx_thread_sleep(10);
           
         }
 		else{
              // Turn on heating
+            gpro_t.ptc_force_close_f = 0;
+            run_t.gDry =0;
             LED_DRY_OFF();
             // Send command to mainboard to turn on heating
-            SendData_Set_Command(0x02, 0x0);
+            SendData_Set_Command(0x22, 0x0);
             tx_thread_sleep(10);
         }
 
-
-	}
 }
 
 /****************************************************************
@@ -262,16 +262,33 @@ void immediately_compare_temp_value(void)
 *****************************************************************/
 void compare_temp_value(void)  
 {
-    if(run_t.ntc_tem[0] >= 50) {
+
+   static uint8_t ptc_on_default = 0xff,ptc_off_default=0xff;
+   uint8_t target_temp ,real_temp;
+
+   if(gpro_t.ptc_force_close_f ==1) return ;
+
+   target_temp =run_t.set_temperature_value;
+
+   if(gpro_t.gTime_disp_temp_counter > 3){
+       gpro_t.gTime_disp_temp_counter =0;
+
+      
+
+   if(run_t.ntc_tem[0] >= target_temp) {
         
             // Turn off heating
+           
             LED_DRY_OFF();
 			gpro_t.ptc_first_open_f = 1;
             // Send command to mainboard to turn off heating
-            SendData_Set_Command(0x02, 0x00);
-            tx_thread_sleep(10);
+            if(ptc_off_default != run_t.gDry){
+				 ptc_off_default = run_t.gDry;
+            	SendData_Set_Command(0x22, 0x00);
+            	tx_thread_sleep(10);
             // Update flag
-          
+            }
+           run_t.gDry =0; //close ptc
         
         return;
     }
@@ -280,21 +297,31 @@ void compare_temp_value(void)
     if(gpro_t.ptc_first_open_f == 0) {
         if(run_t.ntc_tem[0] < run_t.set_temperature_value) {
             // Turn on heating
+            
             LED_DRY_ON();
 			gpro_t.ptc_first_open_f = 1;
             // Send command to mainboard to turn on heating
-            SendData_Set_Command(0x02, 0x01);
-            tx_thread_sleep(10);
-            // Update flag
+             if(ptc_on_default !=  run_t.gDry  ){
+			 	 ptc_on_default =  run_t.gDry  ;
+            	SendData_Set_Command(0x22, 0x01);
+            	tx_thread_sleep(10);
+             }
+			 run_t.gDry  = 1;
            
         }
 		else{
            // Turn on heating
+            
             LED_DRY_OFF();
             // Send command to mainboard to turn on heating
-            SendData_Set_Command(0x02, 0);
-            tx_thread_sleep(10);
+             if(ptc_off_default != run_t.gDry ){
+			 	 ptc_off_default = run_t.gDry ;
+            	SendData_Set_Command(0x22, 0);
+            		tx_thread_sleep(10);
+             	
             // Update flag
+             }
+		     run_t.gDry  = 0;
 
 
 		}
@@ -304,24 +331,34 @@ void compare_temp_value(void)
         // If ptc_open_f is 1 (currently on), use hysteresis of -2°C
         if(run_t.ntc_tem[0] >= run_t.set_temperature_value) {
             // Turn off heating when temperature reaches set value
+           
             LED_DRY_OFF();
             // Send command to mainboard to turn off heating
-            SendData_Set_Command(0x02, 0x00);
-            tx_thread_sleep(10);
+             if(ptc_off_default != run_t.gDry ){
+			 	 ptc_off_default = run_t.gDry ;
+                 SendData_Set_Command(0x22, 0x00);
+                 tx_thread_sleep(10);
             // Update flag
-            run_t.ptc_open_f = 0;
+             }
+			 run_t.gDry  = 0;
+            
         } 
 		else if(run_t.ntc_tem[0] < (run_t.set_temperature_value - 2)) {
             // Turn on heating when temperature is 2°C below set value
+           
             LED_DRY_ON();
             // Send command to mainboard to turn on heating
-            SendData_Set_Command(0x02, 0x01);
-            tx_thread_sleep(10);
-            // Update flag
+           if(ptc_on_default !=  run_t.gDry  ){
+			 	 ptc_on_default =  run_t.gDry  ;
+            	SendData_Set_Command(0x22, 0x01);
+            	tx_thread_sleep(10);
+             }
+		     run_t.gDry =1;
             
         }
         // If temperature is between (set-2) and set, maintain current state
     }
+   }
 }
 
 
@@ -331,6 +368,12 @@ void power_on_run_handler(void)
 
 		power_on_init_reference();
         // Time-sharing execution: each function runs every 20ms
+        if(gpro_t.immediately_compare_temp_f ==1){
+             gpro_t.immediately_compare_temp_f ++;
+             immediately_compare_temp_value();
+		}
+
+		
         switch(function_counter) {
             case 0:
                 disp_set_timer_fun();

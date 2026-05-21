@@ -178,7 +178,7 @@ static void vTaskUiPro(ULONG thread_input)
     {
      
         if(run_t.gPower_On == power_on){
-
+ 
 		  power_on_run_handler();
 
 	    }
@@ -250,7 +250,7 @@ static void vTaskKeyPro(ULONG thread_input)
 	  if(ADD_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
           
            up_cnt++;
-          
+	  
 	  }
 	  else{
           if(up_cnt > 1 && up_cnt < LONG_PRESS_TIME)

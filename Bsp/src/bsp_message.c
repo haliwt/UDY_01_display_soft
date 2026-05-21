@@ -145,7 +145,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 	   if(pdata[3]== 0x01 && run_t.gPower_On == power_on){
 
             run_t.gDry =1 ;//&& run_t.gPlasma ==1  && run_t.gUltransonic==1
-            
+            LED_DRY_ON();
         }
         else if(pdata[3] == 0x0){
 
@@ -244,7 +244,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 			if(pdata[4] == 0x01){ //数据,one 
 
 	 			run_t.ntc_tem[0] = pdata[5]; //temperature value
-	 			TM1639_Display_Temperature(run_t.ntc_tem[0]);
+	 			//TM1639_Display_Temperature(run_t.ntc_tem[0]);
 			}
 			else if(pdata[4] == 0x02){
 

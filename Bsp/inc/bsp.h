@@ -117,10 +117,13 @@ typedef struct _pro_t{
 
    uint8_t set_timer_timing_doing_value;
 
-   uint8_t set_up_temperature_value;
+
    uint8_t  temperature_init_value;
    uint8_t  ptc_first_open_f;
    uint8_t  disp_set_temp_f;
+   uint8_t  ptc_force_close_f;
+   uint8_t immediately_compare_temp_f ;
+   
   
    uint8_t answer_signal_flag;
 
@@ -132,8 +135,9 @@ typedef struct _pro_t{
    
    uint8_t gTimer_disp_timer_counter ;
    uint8_t gTimer_set_timer_counter;
+   uint8_t gTime_disp_temp_counter;
 
-  // uint16_t gTimer_4bitsmg_blink_times;
+ 
   
    
 }pro_run_t;

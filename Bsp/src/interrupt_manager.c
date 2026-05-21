@@ -29,6 +29,7 @@ void tim17_invoke_callback(void)//tim17_isr_callback_handler();
          run_t.gTimer_disp_ntc ++;
          run_t.gTimer_time_colon++ ;
 		//--------------//
+		gpro_t.gTime_disp_temp_counter++;
 
 		run_t.gTimer_timer_seconds_counter ++;
 	   //usart
