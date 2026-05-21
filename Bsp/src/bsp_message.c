@@ -273,17 +273,17 @@ static void copy_cmd_data_from_mainboard(uint8_t *pdata )
     
 
 	 if(pdata[4]==0x01){
-	 	run_t.gPower_On = power_on;
-        power_on_handler();
-        
+	 	//run_t.gPower_On = power_on;
+        //power_on_handler();
+         gpro_t.rx_data_power_on_f =1;
 
      }
      else if(pdata[4]==0){ //power offf
 
-        run_t.gPower_On = power_off;
-        run_t.power_off_flag=0;
+        //run_t.gPower_On = power_off;
+        //run_t.power_off_flag=0;
        
-
+        gpro_t.rx_data_power_on_f = 2;
      }
     
     break;

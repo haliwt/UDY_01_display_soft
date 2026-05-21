@@ -62,6 +62,7 @@ static void power_on_init(void)
 	run_t.timer_dispTime_minutes=0;
 	run_t.gTimer_timer_seconds_counter=0;
 	 run_t.disp_health_minutes=0;
+
 	
 	// Temperature setting initialization
 	run_t.set_temperature_value = 50; // Default temperature 50°C (maximum)
@@ -127,6 +128,8 @@ void disp_set_timer_fun(void)
    if((gpro_t.key_add_dec_pressed_flag ==1 && gpro_t.set_timer_timing_doing_value == 1)&& gpro_t.gTimer_set_timer_counter  > 2){
 	 
 	
+           if(run_t.timer_dispTime_hours==0)run_t.timer_dispTime_hours=8;
+
 		   TM1639_donotDisplay_4Bit_Time();
 		   tx_thread_sleep(30);//300ms
 		   TM1639_Display_4Bit_Time(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
@@ -134,6 +137,8 @@ void disp_set_timer_fun(void)
 		   TM1639_donotDisplay_4Bit_Time();
 		   tx_thread_sleep(30);
 		   TM1639_Display_4Bit_Time(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
+
+		 
 	
 		
 		   gpro_t.key_add_dec_pressed_flag=0;

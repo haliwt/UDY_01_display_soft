@@ -112,14 +112,14 @@ static void adjust_timer_minutes(int8_t delta_min)
 void power_key_short_handler(void)
 {
 	if(run_t.gPower_On == power_off){
-		//run_t.gPower_On = power_on;
+		run_t.gPower_On = power_on;
 		SendData_PowerOnOff(1); // power on
 		tx_thread_sleep(10);
 
 	}
 	else if(run_t.gPower_On == power_on){
 
-		//run_t.gPower_On = power_off;
+		run_t.gPower_On = power_off;
 		SendData_PowerOnOff(0); // power off
 		tx_thread_sleep(10);
 	}

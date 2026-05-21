@@ -97,8 +97,8 @@ void tx_application_define(VOID * first_unused_memory)
   					0,
   					stack_dec_pro,
   					STACK_SIZE_DEC,
-  					0,
-  					0,
+  					2,
+  					1,
   					TX_NO_TIME_SLICE,
   					TX_AUTO_START);
 
@@ -120,8 +120,8 @@ void tx_application_define(VOID * first_unused_memory)
 					0,
 					stack_key_pro,
 					STACK_SIZE_KEY,
-					1,
-					1,
+					0,
+					0,
 					TX_NO_TIME_SLICE,
 					TX_AUTO_START);
 	
@@ -131,8 +131,8 @@ void tx_application_define(VOID * first_unused_memory)
 					  0,							/* ???????? */
 					  stack_key_event,				/* ????? */
 					  STACK_SIZE_EVENT,				/* ?????? */  
-					  2,							/* ?????*/
-					  2,							/* ?????? */
+					  1,							/* ?????*/
+					  1,							/* ?????? */
 					  TX_NO_TIME_SLICE, 			/* ?????? */
 					  TX_AUTO_START);				/* ??????? */
    
@@ -226,75 +226,61 @@ static void vTaskKeyPro(ULONG thread_input)
              }
 
 	  }
-	  else{
-          if(power_cnt > 1 && power_cnt < LONG_PRESS_TIME)
+	  else if(power_cnt > 1 && power_cnt < LONG_PRESS_TIME){
                 tx_event_flags_set(&key_event, KEY_POWER_SHORT, TX_OR);
 
             power_cnt = 0;
 
 	  }
-	  
-	  if(DEC_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
+	  else if(DEC_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
            
            down_cnt++;
 	  }
-	  else{
-	       if(down_cnt > 1 && down_cnt < LONG_PRESS_TIME)
-					 tx_event_flags_set(&key_event, KEY_DOWN_SHORT, TX_OR);
+	  else if(down_cnt > 1 && down_cnt < LONG_PRESS_TIME){
+			tx_event_flags_set(&key_event, KEY_DOWN_SHORT, TX_OR);
 	  
 				 down_cnt = 0;
-
-
-	  }
-
-	  if(ADD_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
+      }
+      else if(ADD_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
           
            up_cnt++;
 	  
 	  }
-	  else{
-          if(up_cnt > 1 && up_cnt < LONG_PRESS_TIME)
-                tx_event_flags_set(&key_event, KEY_UP_SHORT, TX_OR);
+	  else if(up_cnt > 1 && up_cnt < LONG_PRESS_TIME){
+            tx_event_flags_set(&key_event, KEY_UP_SHORT, TX_OR);
 
             up_cnt = 0;
-
 	  }
-
-	  if(DRY_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
+      else if(DRY_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
 
 	       dry_cnt++ ;
             
 	  }
-	  else{
-        if(dry_cnt > 1 && up_cnt < LONG_PRESS_TIME)
+	  else  if(dry_cnt > 1 && up_cnt < LONG_PRESS_TIME){
                 tx_event_flags_set(&key_event, KEY_DRY_SHORT, TX_OR); 
 
 		 dry_cnt = 0;
 
 	  }
-
-	  if(PLASMA_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
+      else if(PLASMA_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
             plasma_cnt ++;    
             
 	  }
-	  else{
-	          if(plasma_cnt > 1 && up_cnt < LONG_PRESS_TIME)
-					  tx_event_flags_set(&key_event, KEY_PLASMA_SHORT, TX_OR); 
+	  else if(plasma_cnt > 1 && up_cnt < LONG_PRESS_TIME){
+			 tx_event_flags_set(&key_event, KEY_PLASMA_SHORT, TX_OR); 
 	  
 			   plasma_cnt = 0;
 
 
 	  }
-
-	  if(MOUSE_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
+      else if(MOUSE_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
          
            mouse_cnt ++ ; 
 	  }
-	  else{
-	      if(mouse_cnt > 1 && up_cnt < LONG_PRESS_TIME)
-						   tx_event_flags_set(&key_event, KEY_MOUSE_SHORT, TX_OR); 
+	  else if(mouse_cnt > 1 && up_cnt < LONG_PRESS_TIME){
+			tx_event_flags_set(&key_event, KEY_MOUSE_SHORT, TX_OR); 
 		   
-					mouse_cnt = 0;
+			mouse_cnt = 0;
 
 	  }
 
