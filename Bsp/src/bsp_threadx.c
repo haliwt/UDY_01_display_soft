@@ -65,7 +65,9 @@ static void debug_stack_key_event_check(void);
 
 ULONG unused_ui,unused_key,unused_decoder,unused_event ;
 #endif 
+static uint16_t power_cnt = 0;
 
+uint8_t key_power_long_f;
 
 /**
 *@brief 
@@ -203,36 +205,28 @@ static void vTaskUiPro(ULONG thread_input)
 *	priority: 3  (?????????????uCOS??)
 *
 **********************************************************************************************************/
+
+
+
 static void vTaskKeyPro(ULONG thread_input)
 {
   (void)thread_input;  /* ?????????? */
     
-    static uint16_t dry_cnt = 0;
+    static uint8_t dry_cnt = 0;
 	static uint16_t plasma_cnt = 0;
 	static uint16_t mouse_cnt = 0;
     static uint16_t up_cnt = 0;
     static uint16_t down_cnt = 0;
-    static uint16_t power_cnt = 0;
+   // static uint16_t power_cnt = 0;
 
-    const uint16_t LONG_PRESS_TIME = 130;   // 300 * 10ms = 3000ms
+    const uint16_t LONG_PRESS_TIME = 100;   // 300 * 10ms = 3000ms
 	
     while(1)
     {
-      if(POWER_KEY_VALUE() == KEY_DOWN){
-         
-            power_cnt++;
-            if(power_cnt == LONG_PRESS_TIME && run_t.gPower_On == power_on){
-                tx_event_flags_set(&key_event, KEY_POWER_LONG, TX_OR);
-             }
+      
 
-	  }
-	  else if(power_cnt > 1 && power_cnt < LONG_PRESS_TIME){
-                tx_event_flags_set(&key_event, KEY_POWER_SHORT, TX_OR);
-
-            power_cnt = 0;
-
-	  }
-	  else if(DEC_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
+	  
+     if(DEC_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
            
            down_cnt++;
 	  }
@@ -284,6 +278,30 @@ static void vTaskKeyPro(ULONG thread_input)
 
 	  }
 
+
+	  if(POWER_KEY_VALUE() == KEY_DOWN){
+         
+            power_cnt++;
+            if(power_cnt == LONG_PRESS_TIME && run_t.gPower_On == power_on && key_power_long_f !=1 && key_power_long_f !=2){
+				key_power_long_f = 1;
+                tx_event_flags_set(&key_event, KEY_POWER_LONG, TX_OR);
+             }
+
+	  }
+	  else{
+	  	if(power_cnt > 1 ){
+			   if(power_cnt >=LONG_PRESS_TIME){
+
+			   }
+			   else
+                   tx_event_flags_set(&key_event, KEY_POWER_SHORT, TX_OR);
+				
+			key_power_long_f = 0;
+            power_cnt = 0;
+	  	 }
+
+	  }
+
 	  #if DEBUG_ENABLE
               debug_stack_key_check();
         #endif 
@@ -316,14 +334,17 @@ static void vTaskKeyPro(ULONG thread_input)
 	  if(status == TX_SUCCESS){
  
 		 if(flags & KEY_POWER_SHORT){
- 
-			power_key_short_handler();
+           
+			 power_key_short_handler();
+            
  
 		 }
 		 else if(flags & KEY_POWER_LONG){
 
-			// Handle long power key press (enter timer setting mode)
-			power_key_long_handler();
+			 if(key_power_long_f ==1){
+				 key_power_long_f++;
+			     power_key_long_handler();
+			}
 
 		 }
 		 else if(flags & KEY_UP_SHORT){
