@@ -65,9 +65,9 @@ static void debug_stack_key_event_check(void);
 
 ULONG unused_ui,unused_key,unused_decoder,unused_event ;
 #endif 
-static uint16_t power_cnt = 0;
+//static uint16_t power_cnt = 0;
 
-uint8_t key_power_long_f;
+//uint8_t key_power_long_f;
 
 /**
 *@brief 
@@ -217,7 +217,7 @@ static void vTaskKeyPro(ULONG thread_input)
 	static uint16_t mouse_cnt = 0;
     static uint16_t up_cnt = 0;
     static uint16_t down_cnt = 0;
-   // static uint16_t power_cnt = 0;
+    static uint16_t power_cnt = 0;
 
     const uint16_t LONG_PRESS_TIME = 100;   // 300 * 10ms = 3000ms
 	
@@ -282,8 +282,8 @@ static void vTaskKeyPro(ULONG thread_input)
 	  if(POWER_KEY_VALUE() == KEY_DOWN){
          
             power_cnt++;
-            if(power_cnt == LONG_PRESS_TIME && run_t.gPower_On == power_on && key_power_long_f !=1 && key_power_long_f !=2){
-				key_power_long_f = 1;
+            if(power_cnt == LONG_PRESS_TIME && run_t.gPower_On == power_on){
+				
                 tx_event_flags_set(&key_event, KEY_POWER_LONG, TX_OR);
              }
 
@@ -296,7 +296,7 @@ static void vTaskKeyPro(ULONG thread_input)
 			   else
                    tx_event_flags_set(&key_event, KEY_POWER_SHORT, TX_OR);
 				
-			key_power_long_f = 0;
+			
             power_cnt = 0;
 	  	 }
 
@@ -341,12 +341,9 @@ static void vTaskKeyPro(ULONG thread_input)
 		 }
 		 else if(flags & KEY_POWER_LONG){
 
-			 if(key_power_long_f ==1){
-				 key_power_long_f++;
-			     power_key_long_handler();
-			}
-
-		 }
+			 
+			   power_key_long_handler();
+		}
 		 else if(flags & KEY_UP_SHORT){
 			   key_add_fun();
 				
