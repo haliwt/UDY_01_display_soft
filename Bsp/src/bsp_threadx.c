@@ -277,9 +277,7 @@ static void vTaskKeyPro(ULONG thread_input)
 			mouse_cnt = 0;
 
 	  }
-
-
-	  if(POWER_KEY_VALUE() == KEY_DOWN){
+      else if(POWER_KEY_VALUE() == KEY_DOWN){
          
             power_cnt++;
             if(power_cnt == LONG_PRESS_TIME && run_t.gPower_On == power_on){
