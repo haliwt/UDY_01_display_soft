@@ -97,8 +97,8 @@ void tx_application_define(VOID * first_unused_memory)
   					0,
   					stack_dec_pro,
   					STACK_SIZE_DEC,
-  					2,
-  					2,
+  					0,
+  					0,
   					TX_NO_TIME_SLICE,
   					TX_AUTO_START);
 
@@ -120,8 +120,8 @@ void tx_application_define(VOID * first_unused_memory)
 					0,
 					stack_key_pro,
 					STACK_SIZE_KEY,
-					0,
-					0,
+					1,
+					1,
 					TX_NO_TIME_SLICE,
 					TX_AUTO_START);
 	
@@ -131,8 +131,8 @@ void tx_application_define(VOID * first_unused_memory)
 					  0,							/* ???????? */
 					  stack_key_event,				/* ????? */
 					  STACK_SIZE_EVENT,				/* ?????? */  
-					  1,							/* ?????*/
-					  1,							/* ?????? */
+					  2,							/* ?????*/
+					  2,							/* ?????? */
 					  TX_NO_TIME_SLICE, 			/* ?????? */
 					  TX_AUTO_START);				/* ??????? */
    
@@ -396,7 +396,10 @@ void semaphore_isr(void)
 *@retval
 *
 **/
-
+void power_on_off_tx_task(void)
+{
+   tx_event_flags_set(&key_event, KEY_POWER_SHORT, TX_OR);
+}
 
 
 #if DEBUG_ENABLE

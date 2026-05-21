@@ -7,6 +7,7 @@
 
 void semaphore_isr(void);
 
+void power_on_off_tx_task(void);
 
 
 

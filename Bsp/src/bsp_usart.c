@@ -4,12 +4,12 @@ typedef struct Msg
 {
 	
 	uint8_t  usData[12];
-    uint8_t  ucMessageID;
-    uint8_t  rx_data_counter;
-    uint8_t  disp_rx_cmd_done_flag;
-    uint8_t  bcc_check_code;
-    volatile uint8_t ulid;
  
+    uint8_t  rx_data_counter;
+   
+    uint8_t  bcc_check_code;
+	uint8_t  data_lenght;
+  
 }MSG_T;
 
 MSG_T   gl_tMsg; /* 定义丢�个结构体用于消息队列 */
@@ -29,7 +29,7 @@ uint8_t check_code;
 *******************************************************************************/
 void usart2_rx_data(uint8_t data)
 {
-     static uint8_t state,rx_end_flag ;
+   static uint8_t state=0;
       inputBuf[0] = data;
      switch(state){ 
 		case 0:  //#0
@@ -46,41 +46,38 @@ void usart2_rx_data(uint8_t data)
        
 		case 1: //#1
 
-            if(gl_tMsg.disp_rx_cmd_done_flag ==0){
+          
               /* 初始化结构体指针 */
                gl_tMsg.rx_data_counter++;
 		     
 	          gl_tMsg.usData[gl_tMsg.rx_data_counter] = inputBuf[0];
-              
 
-              if(rx_end_flag == 1){
-
-                state = 0;
-            
-                gl_tMsg.ulid = gl_tMsg.rx_data_counter;
-                rx_end_flag=0;
-
-                gl_tMsg.rx_data_counter =0;
-
-                gl_tMsg.disp_rx_cmd_done_flag = 1 ;
-
-                gl_tMsg.bcc_check_code=inputBuf[0];
-				semaphore_isr();
-
-              
-              
-                  
-              }
-
-              }
-
-              if(gl_tMsg.usData[gl_tMsg.rx_data_counter] ==0xFE && rx_end_flag == 0 &&   gl_tMsg.rx_data_counter > 4){
+			  if(gl_tMsg.usData[gl_tMsg.rx_data_counter] ==0xFE  && gl_tMsg.rx_data_counter > 4){
                      
-                     rx_end_flag = 1 ;
+                    state = 2 ;
                           
               }
 
-        break;
+	    break;
+
+
+		case 2:
+              
+			    gl_tMsg.rx_data_counter++;
+
+                gl_tMsg.data_lenght = gl_tMsg.rx_data_counter;
+
+				gl_tMsg.usData[gl_tMsg.rx_data_counter] = inputBuf[0];
+
+				gl_tMsg.bcc_check_code=inputBuf[0];
+				
+                gl_tMsg.rx_data_counter =0;
+				state = 0;
+
+                semaphore_isr();
+
+              
+            break;
 
 
 	   }
@@ -94,12 +91,13 @@ void usart2_rx_data(uint8_t data)
 * @notice 
 * @param
 */
+uint8_t check_code ;
 
 void decoder_handler(void)
 {
-    uint8_t check_code ;
-	gl_tMsg.disp_rx_cmd_done_flag = 0 ;
-	check_code =  bcc_check(gl_tMsg.usData,gl_tMsg.ulid);
+    
+	
+	check_code =  bcc_check(gl_tMsg.usData,gl_tMsg.data_lenght);
 
 	if(check_code == gl_tMsg.bcc_check_code ){
 

@@ -60,12 +60,12 @@ static void fillFrame(uint8_t cmd, uint8_t frameType, uint8_t *data, uint8_t dat
         outputBuf[5 + dataLen] = FRAME_END; // 帧尾
         outputBuf[6 + dataLen] = bcc_check(outputBuf, 6 + dataLen); // 校验码
         transferSize = 7 + dataLen;    // 计算帧总长度
-    } else {                           // 命令类型
+    } 
+	else {                           // 命令类型
 		outputBuf[4] = 0;            // 命令数据长度是“0”
-		outputBuf[5] = data[0];      // 功能码
-        outputBuf[6] = FRAME_END;      // 帧尾
-        outputBuf[7] = bcc_check(outputBuf, 7); // 校验码
-        transferSize = 8;              // 帧总长度
+		outputBuf[5] = FRAME_END;      // 帧尾
+        outputBuf[6] = bcc_check(outputBuf, 6); // 校验码
+        transferSize = 7;              // 帧总长度
     }
 }
 
@@ -110,7 +110,7 @@ static void fillFrame_copy(uint8_t cmd, uint8_t frameType, uint8_t *data, uint8_
 void SendData_Buzzer(void) {
     uint8_t cmd = 0x06; // 蜂鸣器命令
     uint8_t cmdData = 0x01; // 打开蜂鸣器
-    fillFrame(cmd,NO_DATA,&cmdData,0);
+    fillFrame(cmd,cmdData,0,0);
     sendUartData(outputBuf, transferSize);
 }
 
@@ -121,7 +121,7 @@ void SendData_Buzzer(void) {
  * Return Ref: 无
  ****************************************************************************************************/
 void SendData_Set_Command(uint8_t cmd, uint8_t cmdData) {
-    fillFrame(cmd,NO_DATA,&cmdData, 0);
+    fillFrame(cmd,cmdData,0,0);
     sendUartData(outputBuf, transferSize);
 }
 
@@ -132,7 +132,7 @@ void SendData_Set_Command(uint8_t cmd, uint8_t cmdData) {
  * Return Ref: 无
  ****************************************************************************************************/
 void SendData_Tx_Data(uint8_t cmd, uint8_t data) {
-    fillFrame(cmd, HAS_DATA, &data, 1);
+    fillFrame(cmd,HAS_DATA, &data, 1);
     sendUartData(outputBuf, transferSize);
 }
 
@@ -178,6 +178,12 @@ void SendData_CopyCmd_Data(uint8_t cmd,uint8_t *pdata,uint8_t datalen)
     sendUartData(outputBuf, (8+datalen));
 }
 
+void SendData_CopyCmd(uint8_t cmd,uint8_t icmd,uint8_t datalen) 
+{
+    fillFrame_copy(cmd,icmd,0,0);
+    sendUartData(outputBuf, transferSize);
+}
+
 /****************************************************************************************************
  * Function Name: SendData_PowerOnOff
  * Function: 发送电源开关命令
@@ -185,7 +191,7 @@ void SendData_CopyCmd_Data(uint8_t cmd,uint8_t *pdata,uint8_t datalen)
  * Return Ref: 无
  ****************************************************************************************************/
 void SendData_PowerOnOff(uint8_t index) {
-    fillFrame(0x01,NO_DATA,&index,0);
+    fillFrame(0x01,index,0,0);
     sendUartData(outputBuf, transferSize);
 }
 
