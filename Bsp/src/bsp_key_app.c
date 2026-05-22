@@ -86,11 +86,11 @@ static void adjust_timer_minutes(int8_t delta_min)
     run_t.timer_dispTime_hours += delta_min;
 
    // 限制时间范围在1~72小时
-    if (run_t.timer_dispTime_hours > 24) {
-        run_t.timer_dispTime_hours = 24;  // 超过72小时，循环回到1小时
+    if (run_t.timer_dispTime_hours > 72) {
+        run_t.timer_dispTime_hours = 72;  // 超过72小时，循环回到1小时
     }
-    else if (run_t.timer_dispTime_hours < 0) {
-        run_t.timer_dispTime_hours = 0;  // 低于1小时，循环到72小时
+    else if (run_t.timer_dispTime_hours == 0) {
+        run_t.timer_dispTime_hours = 8;  // default initial value is 8 hours
     }
 
     gpro_t.gTimer_set_timer_counter=0;
@@ -261,19 +261,10 @@ void key_add_fun(void)
 	 if(gpro_t.set_timer_timing_doing_value==1) {
 	 	   gpro_t.key_add_dec_pressed_flag = 1;
 		 // In timer setting mode, adjust timer hours
-		#if 0
-		 run_t.timer_dispTime_hours++;
-		 if(run_t.timer_dispTime_hours > 24) {
-			 run_t.timer_dispTime_hours = 24; // Maximum 24 hours
-		 }
-		 // Display the new timer value
-		 TM1639_Display_4Bit_Time(run_t.timer_dispTime_hours, run_t.timer_dispTime_minutes);
-		 // Reset the timeout counter
-		 gpro_t.gTimer_set_timer_counter = 0;
-		 #else
+	
 		 adjust_timer_minutes(1) ;
 
-		 #endif 
+		
 	 }
 	 else{
 	 	  

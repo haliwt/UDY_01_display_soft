@@ -192,14 +192,16 @@ void TM1639_Display_4Bit_Temp(uint8_t temp)
 void Display_TimeColon_Blink_Fun(void)
 {
 
-	  if(run_t.gTimer_time_colon >0 && gpro_t.key_add_dec_pressed_flag != 1){ //200 //10*20ms=300ms
+      if(gpro_t.set_timer_timing_doing_value == 1 || gpro_t.key_add_dec_pressed_flag == 1) return ;
+
+	  if(run_t.gTimer_time_colon >0 ){ //200 //10*20ms=300ms
 
 		   run_t.gTimer_time_colon =0;
 	       
 		 gpro_t.g_time_disp_colon_flag = gpro_t.g_time_disp_colon_flag ^ 0x01;
 	     Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
 	  
-		}
+	 }
  }
 
 

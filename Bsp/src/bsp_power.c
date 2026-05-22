@@ -127,10 +127,8 @@ void disp_set_timer_fun(void)
 
    if((gpro_t.key_add_dec_pressed_flag ==1 && gpro_t.set_timer_timing_doing_value == 1)&& gpro_t.gTimer_set_timer_counter  > 2){
 	 
-	
-           if(run_t.timer_dispTime_hours==0)run_t.timer_dispTime_hours=8;
-
-		   TM1639_donotDisplay_4Bit_Time();
+	       
+           TM1639_donotDisplay_4Bit_Time();
 		   tx_thread_sleep(30);//300ms
 		   TM1639_Display_4Bit_Time(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
 		   tx_thread_sleep(30);
@@ -148,7 +146,7 @@ void disp_set_timer_fun(void)
 		   run_t.gTimer_timer_seconds_counter =0;
 	
     }
-    else if(gpro_t.set_timer_timing_doing_value == 1 && (gpro_t.gTimer_set_timer_counter >2)){
+    else if((gpro_t.set_timer_timing_doing_value == 1 && gpro_t.key_add_dec_pressed_flag==0)&& (gpro_t.gTimer_set_timer_counter >2)){
 
 		// Switch to temperature setting mode
 		gpro_t.set_timer_timing_doing_value ++;
