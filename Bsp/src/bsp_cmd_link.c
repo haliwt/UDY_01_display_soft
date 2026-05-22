@@ -34,7 +34,7 @@ static void sendUartData(const uint8_t *data, uint8_t size)
 	#else
 
 	    //HAL_UART_Transmit_DMA(&huart2, data, size);
-	    usart2_dma_send((const uint8_t *)data, size);
+	    usart2_dma_send((uint8_t *)data, size);
 	
    #endif 
 }

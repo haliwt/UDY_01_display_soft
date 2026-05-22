@@ -117,7 +117,10 @@ void decoder_handler(void)
 void usart2_dma_send(uint8_t *txbuf,uint16_t txlen)
 {
 
-    LL_DMA_DisableChannel(DMA1,LL_DMA_CHANNEL_1);
+   if(txbuf == NULL || txlen==0) return ;
+	gpro_t.dma_tx_done =0;
+
+	LL_DMA_DisableChannel(DMA1,LL_DMA_CHANNEL_1);
 
     LL_DMA_ConfigAddresses(DMA1,LL_DMA_CHANNEL_1,
                             (uint32_t)txbuf,

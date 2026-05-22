@@ -97,7 +97,7 @@ static void adjust_timer_minutes(int8_t delta_min)
 	
 	run_t.timer_dispTime_minutes = 0;
 	
-	
+	gpro_t.g_time_disp_colon_flag = 0;
 	TM1639_Display_4Bit_Time(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
 
 }
@@ -144,9 +144,11 @@ void power_key_long_handler(void)
 	gpro_t.gTimer_set_timer_counter = 0;
 
 	gpro_t.key_add_dec_pressed_flag =0;
+	gpro_t.g_time_disp_colon_flag =0;//don't display time of colon ":"
 
 	SendData_Buzzer();
 	//tx_thread_sheep(10);
+	Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
 		
            
 

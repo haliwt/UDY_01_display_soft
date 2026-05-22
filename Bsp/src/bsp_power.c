@@ -235,22 +235,31 @@ void immediately_compare_temp_value(void)
     
     if(run_t.ntc_tem[0] < run_t.set_temperature_value) {
             // Turn on heating
-            gpro_t.ptc_force_close_f = 0;
+            if(gpro_t.dma_tx_done ==1)
+               SendData_Set_Command(0x22, 0x01);
+            
+			
+			
+			gpro_t.ptc_force_close_f = 0;
             run_t.gDry =1;
             LED_DRY_ON();
             // Send command to mainboard to turn on heating
-            SendData_Set_Command(0x22, 0x01);
-            //tx_thread_sheep(10);
+           
           
         }
 		else{
-             // Turn on heating
+
+		    if(gpro_t.dma_tx_done ==1)
+            SendData_Set_Command(0x22, 0);
+            //tx_thread_sleep(2);
+           
+			
             gpro_t.ptc_force_close_f = 0;
             run_t.gDry =0;
             LED_DRY_OFF();
             // Send command to mainboard to turn on heating
-            SendData_Set_Command(0x22, 0x0);
-            //tx_thread_sheep(10);
+           
+           // tx_thread_sleep(2);
         }
 
 }

@@ -108,9 +108,10 @@ void HardFault_Handler(void)
 void DMA1_Channel1_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA1_Channel1_IRQn 0 */
-  if(LL_DMA_IsActiveFlag_TC1(DMA1) != RESET){
-       LL_DMA_ClearFlag_TC1(DMA1);
+  if(LL_DMA_IsActiveFlag_TC1(DMA1) != RESET || LL_DMA_IsActiveFlag_TE1(DMA1) !=RESET){
+      if(LL_DMA_IsActiveFlag_TC1(DMA1) != RESET) LL_DMA_ClearFlag_TC1(DMA1);
 
+       if(LL_DMA_IsActiveFlag_TE1(DMA1) !=RESET) LL_DMA_ClearFlag_TE1(DMA1);
        //shut off DMA channel
        LL_DMA_DisableChannel(DMA1,LL_DMA_CHANNEL_1);
       //Waiting shift register send data over 
@@ -127,8 +128,7 @@ void DMA1_Channel1_IRQHandler(void)
   }
   /* USER CODE END DMA1_Channel1_IRQn 0 */
   /* USER CODE BEGIN DMA1_Channel1_IRQn 1 */
-   if(LL_DMA_IsActiveFlag_TE1(DMA1) !=RESET) 
-   LL_DMA_ClearFlag_TE1(DMA1);
+ //  if(LL_DMA_IsActiveFlag_TE1(DMA1) !=RESET) LL_DMA_ClearFlag_TE1(DMA1);
 
   /* USER CODE END DMA1_Channel1_IRQn 1 */
 }
@@ -197,7 +197,10 @@ void USART2_IRQHandler(void)
 
   /* USER CODE END USART2_IRQn 0 */
   /* USER CODE BEGIN USART2_IRQn 1 */
-
+  
+   LL_USART_ClearFlag_ORE(USART2);
+   LL_USART_ClearFlag_NE(USART2);
+   LL_USART_ClearFlag_FE(USART2);
   /* USER CODE END USART2_IRQn 1 */
 }
 

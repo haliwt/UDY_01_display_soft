@@ -19,10 +19,12 @@
 
 
 
-#define STACK_SIZE_UI     896//1024 
+#define STACK_SIZE_UI     896//896//1024 
 #define STACK_SIZE_KEY    256//512
 #define STACK_SIZE_DEC    512//512//
 #define STACK_SIZE_EVENT  512//512//256
+
+#define DEBUG_ENABLE    1
 
 
 
@@ -38,10 +40,6 @@ static UCHAR stack_ui_pro[STACK_SIZE_UI];
 static UCHAR stack_key_pro[STACK_SIZE_KEY];
 static UCHAR stack_dec_pro[STACK_SIZE_DEC];
 static UCHAR stack_key_event[STACK_SIZE_EVENT];
-
-
-
-
 
 static void vTaskUiPro(ULONG thread_input);
 static void vTaskKeyPro(ULONG thread_input);
@@ -100,7 +98,7 @@ void tx_application_define(VOID * first_unused_memory)
   					stack_dec_pro,
   					STACK_SIZE_DEC,
   					2,
-  					1,
+  					2,
   					TX_NO_TIME_SLICE,
   					TX_AUTO_START);
 
@@ -193,7 +191,7 @@ static void vTaskUiPro(ULONG thread_input)
 		 #if DEBUG_ENABLE
               debug_stack_ui_check();
          #endif 
-	     tx_thread_sleep(2);//20ms //vTaskDelay(10);
+	     tx_thread_sleep(1);//20ms //vTaskDelay(10);
    } //wihile(1) ---end
 }
 /**********************************************************************************************************
@@ -373,7 +371,7 @@ static void vTaskKeyPro(ULONG thread_input)
               debug_stack_key_event_check();
           #endif 
 		 
-		 tx_thread_sleep(1);
+		 tx_thread_sleep(2);
 	  }
   
 		

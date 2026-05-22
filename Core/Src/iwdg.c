@@ -31,14 +31,14 @@ void MX_IWDG_Init(void)
   /* USER CODE BEGIN IWDG_Init 0 */
 
   /* USER CODE END IWDG_Init 0 */
-
+ //  T = /32KHZ
   /* USER CODE BEGIN IWDG_Init 1 */
 
   /* USER CODE END IWDG_Init 1 */
   LL_IWDG_Enable(IWDG);
   LL_IWDG_EnableWriteAccess(IWDG);
   LL_IWDG_SetPrescaler(IWDG, LL_IWDG_PRESCALER_256);
-  LL_IWDG_SetReloadCounter(IWDG, 999);
+  LL_IWDG_SetReloadCounter(IWDG, 1999);
   while (LL_IWDG_IsReady(IWDG) != 1)
   {
   }
