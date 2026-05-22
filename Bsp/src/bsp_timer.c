@@ -73,7 +73,7 @@ void Display_SmgTiming_Value(void)
 
         run_t.gPower_On = power_off;
 		SendData_PowerOnOff(0);//power off
-		tx_thread_sleep(10);
+		//tx_thread_sheep(10);
 
 		}
 		Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);

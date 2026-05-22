@@ -242,7 +242,7 @@ void immediately_compare_temp_value(void)
             LED_DRY_ON();
             // Send command to mainboard to turn on heating
             SendData_Set_Command(0x22, 0x01);
-            tx_thread_sleep(10);
+            //tx_thread_sheep(10);
           
         }
 		else{
@@ -252,7 +252,7 @@ void immediately_compare_temp_value(void)
             LED_DRY_OFF();
             // Send command to mainboard to turn on heating
             SendData_Set_Command(0x22, 0x0);
-            tx_thread_sleep(10);
+            //tx_thread_sheep(10);
         }
 
 }
@@ -290,7 +290,7 @@ void compare_temp_value(void)
             if(ptc_off_default != run_t.gDry){
 				 ptc_off_default = run_t.gDry;
             	SendData_Set_Command(0x22, 0x00);
-            	tx_thread_sleep(10);
+            	//tx_thread_sheep(10);
             // Update flag
             }
            run_t.gDry =0; //close ptc
@@ -309,7 +309,7 @@ void compare_temp_value(void)
              if(ptc_on_default !=  run_t.gDry  ){
 			 	 ptc_on_default =  run_t.gDry  ;
             	SendData_Set_Command(0x22, 0x01);
-            	tx_thread_sleep(10);
+            	//tx_thread_sheep(10);
              }
 			 run_t.gDry  = 1;
            
@@ -322,7 +322,7 @@ void compare_temp_value(void)
              if(ptc_off_default != run_t.gDry ){
 			 	 ptc_off_default = run_t.gDry ;
             	SendData_Set_Command(0x22, 0);
-            		tx_thread_sleep(10);
+            		//tx_thread_sheep(10);
              	
             // Update flag
              }
@@ -342,7 +342,7 @@ void compare_temp_value(void)
              if(ptc_off_default != run_t.gDry ){
 			 	 ptc_off_default = run_t.gDry ;
                  SendData_Set_Command(0x22, 0x00);
-                 tx_thread_sleep(10);
+                 //tx_thread_sheep(10);
             // Update flag
              }
 			 run_t.gDry  = 0;
@@ -356,7 +356,7 @@ void compare_temp_value(void)
            if(ptc_on_default !=  run_t.gDry  ){
 			 	 ptc_on_default =  run_t.gDry  ;
             	SendData_Set_Command(0x22, 0x01);
-            	tx_thread_sleep(10);
+            	//tx_thread_sheep(10);
              }
 		     run_t.gDry =1;
             

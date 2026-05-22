@@ -123,12 +123,24 @@ void usart2_dma_send(uint8_t *txbuf,uint16_t txlen)
                             (uint32_t)txbuf,
                             (uint32_t)&USART2->TDR,
                             LL_DMA_DIRECTION_MEMORY_TO_PERIPH);
+	//配置长度
     LL_DMA_SetDataLength(DMA1,LL_DMA_CHANNEL_1,txlen);
 
+    //clear flag
     LL_DMA_ClearFlag_TC1(DMA1);//TC1 -> clear transfer complete flag
+    LL_DMA_ClearFlag_TE1(DMA1);
+
+	//5.Enable DMA flag  interrupt 
+	LL_DMA_EnableIT_TC(DMA1,LL_DMA_CHANNEL_1);
+	LL_DMA_EnableIT_TE(DMA1,LL_DMA_CHANNEL_1);
+	
+    //6.Enable USART2 Requre DMA TX 
+	LL_USART_EnableDMAReq_TX(USART2);
+
+	//7.Start 
     LL_DMA_EnableChannel(DMA1,LL_DMA_CHANNEL_1);
 
-    LL_USART_EnableDMAReq_TX(USART2);
+    
 
 }
 

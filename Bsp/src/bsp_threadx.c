@@ -230,54 +230,59 @@ static void vTaskKeyPro(ULONG thread_input)
            
            down_cnt++;
 	  }
-	  else if(down_cnt > 1 && down_cnt < LONG_PRESS_TIME){
+	  else if(down_cnt > 1){
 			tx_event_flags_set(&key_event, KEY_DOWN_SHORT, TX_OR);
 	  
 				 down_cnt = 0;
       }
-      else if(ADD_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
+	  
+      if(ADD_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
           
            up_cnt++;
 	  
 	  }
-	  else if(up_cnt > 1 && up_cnt < LONG_PRESS_TIME){
+	  else if(up_cnt > 1){
             tx_event_flags_set(&key_event, KEY_UP_SHORT, TX_OR);
 
             up_cnt = 0;
 	  }
-      else if(DRY_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
+	  
+      if(DRY_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
 
 	       dry_cnt++ ;
             
 	  }
-	  else  if(dry_cnt > 1 && up_cnt < LONG_PRESS_TIME){
+	  else  if(dry_cnt > 1){
                 tx_event_flags_set(&key_event, KEY_DRY_SHORT, TX_OR); 
 
 		 dry_cnt = 0;
 
 	  }
-      else if(PLASMA_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
+	  
+      if(PLASMA_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
             plasma_cnt ++;    
             
 	  }
-	  else if(plasma_cnt > 1 && up_cnt < LONG_PRESS_TIME){
+	  else if(plasma_cnt > 1){
 			 tx_event_flags_set(&key_event, KEY_PLASMA_SHORT, TX_OR); 
 	  
 			   plasma_cnt = 0;
 
 
 	  }
-      else if(MOUSE_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
+	  
+      if(MOUSE_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
          
            mouse_cnt ++ ; 
 	  }
-	  else if(mouse_cnt > 1 && up_cnt < LONG_PRESS_TIME){
+	  else if(mouse_cnt > 1){
 			tx_event_flags_set(&key_event, KEY_MOUSE_SHORT, TX_OR); 
 		   
 			mouse_cnt = 0;
 
 	  }
-      else if(POWER_KEY_VALUE() == KEY_DOWN){
+	  
+       if(POWER_KEY_VALUE() == KEY_DOWN){
          
             power_cnt++;
             if(power_cnt == LONG_PRESS_TIME && run_t.gPower_On == power_on){
@@ -287,7 +292,7 @@ static void vTaskKeyPro(ULONG thread_input)
 
 	  }
 	  else{
-	  	if(power_cnt > 1 ){
+	  	if(power_cnt > 1){
 			   if(power_cnt >=LONG_PRESS_TIME){
 
 			   }

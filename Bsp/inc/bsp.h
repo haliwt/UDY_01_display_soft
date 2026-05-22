@@ -124,6 +124,7 @@ typedef struct _pro_t{
    uint8_t  ptc_force_close_f;
    uint8_t immediately_compare_temp_f ;
    uint8_t rx_data_power_on_f;
+   uint8_t dma_tx_done;
    
   
    uint8_t answer_signal_flag;

@@ -110,10 +110,25 @@ void DMA1_Channel1_IRQHandler(void)
   /* USER CODE BEGIN DMA1_Channel1_IRQn 0 */
   if(LL_DMA_IsActiveFlag_TC1(DMA1) != RESET){
        LL_DMA_ClearFlag_TC1(DMA1);
+
+       //shut off DMA channel
+       LL_DMA_DisableChannel(DMA1,LL_DMA_CHANNEL_1);
+      //Waiting shift register send data over 
+      while(!LL_USART_IsActiveFlag_TC(USART2));
+
+	  //Clear USART2 TC FLAG
+	  LL_USART_ClearFlag_TC(USART2);
+
+	  //Shut down DMA requre 
+	  LL_USART_DisableDMAReq_TX(USART2);
+	  //send data complish callback ref 
+	  gpro_t.dma_tx_done = 1;
+	  
   }
   /* USER CODE END DMA1_Channel1_IRQn 0 */
   /* USER CODE BEGIN DMA1_Channel1_IRQn 1 */
-   if(LL_DMA_IsActiveFlag_TE1(DMA1) !=RESET) LL_DMA_ClearFlag_TE1(DMA1);
+   if(LL_DMA_IsActiveFlag_TE1(DMA1) !=RESET) 
+   LL_DMA_ClearFlag_TE1(DMA1);
 
   /* USER CODE END DMA1_Channel1_IRQn 1 */
 }
