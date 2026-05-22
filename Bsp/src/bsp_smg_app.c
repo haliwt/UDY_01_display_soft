@@ -4,7 +4,6 @@
 
 
 
-//static void TimeColon_Smg_Blink_Fun(void);
 
 
 /**********************************************************************
@@ -17,10 +16,25 @@
 **********************************************************************/
 void Display_DHT11_Value(void)
 {
+
+   static uint8_t temp_disp =0 ;
+   
+   if(gpro_t.power_on_f ==1 && run_t.ntc_tem[0] >0){
+         gpro_t.power_on_f ++;
+	     temp_disp  = run_t.ntc_tem[0];
+   }
+
+	if(temp_disp < run_t.ntc_tem[0]){
+
+        temp_disp ++ ;
+	}
+	else if(temp_disp > run_t.ntc_tem[0]){
+
+          temp_disp -- ;
+   }
+
+   TM1639_Display_Temperature(temp_disp);//TM1639_Write_2bit_TempData(temp1,temp2);
     
-   TM1639_Display_Temperature(run_t.ntc_tem[0]);//TM1639_Write_2bit_TempData(temp1,temp2);
-    
-   //TM1639_Display_Health(run_t.disp_health_minutes);//TM1639_Write_2bit_HumData(hum1,hum2);
 }  
 
 void disp_health_index(void)
@@ -63,16 +77,24 @@ void disp_ntc_temperature_value(void)
 	   disp_health_index();
 
   }
+  else if(gpro_t.disp_set_temp_f ==1 &&  gpro_t.gTimer_set_timer_counter > 3){
+       gpro_t.disp_set_temp_f ++;
+       Display_DHT11_Value();
+  }
   else if(run_t.gTimer_disp_ntc > 2 && gpro_t.disp_set_temp_f !=1){
 	    run_t.gTimer_disp_ntc=0;
 		
 		Display_DHT11_Value();
-        disp_health_index();
+       
   }
-  else if(gpro_t.disp_set_temp_f ==1 &&  gpro_t.gTimer_set_timer_counter > 3){
-       gpro_t.disp_set_temp_f ++;
-       Display_DHT11_Value();
-   }
+
+  if(gpro_t.gTimer_disp_health_counter > 15){
+	   gpro_t.gTimer_disp_health_counter=0;
+
+       disp_health_index();
+
+  }
+ 
 
 }
 
@@ -91,40 +113,15 @@ void Display_Error_Digital(uint8_t sel)
     TM1639_Display_4Bit_Error(sel);
 
 }
-
-/********************************************************************************
+/*************************************************************************
 *
-*Functin Name: static void TimeColon_Smg_Blink_Fun(void)
-*Function : Timer of key be pressed handle
-*Input Ref:  NO
-*Return Ref: NO
+*Function Name:void SmgBlink_Colon_Function(uint8_t twobit,uint8_t threebit,uint8_t sel)
+*Function :display smg of colon ":" blink 
+*Input Ref:
 *
-********************************************************************************/
-//static void TimeColon_Smg_Blink_Fun(void)
-//{
-//	//if(run_t.gTimer_colon < 1){ //2
-//	static uint8_t i;
+*
+*************************************************************************/
 
-//     i++ ;
-//     if(i==1)
-//		  SmgBlink_Colon_Function(run_t.hours_two_unit_bit ,run_t.minutes_one_decade_bit,0);
-//     else{
-//          i=0;
-//	
-//		   SmgBlink_Colon_Function(run_t.hours_two_unit_bit ,run_t.minutes_one_decade_bit,1);
-//        }
-
-//	
-//}
-
-/********************************************************************************
-	*
-	*Functin Name: void Display_TimeColon_Blink_Fun(void)
-	*Function : 
-	*Input Ref:  NO
-	*Return Ref: NO
-	*
-********************************************************************************/
 
 
 

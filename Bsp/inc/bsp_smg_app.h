@@ -18,7 +18,7 @@ void Display_Error_Digital(uint8_t sel);
 void disp_ntc_temperature_value(void);
 
 
-void Display_TimeColon_Blink_Fun(void);
+void Display_TimingValue_TimeColon_Handler(void);
 
 
 void disp_health_index(void);

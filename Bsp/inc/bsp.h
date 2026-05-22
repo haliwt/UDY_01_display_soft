@@ -125,6 +125,7 @@ typedef struct _pro_t{
    uint8_t immediately_compare_temp_f ;
    uint8_t rx_data_power_on_f;
    uint8_t dma_tx_done;
+   uint8_t power_on_f ;
    
   
    uint8_t answer_signal_flag;
@@ -135,7 +136,7 @@ typedef struct _pro_t{
    
    uint8_t key_add_dec_pressed_flag;
    
-   uint8_t gTimer_disp_timer_counter ;
+   uint8_t gTimer_disp_health_counter ;
    uint8_t gTimer_set_timer_counter;
    uint8_t gTime_disp_temp_counter;
 

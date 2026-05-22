@@ -41,7 +41,7 @@ static void Power_Off(void)
 static void power_on_init(void)
 {
    static uint8_t dc_on_f = 0;
-  #if 0
+   #if 1
 	if(dc_on_f ==0){
 	  dc_on_f ++;
 	  LED_GPIO_TIME_Init();	
@@ -71,6 +71,7 @@ static void power_on_init(void)
 	//works time
 
     run_t.power_off_flag =0;
+	gpro_t.power_on_f = 1;
 		
     TM1639_Display_4Bit_Time(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
      
@@ -391,7 +392,7 @@ void power_on_run_handler(void)
                 disp_set_timer_fun();
                 break;
             case 1:
-                Display_TimeColon_Blink_Fun();
+                Display_TimingValue_TimeColon_Handler();
                 break;
             case 2:
                 disp_ntc_temperature_value();

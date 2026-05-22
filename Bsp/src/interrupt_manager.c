@@ -34,7 +34,7 @@ void tim17_invoke_callback(void)//tim17_isr_callback_handler();
 		run_t.gTimer_timer_seconds_counter ++;
 	   //usart
     
-        gpro_t.gTimer_disp_timer_counter ++;
+        gpro_t.gTimer_disp_health_counter ++;
 		gpro_t.gTimer_set_timer_counter++;
 	
 	   }

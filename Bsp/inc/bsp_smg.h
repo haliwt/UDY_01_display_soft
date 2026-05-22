@@ -20,7 +20,7 @@ void TM1639_Display_4Bit_Error(uint8_t sle);
 
 void TM1639_Display_4Bit_Temp(uint8_t temp);
 
-void Display_TimeColon_Blink_Fun(void);
+void Display_TimingValue_TimeColon_Handler(void);
 
 
 

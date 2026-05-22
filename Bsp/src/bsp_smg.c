@@ -183,13 +183,13 @@ void TM1639_Display_4Bit_Temp(uint8_t temp)
 
 /********************************************************************************
 	*
-	*Functin Name: void Display_TimeColon_Blink_Fun(void)
+	*Functin Name: void Display_TimingValue_TimeColon_Handler(void)
 	*Function : 
 	*Input Ref:  NO
 	*Return Ref: NO
 	*
 ********************************************************************************/
-void Display_TimeColon_Blink_Fun(void)
+void Display_TimingValue_TimeColon_Handler(void)
 {
 
       if(gpro_t.set_timer_timing_doing_value == 1 || gpro_t.key_add_dec_pressed_flag == 1) return ;
@@ -199,20 +199,11 @@ void Display_TimeColon_Blink_Fun(void)
 		   run_t.gTimer_time_colon =0;
 	       
 		 gpro_t.g_time_disp_colon_flag = gpro_t.g_time_disp_colon_flag ^ 0x01;
+	  
 	     Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
 	  
 	 }
  }
-
-
-/*************************************************************************
-*
-*Function Name:void SmgBlink_Colon_Function(uint8_t twobit,uint8_t threebit,uint8_t sel)
-*Function :display smg of colon ":" blink 
-*Input Ref:
-*
-*
-*************************************************************************/
 
 
 
