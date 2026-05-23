@@ -38,18 +38,10 @@ static void vTaskDecoderPro(ULONG thread_input);
 static void vTaskKeyEvent(ULONG thread_input);
 
 
-
-
-
-
 static TX_THREAD  thread_ui;
 static TX_THREAD  thread_key;
 static TX_THREAD  thread_decoder;
 static TX_THREAD  thread_key_event;
-
-
-
-
 
 
 TX_EVENT_FLAGS_GROUP key_event;
