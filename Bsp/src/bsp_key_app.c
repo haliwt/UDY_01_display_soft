@@ -89,8 +89,8 @@ static void adjust_timer_minutes(int8_t delta_min)
     if (run_t.timer_dispTime_hours > 72) {
         run_t.timer_dispTime_hours = 72;  // 超过72小时，循环回到1小时
     }
-    else if (run_t.timer_dispTime_hours == 0) {
-        run_t.timer_dispTime_hours = 8;  // default initial value is 8 hours
+    else if (run_t.timer_dispTime_hours < 1) {
+        run_t.timer_dispTime_hours = 1;  // minimax value is one hours .
     }
 
     gpro_t.gTimer_set_timer_counter=0;
