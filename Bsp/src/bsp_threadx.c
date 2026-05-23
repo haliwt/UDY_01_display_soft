@@ -16,6 +16,7 @@
 
 #define KEY_DOWN_SHORT   (1UL << 6)
 
+#define DEBUG_ENABLE    0
 
 
 
@@ -24,7 +25,18 @@
 #define STACK_SIZE_DEC    512//512//
 #define STACK_SIZE_EVENT  512//512//256
 
-#define DEBUG_ENABLE    1
+__attribute__((aligned(8))) static UCHAR stack_ui_pro[STACK_SIZE_UI];
+__attribute__((aligned(8))) static UCHAR stack_key_pro[STACK_SIZE_KEY];
+__attribute__((aligned(8))) static UCHAR stack_dec_pro[STACK_SIZE_DEC];
+__attribute__((aligned(8))) static UCHAR stack_key_event[STACK_SIZE_EVENT];
+
+
+
+static void vTaskUiPro(ULONG thread_input);
+static void vTaskKeyPro(ULONG thread_input);
+static void vTaskDecoderPro(ULONG thread_input);
+static void vTaskKeyEvent(ULONG thread_input);
+
 
 
 
@@ -36,15 +48,8 @@ static TX_THREAD  thread_decoder;
 static TX_THREAD  thread_key_event;
 
 
-static UCHAR stack_ui_pro[STACK_SIZE_UI];
-static UCHAR stack_key_pro[STACK_SIZE_KEY];
-static UCHAR stack_dec_pro[STACK_SIZE_DEC];
-static UCHAR stack_key_event[STACK_SIZE_EVENT];
 
-static void vTaskUiPro(ULONG thread_input);
-static void vTaskKeyPro(ULONG thread_input);
-static void vTaskDecoderPro(ULONG thread_input);
-static void vTaskKeyEvent(ULONG thread_input);
+
 
 
 TX_EVENT_FLAGS_GROUP key_event;
