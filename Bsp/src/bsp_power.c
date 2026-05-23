@@ -74,6 +74,7 @@ static void power_on_init(void)
 	gpro_t.power_on_f = 1;
 		
     TM1639_Display_4Bit_Time(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
+	disp_health_index();
      
     
 }
