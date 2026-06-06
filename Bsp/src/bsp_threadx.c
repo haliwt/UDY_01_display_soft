@@ -13,8 +13,11 @@
 
 
 #define KEY_UP_SHORT     (1UL << 5)
+#define KEY_UP_LONG      (1UL<< 8 )
 
 #define KEY_DOWN_SHORT   (1UL << 6)
+#define KEY_DOWN_LONG    (1UL << 7)
+
 
 #define DEBUG_ENABLE    0
 
@@ -215,6 +218,8 @@ static void vTaskKeyPro(ULONG thread_input)
     static uint16_t power_cnt = 0;
 
     const uint16_t LONG_PRESS_TIME = 40;   // 300 * 10ms = 3000ms
+    const uint16_t LONG_PRESS_COUNTER = 20;
+	const uint16_t REPEAT_INTERVAL = 2;       // 每 5 次循环跑数一次（约 30ms）
 	
     while(1)
     {
@@ -224,19 +229,37 @@ static void vTaskKeyPro(ULONG thread_input)
      if(DEC_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
            
            down_cnt++;
+	        if (down_cnt >= LONG_PRESS_COUNTER)
+            {
+                if ((down_cnt % REPEAT_INTERVAL) == 0)
+                {
+                    tx_event_flags_set(&key_event, KEY_DOWN_SHORT, TX_OR);
+                }
+            }
+            
 	  }
 	  else if(down_cnt > 0){
+	  	    if(down_cnt < LONG_PRESS_COUNTER)
 			tx_event_flags_set(&key_event, KEY_DOWN_SHORT, TX_OR);
 	  
-				 down_cnt = 0;
+		  down_cnt = 0;
       }
 	  
       if(ADD_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
           
            up_cnt++;
+		   if(up_cnt >= LONG_PRESS_COUNTER)
+           {
+                // 跑数模式：每 REPEAT_INTERVAL 次触发一次
+                if ((up_cnt % REPEAT_INTERVAL) == 0)
+                {
+                    tx_event_flags_set(&key_event, KEY_UP_SHORT, TX_OR);
+                }
+            }
 	  
 	  }
 	  else if(up_cnt > 0){
+	  	    if(up_cnt <LONG_PRESS_COUNTER)
             tx_event_flags_set(&key_event, KEY_UP_SHORT, TX_OR);
 
             up_cnt = 0;
@@ -245,7 +268,7 @@ static void vTaskKeyPro(ULONG thread_input)
       if(DRY_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
 
 	       dry_cnt++ ;
-            
+		 
 	  }
 	  else  if(dry_cnt > 0){
                 tx_event_flags_set(&key_event, KEY_DRY_SHORT, TX_OR); 

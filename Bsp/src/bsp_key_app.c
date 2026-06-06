@@ -258,7 +258,7 @@ void key_add_fun(void)
    
     // if(gpro_t.dma_tx_done == 1)
 	 SendData_Set_Command(0x06,0x01);
-	 tx_thread_sleep(2);
+	 tx_thread_sleep(1);
     // while(!gpro_t.dma_tx_done);
 	 if(gpro_t.set_timer_timing_doing_value==1) {
 	 	   gpro_t.key_add_dec_pressed_flag = 1;
@@ -294,7 +294,7 @@ void key_dec_fun(void)
   
 	//if(gpro_t.dma_tx_done ==1)
 	SendData_Set_Command(0x06,0x01);//SendData_Buzzer();
-	tx_thread_sleep(2);
+	tx_thread_sleep(1);
 
    // while(!gpro_t.dma_tx_done);
 	if(gpro_t.set_timer_timing_doing_value==1) {
