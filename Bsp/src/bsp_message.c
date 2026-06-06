@@ -38,14 +38,14 @@ void receive_data_from_mainboard(uint8_t *pdata)
             run_t.power_on_step =0;
      
             power_on_handler();
-            SendData_Set_Command(0x11,0x01); //0x11 :send to main has the second display board exit.
+            if(gpro_t.dma_tx_done ==1)SendData_Set_Command(0x11,0x01); //0x11 :send to main has the second display board exit.
 			//tx_thread_sheep(10);
            }
            else{ //power off
 
             run_t.gPower_On = power_off;
             run_t.power_on_step =0;
-            SendData_Set_Command(0x11,0x01);
+            if(gpro_t.dma_tx_done ==1)SendData_Set_Command(0x11,0x01);
 			//tx_thread_sheep(10);
            
            }

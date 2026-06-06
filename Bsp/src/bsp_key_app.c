@@ -59,7 +59,7 @@ static void adjust_temperature_value(int8_t delta)
 	 run_t.set_temperature_value += delta;
 	 
 	 if (run_t.set_temperature_value< 30) run_t.set_temperature_value= 30;
-     if (run_t.set_temperature_value > 50) run_t.set_temperature_value= 50;
+     if (run_t.set_temperature_value > 60) run_t.set_temperature_value= 60;
 	  
      gpro_t.ptc_first_open_f = 0;
 	 gpro_t.gTimer_set_timer_counter=0;
@@ -114,14 +114,14 @@ void power_key_short_handler(void)
 	if(run_t.gPower_On == power_off){
 		run_t.gPower_On = power_on;
 		SendData_PowerOnOff(1); // power on
-		//tx_thread_sheep(10);
+		tx_thread_sleep(2);
 
 	}
 	else if(run_t.gPower_On == power_on){
 
 		run_t.gPower_On = power_off;
 		SendData_PowerOnOff(0); // power off
-		//tx_thread_sheep(10);
+		tx_thread_sleep(2);
 	}
 			 
 		
@@ -146,8 +146,8 @@ void power_key_long_handler(void)
 	gpro_t.key_add_dec_pressed_flag =0;
 	gpro_t.g_time_disp_colon_flag =0;//don't display time of colon ":"
 
-	SendData_Buzzer();
-	//tx_thread_sheep(10);
+	SendData_Set_Command(0x06,0x01);
+	tx_thread_sleep(1);
 	Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
 		
            
@@ -164,13 +164,13 @@ void plasma_key_handler(void)
 
         if(run_t.gPlasma == 1){
             run_t.gPlasma = 0;
-            SendData_Set_Command(plasma_cmd, 0x00);
+            if(gpro_t.dma_tx_done ==1)SendData_Set_Command(plasma_cmd, 0x00);
 		    //tx_thread_sheep(10);
             LED_PLASMA_OFF();
           
         } else {
             run_t.gPlasma = 1;
-            SendData_Set_Command(plasma_cmd, 0x01);
+            if(gpro_t.dma_tx_done ==1)SendData_Set_Command(plasma_cmd, 0x01);
 			//tx_thread_sheep(10);
             LED_PLASMA_ON();
             
@@ -190,7 +190,7 @@ void dry_key_handler(void)
 {
 
         if(run_t.gDry == 0) {
-            SendData_Set_Command(dry_cmd, 0x01);//sendCommandAndAck(dry_cmd, 0x01, check_ack_ptc_on);
+           if(gpro_t.dma_tx_done ==1) SendData_Set_Command(dry_cmd, 0x01);//sendCommandAndAck(dry_cmd, 0x01, check_ack_ptc_on);
 			//tx_thread_sheep(10);
             run_t.gDry = 1;
 			gpro_t.ptc_force_close_f = 0;
@@ -199,7 +199,7 @@ void dry_key_handler(void)
            
         } 
 		else if(run_t.gDry == 1) {
-            SendData_Set_Command(dry_cmd, 0x00);//sendCommandAndAck(dry_cmd, 0x00, check_ack_ptc_off);
+            if(gpro_t.dma_tx_done ==1)SendData_Set_Command(dry_cmd, 0x00);//sendCommandAndAck(dry_cmd, 0x00, check_ack_ptc_off);
 			//tx_thread_sheep(10);
 		    gpro_t.ptc_force_close_f = 1;
             run_t.gDry = 0;
@@ -227,7 +227,7 @@ void mouse_key_handler(void)
             
             run_t.gMouse = 1;
             LED_MOUSE_ON();
-          SendData_Set_Command(mouse_cmd, 0x01);
+          if(gpro_t.dma_tx_done ==1)SendData_Set_Command(mouse_cmd, 0x01);
             //tx_thread_sheep(10);//对应的反馈类型
             
 
@@ -237,7 +237,7 @@ void mouse_key_handler(void)
           
             run_t.gMouse = 0;
             LED_MOUSE_OFF();
-         SendData_Set_Command(mouse_cmd, 0x00);
+         if(gpro_t.dma_tx_done ==1)SendData_Set_Command(mouse_cmd, 0x00);
             //tx_thread_sheep(10);//应的反馈类型
             
         }
@@ -256,10 +256,10 @@ void mouse_key_handler(void)
 void key_add_fun(void)
 {
    
-     gpro_t.dma_tx_done = 0;
-     SendData_Set_Command(0x06,0x01);//SendData_Buzzer();
+    // if(gpro_t.dma_tx_done == 1)
+	 SendData_Set_Command(0x06,0x01);
 	 tx_thread_sleep(2);
-     while(!gpro_t.dma_tx_done);
+    // while(!gpro_t.dma_tx_done);
 	 if(gpro_t.set_timer_timing_doing_value==1) {
 	 	   gpro_t.key_add_dec_pressed_flag = 1;
 		 // In timer setting mode, adjust timer hours
@@ -271,17 +271,10 @@ void key_add_fun(void)
 	 else{
 	 	  
 	 	 if(gpro_t.set_timer_timing_doing_value==1) return ;
-		 #if 0
-		 // In temperature setting mode, adjust temperature
-		 run_t.set_temperature_value++;
-		 if(run_t.set_temperature_value > 50) {
-			 run_t.set_temperature_value = 50; // Loop back to maxnimum (50°C)
-		 }
-		 TM1639_Display_4Bit_Temp(run_t.set_temperature_value);
-		 #else 
+	
 
           adjust_temperature_value(1) ;
-		 #endif 
+
 		 
 	 }
            
@@ -299,11 +292,11 @@ void key_add_fun(void)
 void key_dec_fun(void)
 {
   
-	gpro_t.dma_tx_done = 0;
+	//if(gpro_t.dma_tx_done ==1)
 	SendData_Set_Command(0x06,0x01);//SendData_Buzzer();
 	tx_thread_sleep(2);
 
-    while(!gpro_t.dma_tx_done);
+   // while(!gpro_t.dma_tx_done);
 	if(gpro_t.set_timer_timing_doing_value==1) {
 
 	    gpro_t.key_add_dec_pressed_flag = 1;
@@ -327,17 +320,10 @@ void key_dec_fun(void)
 
 	    if(gpro_t.set_timer_timing_doing_value==1) return ;
 		
-		#if 0
-		// In temperature setting mode, adjust temperature
-		run_t.set_temperature_value--;
-		if(run_t.set_temperature_value < 30) {
-			run_t.set_temperature_value = 30; // Loop back to  (30°C)
-		 }
-		TM1639_Display_4Bit_Temp(run_t.set_temperature_value);
-		#else
+
 		adjust_temperature_value(-1) ;
 
-		#endif 
+		
 	}
 
 	

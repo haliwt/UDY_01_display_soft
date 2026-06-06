@@ -65,7 +65,7 @@ static void power_on_init(void)
 
 	
 	// Temperature setting initialization
-	run_t.set_temperature_value = 50; // Default temperature 50°C (maximum)
+	run_t.set_temperature_value = 60; // Default temperature 60°C (maximum)
    
 	gpro_t.ptc_first_open_f =0;
 	//works time
@@ -237,8 +237,9 @@ void immediately_compare_temp_value(void)
     
     if(run_t.ntc_tem[0] < run_t.set_temperature_value) {
             // Turn on heating
-            if(gpro_t.dma_tx_done ==1)
-               SendData_Set_Command(0x22, 0x01);
+            if(gpro_t.dma_tx_done ==1)SendData_Set_Command(0x22, 0x01);
+			   
+            
             
 			
 			
@@ -251,9 +252,8 @@ void immediately_compare_temp_value(void)
         }
 		else{
 
-		    if(gpro_t.dma_tx_done ==1)
-            SendData_Set_Command(0x22, 0);
-            //tx_thread_sleep(2);
+		    if(gpro_t.dma_tx_done ==1)SendData_Set_Command(0x22, 0);
+         
            
 			
             gpro_t.ptc_force_close_f = 0;
@@ -298,8 +298,8 @@ void compare_temp_value(void)
             // Send command to mainboard to turn off heating
             if(ptc_off_default != run_t.gDry){
 				 ptc_off_default = run_t.gDry;
-            	SendData_Set_Command(0x22, 0x00);
-            	//tx_thread_sheep(10);
+            	if(gpro_t.dma_tx_done ==1)SendData_Set_Command(0x22, 0x00);
+            	
             // Update flag
             }
            run_t.gDry =0; //close ptc
@@ -317,8 +317,8 @@ void compare_temp_value(void)
             // Send command to mainboard to turn on heating
              if(ptc_on_default !=  run_t.gDry  ){
 			 	 ptc_on_default =  run_t.gDry  ;
-            	SendData_Set_Command(0x22, 0x01);
-            	//tx_thread_sheep(10);
+            	if(gpro_t.dma_tx_done ==1)SendData_Set_Command(0x22, 0x01);
+            	
              }
 			 run_t.gDry  = 1;
            
@@ -330,8 +330,8 @@ void compare_temp_value(void)
             // Send command to mainboard to turn on heating
              if(ptc_off_default != run_t.gDry ){
 			 	 ptc_off_default = run_t.gDry ;
-            	SendData_Set_Command(0x22, 0);
-            		//tx_thread_sheep(10);
+            	if(gpro_t.dma_tx_done ==1)SendData_Set_Command(0x22, 0);
+                
              	
             // Update flag
              }
@@ -350,9 +350,9 @@ void compare_temp_value(void)
             // Send command to mainboard to turn off heating
              if(ptc_off_default != run_t.gDry ){
 			 	 ptc_off_default = run_t.gDry ;
-                 SendData_Set_Command(0x22, 0x00);
-                 //tx_thread_sheep(10);
-            // Update flag
+                 if(gpro_t.dma_tx_done ==1)SendData_Set_Command(0x22, 0x00);
+               
+        
              }
 			 run_t.gDry  = 0;
             
@@ -364,8 +364,8 @@ void compare_temp_value(void)
             // Send command to mainboard to turn on heating
            if(ptc_on_default !=  run_t.gDry  ){
 			 	 ptc_on_default =  run_t.gDry  ;
-            	SendData_Set_Command(0x22, 0x01);
-            	//tx_thread_sheep(10);
+            	if(gpro_t.dma_tx_done ==1)SendData_Set_Command(0x22, 0x01);
+            	
              }
 		     run_t.gDry =1;
             

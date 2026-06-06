@@ -8,7 +8,7 @@
   *
   * s08 model: display board not wifi ,not mode key 
   * s08 display board : set up itself smg DATA.2025.05.30
-  *
+  * data:2026-06-06 : modify set temperature value form 30 to 60 degree
   *
   * 
   * 

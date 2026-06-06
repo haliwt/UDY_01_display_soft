@@ -114,6 +114,7 @@ void DMA1_Channel1_IRQHandler(void)
      
        //shut off DMA channel
        LL_DMA_DisableChannel(DMA1,LL_DMA_CHANNEL_1);
+     #if 0
       //Waiting shift register send data over 
       while(!LL_USART_IsActiveFlag_TC(USART2));
 
@@ -124,6 +125,12 @@ void DMA1_Channel1_IRQHandler(void)
 	  LL_USART_DisableDMAReq_TX(USART2);
 	  //send data complish callback ref 
 	  gpro_t.dma_tx_done = 1;
+	  #else 
+	  // 2. 开启 USART 的 TC（传输完成）中断，让硬件去等，我们不在这里死等
+        LL_USART_ClearFlag_TC(USART2); // 先清一下标志位防止误触发
+        LL_USART_EnableIT_TC(USART2);  // 开启串口发送完成中断
+
+	  #endif 
 	  
   }
   /* USER CODE END DMA1_Channel1_IRQn 0 */
@@ -194,6 +201,25 @@ void USART2_IRQHandler(void)
 
   }
 
+  // 2. 新增的发送完成逻辑：
+  // 必须同时判断“开启了TC中断”并且“硬件TC标志位置1”，防止未发送时误触发
+  if(LL_USART_IsEnabledIT_TC(USART2) && LL_USART_IsActiveFlag_TC(USART2))
+  {
+      // 清除串口 TC 标志位
+      LL_USART_ClearFlag_TC(USART2);
+      
+      // 关闭串口 TC 中断（因为是單次发送，发完就关掉，下次发送再开启）
+      LL_USART_DisableIT_TC(USART2);
+      
+      // 关闭串口的 DMA 发送请求
+      LL_USART_DisableDMAReq_TX(USART2);
+
+      // 正式宣告：数据已全部物理发送到芯片外部引脚！
+      gpro_t.dma_tx_done = 1;
+      
+      // (可选) 如果有发送完成的回调函数，可以在这里调用
+      // usart2_tx_complete_callback(); 
+  }
 
   /* USER CODE END USART2_IRQn 0 */
   /* USER CODE BEGIN USART2_IRQn 1 */
