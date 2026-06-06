@@ -11,7 +11,7 @@
 uint8_t  set_temp_flag;
 uint8_t power_on_key_counter;
 
-static void adjust_timer_minutes(int8_t delta_min) ;
+static void adjust_timer_hours(int8_t delta_min) ;
 static void adjust_temperature_value(int8_t delta) ;
 
 
@@ -79,7 +79,7 @@ static void adjust_temperature_value(int8_t delta)
 	*
 	*
 *******************************************************/
-static void adjust_timer_minutes(int8_t delta_min) 
+static void adjust_timer_hours(int8_t delta_min) 
 {
    
 //	uint8_t copy_total_hour;
@@ -264,7 +264,7 @@ void key_add_fun(void)
 	 	   gpro_t.key_add_dec_pressed_flag = 1;
 		 // In timer setting mode, adjust timer hours
 	
-		 adjust_timer_minutes(1) ;
+		 adjust_timer_hours(1) ;
 
 		
 	 }
@@ -312,7 +312,7 @@ void key_dec_fun(void)
 		// Reset the timeout counter
 		gpro_t.gTimer_set_timer_counter = 0;
 		#else
-		adjust_timer_minutes(-1) ;
+		adjust_timer_hours(-1) ;
 
 		#endif 
 	}
