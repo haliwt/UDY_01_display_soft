@@ -216,10 +216,13 @@ static void vTaskKeyPro(ULONG thread_input)
     static uint16_t up_cnt = 0;
     static uint16_t down_cnt = 0;
     static uint16_t power_cnt = 0;
+	// 新增：用于长按跑数的速度控制计数器
+   static uint16_t up_repeat_cnt = 0;
+   static uint16_t down_repeat_cnt = 0;
 
     const uint16_t LONG_PRESS_TIME = 40;   // 300 * 10ms = 3000ms
     const uint16_t LONG_PRESS_COUNTER = 20;
-	const uint16_t REPEAT_INTERVAL = 2;       // 每 5 次循环跑数一次（约 30ms）
+	const uint16_t REPEAT_INTERVAL = 1;       // 每 5 次循环跑数一次（约 30ms）
 	
     while(1)
     {
@@ -231,9 +234,15 @@ static void vTaskKeyPro(ULONG thread_input)
            down_cnt++;
 	        if (down_cnt >= LONG_PRESS_COUNTER)
             {
-                if ((down_cnt % REPEAT_INTERVAL) == 0)
+				 down_cnt = LONG_PRESS_COUNTER;
+
+			     // 已经进入长按状态，启动连发跑数计数器
+                 down_repeat_cnt++;
+				if (down_repeat_cnt >REPEAT_INTERVAL)
                 {
-                    tx_event_flags_set(&key_event, KEY_DOWN_SHORT, TX_OR);
+                    down_repeat_cnt=0;
+				
+					tx_event_flags_set(&key_event, KEY_DOWN_SHORT, TX_OR);
                 }
             }
             
@@ -241,19 +250,22 @@ static void vTaskKeyPro(ULONG thread_input)
 	  else if(down_cnt > 0){
 	  	    if(down_cnt < LONG_PRESS_COUNTER)
 			tx_event_flags_set(&key_event, KEY_DOWN_SHORT, TX_OR);
-	  
+	      down_repeat_cnt =0;
 		  down_cnt = 0;
       }
-	  
-      if(ADD_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
+	  else if(ADD_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
           
            up_cnt++;
 		   if(up_cnt >= LONG_PRESS_COUNTER)
            {
-                // 跑数模式：每 REPEAT_INTERVAL 次触发一次
-                if ((up_cnt % REPEAT_INTERVAL) == 0)
+               up_cnt = LONG_PRESS_COUNTER +1;
+		        // 跑数模式：每 REPEAT_INTERVAL 次触发一次
+                up_repeat_cnt++;
+                if (up_repeat_cnt >REPEAT_INTERVAL)
                 {
-                    tx_event_flags_set(&key_event, KEY_UP_SHORT, TX_OR);
+                    up_repeat_cnt=0;
+				
+					tx_event_flags_set(&key_event, KEY_UP_SHORT, TX_OR);
                 }
             }
 	  
@@ -261,11 +273,11 @@ static void vTaskKeyPro(ULONG thread_input)
 	  else if(up_cnt > 0){
 	  	    if(up_cnt <LONG_PRESS_COUNTER)
             tx_event_flags_set(&key_event, KEY_UP_SHORT, TX_OR);
-
-            up_cnt = 0;
+			
+			up_repeat_cnt=0;
+             up_cnt = 0;
 	  }
-	  
-      if(DRY_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
+	  else if(DRY_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
 
 	       dry_cnt++ ;
 		 
@@ -276,8 +288,7 @@ static void vTaskKeyPro(ULONG thread_input)
 		 dry_cnt = 0;
 
 	  }
-	  
-      if(PLASMA_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
+	  else if(PLASMA_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
             plasma_cnt ++;    
             
 	  }
@@ -288,8 +299,7 @@ static void vTaskKeyPro(ULONG thread_input)
 
 
 	  }
-	  
-      if(MOUSE_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
+	  else if(MOUSE_KEY_VALUE()==KEY_DOWN && run_t.gPower_On == power_on){
          
            mouse_cnt ++ ; 
 	  }
@@ -299,8 +309,7 @@ static void vTaskKeyPro(ULONG thread_input)
 			mouse_cnt = 0;
 
 	  }
-	  
-       if(POWER_KEY_VALUE() == KEY_DOWN){
+	  else if(POWER_KEY_VALUE() == KEY_DOWN){
          
             power_cnt++;
             if(power_cnt == LONG_PRESS_TIME && run_t.gPower_On == power_on){
@@ -309,19 +318,16 @@ static void vTaskKeyPro(ULONG thread_input)
              }
 
 	  }
-	  else{
-	  	if(power_cnt > 0){
-			   if(power_cnt >=LONG_PRESS_TIME){
-
-			   }
-			   else
-                   tx_event_flags_set(&key_event, KEY_POWER_SHORT, TX_OR);
+	  else if(power_cnt > 0){
+			   if(power_cnt < LONG_PRESS_TIME){
+                  tx_event_flags_set(&key_event, KEY_POWER_SHORT, TX_OR);
+			   	}
 				
 			
             power_cnt = 0;
-	  	 }
+	  	}
 
-	  }
+	  
 
 	  #if DEBUG_ENABLE
               debug_stack_key_check();
@@ -386,7 +392,7 @@ static void vTaskKeyPro(ULONG thread_input)
        
 		      mouse_key_handler() ;
 	     }
-
+         tx_thread_sleep(2);
 		  #if DEBUG_ENABLE
               debug_stack_key_event_check();
           #endif 

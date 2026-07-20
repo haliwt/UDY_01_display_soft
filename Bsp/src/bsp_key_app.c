@@ -97,6 +97,7 @@ static void adjust_timer_hours(int8_t delta_min)
 	
 	run_t.timer_dispTime_minutes = 0;
 	
+	
 	gpro_t.g_time_disp_colon_flag = 0;
 	TM1639_Display_4Bit_Time(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
 

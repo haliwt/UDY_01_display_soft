@@ -59,32 +59,39 @@ static const uint8_t TM1639_Char_Err_Table[] = {
 void TM1639_Display_4Bit_Time(uint8_t hours,uint8_t minutes)
 {
   
+   // 1. 提前把 4 位数码管对应的数字拆分好（清晰直观，方便打断点调试）
+    uint8_t hr_dec = hours / 10;
+    uint8_t hr_uni = hours % 10;
+    uint8_t min_dec = minutes / 10;
+    uint8_t min_uni = minutes % 10;
+
+
     //hours decade 入十位（最左边）
     
-	TM1639_Write_Digit_Full(TM1639_ADDR_DIG5_H, TM1639_ADDR_DIG5_L, Number_Table[hours/10]);
+	TM1639_Write_Digit_Full(TM1639_ADDR_DIG5_H, TM1639_ADDR_DIG5_L, Number_Table[hr_dec]);
 
    
         
     //hours unit 
     if(gpro_t.g_time_disp_colon_flag ==1){ //time colon symbol blink 
-    	 TM1639_Write_Digit_Full(TM1639_ADDR_DIG6_H, TM1639_ADDR_DIG6_L, Number_Table[hours %10] | TM1639_DOT);
+    	 TM1639_Write_Digit_Full(TM1639_ADDR_DIG6_H, TM1639_ADDR_DIG6_L, Number_Table[hr_uni] | TM1639_DOT);
     }
 	else{
-         TM1639_Write_Digit_Full(TM1639_ADDR_DIG6_H, TM1639_ADDR_DIG6_L, Number_Table[hours %10]);
+         TM1639_Write_Digit_Full(TM1639_ADDR_DIG6_H, TM1639_ADDR_DIG6_L, Number_Table[hr_uni]);
 
 	}
 
 	//minute decade入十位（中间）
   
 	  if(gpro_t.g_time_disp_colon_flag ==1){ //time colon symbol blink 
-	      TM1639_Write_Digit_Full(TM1639_ADDR_DIG7_H, TM1639_ADDR_DIG7_L,Number_Table[minutes/10] | TM1639_DOT);
+	      TM1639_Write_Digit_Full(TM1639_ADDR_DIG7_H, TM1639_ADDR_DIG7_L,Number_Table[min_dec] | TM1639_DOT);
 	  }
 	  else{
-          TM1639_Write_Digit_Full(TM1639_ADDR_DIG7_H, TM1639_ADDR_DIG7_L,Number_Table[minutes/10]);
+          TM1639_Write_Digit_Full(TM1639_ADDR_DIG7_H, TM1639_ADDR_DIG7_L,Number_Table[min_dec]);
 	  }
 	
     //minute uint
-	TM1639_Write_Digit_Full(TM1639_ADDR_DIG8_H, TM1639_ADDR_DIG8_L,Number_Table[minutes%10]);
+	TM1639_Write_Digit_Full(TM1639_ADDR_DIG8_H, TM1639_ADDR_DIG8_L,Number_Table[min_uni]);
 }
 
 void TM1639_donotDisplay_4Bit_Time(void)
